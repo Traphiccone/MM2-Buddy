@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="starship_retro_cropped.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DirectShowLib" Version="1.0.0" />
+    <PackageReference Include="Emgu.CV" Version="4.7.0.5276" />
+    <PackageReference Include="EPPlus" Version="6.2.2" />
+    <PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />
+    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.7.0.20230115" />
+    <PackageReference Include="OpenCvSharp4Extern" Version="1.0.0" />
+    <PackageReference Include="Tesseract" Version="5.2.0" />
+    <PackageReference Include="TesseractOCR" Version="5.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="starship_retro_cropped.jpg" />
+  </ItemGroup>
+
+</Project>

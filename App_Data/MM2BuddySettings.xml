@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<appSettings>
+		<add key="VidDevice" value="Value1" />
+		<add key="LvlViewEndless" value="Value2" />
+		<add key="LvlViewReport" value="Value3" />
+		<add key="LogAll" value="Value4" />
+	</appSettings>
+</configuration>
