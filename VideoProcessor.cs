@@ -18,6 +18,7 @@ using TesseractOCR;
 using System.Windows.Controls;
 using System.Security.Cryptography;
 using Emgu.CV.Structure;
+using System.Text.RegularExpressions;
 //using OpenCvSharpExtern;
 
 namespace MM2Buddy
@@ -191,7 +192,7 @@ namespace MM2Buddy
         //static public void CheckScreenState(OpenCvSharp.Mat frame)
         static public ScreenState CheckScreenState(BitmapSource bmap)
         {
-            var perMatchAllowed = 99; //97
+            var perMatchAllowed = 97; //97
 
             var lvlStartScreen = false;
             var lvlPlayedScreen = false;
@@ -290,8 +291,8 @@ namespace MM2Buddy
                     return false;
 
                 //MessageBox.Show("Is Red? : " + (p1.R) + " " + (p1.G) + " " + (p1.B));
-                if (p1.R > 200 && p1.G < 150 && p1.B < 150)
-                    MessageBox.Show("LvlPlayedScreenRpt Detected");
+                //if (p1.R > 200 && p1.G < 150 && p1.B < 150)
+                //    MessageBox.Show("LvlPlayedScreenRpt Detected");
 
                 // Check for Red
                 return ((p1.R > 200) && (p1.G < 150) && (p1.B < 150));
@@ -483,6 +484,9 @@ namespace MM2Buddy
             {
                 lvlCode = SubImageText(frame, 110, 265, 263, 40, "code");
                 lvlCode = lvlCode.Replace(" ", "");
+                lvlCode = lvlCode.Replace("\n", "");
+                if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
+                    return;
                 lvlName = SubImageText(frame, 325, 140, 1366, 64);
                 lvlCreator = SubImageText(frame, 1000, 265, 600, 50);
                 //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
@@ -492,17 +496,28 @@ namespace MM2Buddy
                 //mainWin.ActiveLevel = lvl;
                 if (mainWin.ActiveLevel.Code == lvlCode)
                     return;
+
+                lvl.LastPlayed = DateTime.Now;
+                lvl.FirstPlayed = DateTime.Now;
                 if (mainWin.LvlViewEndless)
                 {
                     Utils.OpenLink(lvl.Link);
                     lvl.AutoOpened = true;
                 }
                 mainWin.UpdateActiveLevel(lvl);
+
+                if (mainWin.LogAll)
+                {
+                    Utils.UpdateLog();
+                }
             }
             void ReadLvlScn() // For Hot and New course screen
             {
                 lvlCode = SubImageText(frame, 1088, 737, 250, 40, "code");
                 lvlCode = lvlCode.Replace(" ", "");
+                lvlCode = lvlCode.Replace("\n", "");
+                if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
+                    return;
                 if (mainWin.ActiveLevel.Code == lvlCode)
                     return;
                 flagEnd = GetCreatorStart(bmap);
@@ -522,6 +537,9 @@ namespace MM2Buddy
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
                 lvlCode = SubImageText(frame, 1177, 737, 250, 40, "code");
                 lvlCode = lvlCode.Replace(" ", "");
+                lvlCode = lvlCode.Replace("\n", "");
+                if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
+                    return;
                 if (mainWin.ActiveLevel.Code == lvlCode)
                     return;
                 flagEnd = GetCreatorStart(bmap);
@@ -547,7 +565,7 @@ namespace MM2Buddy
                 case ScreenState.LvlScreenRpt:
                     ReadLvlScn();
               
-                    if (mainWin.LvlViewReport)
+                    if (mainWin.LvlViewReport && !mainWin.ActiveLevel.AutoOpened)
                     {
                         Utils.OpenLink(mainWin.ActiveLevel.Link);
                         mainWin.ActiveLevel.AutoOpened = true;
@@ -559,7 +577,7 @@ namespace MM2Buddy
                 case ScreenState.LvlScreenPopRpt:
                     ReadLvlPopScn();
 
-                    if (mainWin.LvlViewReport)
+                    if (mainWin.LvlViewReport && !mainWin.ActiveLevel.AutoOpened)
                     {
                         Utils.OpenLink(mainWin.ActiveLevel.Link);
                         mainWin.ActiveLevel.AutoOpened = true;
@@ -601,6 +619,7 @@ namespace MM2Buddy
             //if (type == "code")
             //    Cv2.ImShow("Large View", binary);
             var codeTxt = GetOCRText(binary, type);
+            codeTxt = codeTxt.Replace("\n", "");
             return codeTxt;
             //}
             // Apply adaptive thresholding to create a binary image

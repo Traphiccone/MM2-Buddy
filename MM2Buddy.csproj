@@ -15,6 +15,7 @@
     <PackageReference Include="DirectShowLib" Version="1.0.0" />
     <PackageReference Include="Emgu.CV" Version="4.7.0.5276" />
     <PackageReference Include="EPPlus" Version="6.2.2" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
     <PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.7.0.20230115" />

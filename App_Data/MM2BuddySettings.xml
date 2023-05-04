@@ -5,5 +5,6 @@
 		<add key="LvlViewEndless" value="Value2" />
 		<add key="LvlViewReport" value="Value3" />
 		<add key="LogAll" value="Value4" />
+		<add key="LogLocation" value="Value5" />
 	</appSettings>
 </configuration>

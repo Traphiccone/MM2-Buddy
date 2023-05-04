@@ -52,5 +52,6 @@
             <Label x:Name="CreatorLabel" Grid.Column="1" Grid.Row="2" Background="Transparent" Foreground="White" FontSize="16"/>
             <Button Grid.Column="0" Grid.Row="2" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click"/>
         </Grid>
+        <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="239,86,0,0" VerticalAlignment="Top" Foreground="White" Width="330"/>
     </Grid>
 </Window>

@@ -17,7 +17,13 @@ namespace MM2Buddy
         LvlScreen,
         LvlScreenRpt,
         LvlScreenPop,
-        LvlScreenPopRpt
+        LvlScreenPopRpt,
+        Pause,
+        PauseBoo,
+        PauseHeart,
+        EndScreen,
+        EndScreenBoo,
+        EndScreenHeart
     }
 };
     //    LevelScreen = {

@@ -52,6 +52,11 @@ namespace MM2Buddy
         public string Link { get; set; }
         public bool AutoOpened { get; set; }
         public bool Active { get; set; }
+        public string Hearted { get; set; } //H or B or null
+        public int DeathCnt { get; set; } = 0;
+        public DateTime LastPlayed { get; set; }
+        public DateTime FirstPlayed { get; set; }
+
 
         public Level(string code = "No Level Detected", string name = "-", string creator = "-")
         {

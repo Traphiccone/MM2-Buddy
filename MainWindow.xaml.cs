@@ -20,6 +20,11 @@ using OpenCvSharp;
 using static Emgu.CV.Dai.OpenVino;
 using System.ComponentModel;
 using System.Xml.Linq;
+using Microsoft.Win32;
+using Microsoft.Office.Interop.Excel;
+using Excel = Microsoft.Office.Interop.Excel;
+using Emgu.CV;
+using OfficeOpenXml;
 
 namespace MM2Buddy
 {
@@ -34,6 +39,8 @@ namespace MM2Buddy
         public bool LvlViewEndless { get; set; }
         public bool LvlViewReport { get; set; }
         public bool LogAll { get; set; }
+        public string LogLocation { get; set; }
+
         public bool IsRunning { get; set; }
         public ScreenState ScreenState { get; set; }
         private Level _activeLevel;
@@ -76,9 +83,9 @@ namespace MM2Buddy
             // TL I can't for the life of me get the binding to update.
             // so set manually for now...
             //
-            this.CodeLabel.SetValue(Label.ContentProperty, lvl.Code);
-            this.NameLabel.SetValue(Label.ContentProperty, lvl.Name);
-            this.CreatorLabel.SetValue(Label.ContentProperty, lvl.Creator);
+            this.CodeLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Code);
+            this.NameLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Name);
+            this.CreatorLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Creator);
 
             //this.OnPropertyChanged(nameof(_page))levelInfoGrid;
             //Binding bind = new Binding("ActiveLevel");
@@ -135,6 +142,10 @@ namespace MM2Buddy
                             case "LogAll":
                                 logAllCB.IsChecked = bool.Parse(appSettings[key]);
                                 this.LogAll = bool.Parse(appSettings[key]);
+                                break;
+                            case "LogLocation":
+                                logLocation.Content = appSettings[key];
+                                this.LogLocation = appSettings[key];
                                 break;
                             default:
                                 // code block
@@ -238,6 +249,8 @@ namespace MM2Buddy
             this.IsRunning = true;
             this.startBtn.IsEnabled = false;
             this.stopBtn.IsEnabled = true;
+            //string filePath = this.LogLocation;
+
             VideoProcessor.Process();
         }
 
@@ -267,6 +280,7 @@ namespace MM2Buddy
             AddUpdateAppSettings("LvlViewEndless", lvlViewEndlessCB.IsChecked.ToString());
             AddUpdateAppSettings("LvlViewReport", lvlViewReportCB.IsChecked.ToString());
             AddUpdateAppSettings("LogAll", logAllCB.IsChecked.ToString());
+            AddUpdateAppSettings("LogLocation", logLocation.Content.ToString());
             //ConfigurationManager.AppSettings["LvlViewEndless"] = textBoxPassword.Text;
             //ConfigurationManager.AppSettings.
         }
@@ -288,6 +302,40 @@ namespace MM2Buddy
         {
             this.LogAll = logAllCB.IsChecked ?? false;
             saveUserSettings();
+            if (this.LogAll && this.LogLocation.Length < 3)
+            {
+
+                //    // Create an instance of the Excel application
+                //Excel.Application excel = new Excel.Application();
+                //excel.Visible = false;
+
+                //    // Open the workbook that you want to copy
+                string fileName = "MM2LogTemplate.xlsx";
+                string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
+                //    MessageBox.Show("2");
+
+                // Prompt the user to select a location to save the copy of the Excel file
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx";
+                saveFileDialog.Title = "Select A Location For the MM2 Buddy Excel File";
+                saveFileDialog.FileName = "MM2Log.xlsx";
+                saveFileDialog.ShowDialog();
+
+                // If the user selects a location, save the copy of the Excel file to that location
+                if (saveFileDialog.FileName != "")
+                {
+                    string newFilePath = saveFileDialog.FileName;
+
+                    // Make a copy of the original Excel file
+                    File.Copy(filePath, newFilePath);
+
+                    // Display a success message
+                    Console.WriteLine("Excel file copied successfully.");
+                    this.LogLocation = newFilePath;
+                    this.logLocation.Content = newFilePath;
+                    saveUserSettings();
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
