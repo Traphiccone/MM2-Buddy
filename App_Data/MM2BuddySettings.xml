@@ -6,5 +6,7 @@
 		<add key="LvlViewReport" value="Value3" />
 		<add key="LogAll" value="Value4" />
 		<add key="LogLocation" value="Value5" />
+		<add key="WinWidth" value="Value6" />
+		<add key="WinHeight" value="Value7" />
 	</appSettings>
 </configuration>

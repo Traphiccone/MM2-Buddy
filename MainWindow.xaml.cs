@@ -237,6 +237,18 @@ namespace MM2Buddy
             //}
         }
 
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //
+            // TODO save window size if user changes the size
+
+            // Get the new size of the window
+            //double newWidth = e.NewSize.Width;
+            //double newHeight = e.NewSize.Height;
+
+            // Do something with the new size, such as updating the layout of your UI
+        }
+
         private void DeviceCombo_Initialized(object? sender, EventArgs e)
         {
             //Console.WriteLine("Hello, world!");

@@ -126,6 +126,7 @@ namespace MM2Buddy
                 {
                     BreakDownImage(frame, state, bitmapSource);
                 }
+                mainWin.ScreenState = state;
 
                 // display the frame in the "Webcam" window
                 //Cv2.ImShow("Large View", frame);
@@ -158,7 +159,10 @@ namespace MM2Buddy
             //using var engine = new Engine(@"C:\freeOCR\tessdata", Language.English, TesseractOCR.Enums.EngineMode.Default);
             if (type == "code")
             {
-                using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata", Language.English, TesseractOCR.Enums.EngineMode.Default))
+                //
+                // For the MM2 code, use specially trained tessdata for conversion
+                //
+                using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata\train", Language.English, TesseractOCR.Enums.EngineMode.Default))
                 {
                     engine.SetVariable("tessedit_char_whitelist", "0123456789QWERTYUPASDFGHJKLXCVBNM-");
 
@@ -173,7 +177,7 @@ namespace MM2Buddy
             }
             else
             {
-                using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata", Language.English, TesseractOCR.Enums.EngineMode.Default))
+                using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng+jpn", TesseractOCR.Enums.EngineMode.Default))
                 {
                     using (img)
                     //using (var img = Tesseract.Pix.LoadFromMemory(bmap))
@@ -201,6 +205,13 @@ namespace MM2Buddy
             var lvlScreenRpt = false;
             var lvlPopScreen = false;
             var lvlPopScreenRpt = false;
+
+            var pause = false;
+            var pauseBoo = false;
+            var pauseHeart = false;
+            var endScreen = false;
+            var endScreenBoo = false;
+            var endScreenHeart = false;
 
             // Screen when starting a level/100 man
             bool checkLvlStartScreen(BitmapSource bmap)
@@ -427,6 +438,63 @@ namespace MM2Buddy
                 //MessageBox.Show("Comp Result: \n" +
                 //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B);
             }
+            bool checkPauseScreen(BitmapSource bmap) // check for pause screen
+            {
+                //
+                // Coordinates and colors that represent the Browsing section Level View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(1843, 41, 13, 0, 0); // Top right close btn black
+                PixelColorCheck p2 = new PixelColorCheck(1843, 66, 255, 255, 255); // Top right close btn white
+                PixelColorCheck p3 = new PixelColorCheck(1311, 682, 255, 204, 30); // Start over btn yellow
+                PixelColorCheck p4 = new PixelColorCheck(1311, 827, 255, 204, 30); // Exit course btn yellow
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+                PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
+                PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
+
+                //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
+                //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
+                //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C)) / 4;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total PauseScreen Comp%: " + totalComp);
+                //if (totalComp > perMatchAllowed)
+                //    MessageBox.Show("LvlScreen Detected");
+                return totalComp > perMatchAllowed;
+                //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
+            }
+            // TODO
+            bool checkPauseScreenHeart(BitmapSource bmap) // check if user has heart selected on pause screen
+            {
+                //
+                // Coordinates and colors that represent the Browsing section Level View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(1843, 41, 13, 0, 0); // Top right close btn black
+                PixelColorCheck p2 = new PixelColorCheck(1843, 66, 255, 255, 255); // Top right close btn white
+                PixelColorCheck p3 = new PixelColorCheck(1311, 682, 255, 204, 30); // Start over btn yellow
+                PixelColorCheck p4 = new PixelColorCheck(1311, 827, 255, 204, 30); // Exit course btn yellow
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+                PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
+                PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
+
+                //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
+                //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
+                //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C)) / 4;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total PauseScreen Comp%: " + totalComp);
+                //if (totalComp > perMatchAllowed)
+                //    MessageBox.Show("LvlScreen Detected");
+                return totalComp > perMatchAllowed;
+                //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
+            }
 
             lvlStartScreen = checkLvlStartScreen(bmap);
             if (lvlStartScreen)
@@ -435,7 +503,6 @@ namespace MM2Buddy
             }
 
             lvlPlayedScreen = checkLvlPlayedScreen(bmap);
-            lvlPlayedScreenRpt = false;
             if (lvlPlayedScreen)
             {
                 lvlPlayedScreenRpt = checkLvlPlayedScreenRpt(bmap);
@@ -443,7 +510,6 @@ namespace MM2Buddy
             }
 
             lvlScreen = checkLvlScreen(bmap);
-            lvlScreenRpt = false;
             if (lvlScreen)
             {
                 lvlScreenRpt = checkLvlScreenRpt(bmap);
@@ -459,6 +525,14 @@ namespace MM2Buddy
                 lvlPopScreenRpt = checkPopLvlScreenRpt(bmap);
                 return lvlPopScreenRpt ? ScreenState.LvlScreenPopRpt : ScreenState.LvlScreenPop;
             }
+            pause = checkPauseScreen(bmap);
+            if (pause)
+            {
+                return ScreenState.Pause;
+                //lvlPopScreenRpt = checkPopLvlScreenRpt(bmap);
+                //return lvlPopScreenRpt ? ScreenState.LvlScreenPopRpt : ScreenState.LvlScreenPop;
+            }
+
             return ScreenState.NoScreen;
 
         }
@@ -487,28 +561,25 @@ namespace MM2Buddy
                 lvlCode = lvlCode.Replace("\n", "");
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
-                lvlName = SubImageText(frame, 325, 140, 1366, 64);
-                lvlCreator = SubImageText(frame, 1000, 265, 600, 50);
-                //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
-                lvl = new Level(lvlCode, lvlName, lvlCreator);
-                lvl.Active = true;
-
-                //mainWin.ActiveLevel = lvl;
-                if (mainWin.ActiveLevel.Code == lvlCode)
-                    return;
-
-                lvl.LastPlayed = DateTime.Now;
-                lvl.FirstPlayed = DateTime.Now;
-                if (mainWin.LvlViewEndless)
+                var alreadyActive = mainWin.ActiveLevel.Code == lvlCode;
+         
+                if (alreadyActive) // user started level from a previous level scn
                 {
-                    Utils.OpenLink(lvl.Link);
-                    lvl.AutoOpened = true;
+                    mainWin.ActiveLevel.LastPlayed = DateTime.Now;
+                    mainWin.ActiveLevel.FirstPlayed = DateTime.Now;
                 }
-                mainWin.UpdateActiveLevel(lvl);
-
-                if (mainWin.LogAll)
+                else // create new level object
                 {
-                    Utils.UpdateLog();
+                    lvlName = SubImageText(frame, 325, 140, 1366, 64);
+                    lvlCreator = SubImageText(frame, 1000, 265, 600, 50);
+                    //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
+                    lvl = new Level(lvlCode, lvlName, lvlCreator);
+                    lvl.Active = true;
+
+
+                    lvl.LastPlayed = DateTime.Now;
+                    lvl.FirstPlayed = DateTime.Now;
+                    mainWin.UpdateActiveLevel(lvl);
                 }
             }
             void ReadLvlScn() // For Hot and New course screen
@@ -531,7 +602,7 @@ namespace MM2Buddy
                 //mainWin.ActiveLevel = lvl;
                 mainWin.UpdateActiveLevel(lvl);
             }
-            void ReadLvlPopScn() // For Hot and New course screen
+            void ReadLvlPopScn() // For Popular course screen
             {
 
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
@@ -552,12 +623,44 @@ namespace MM2Buddy
                 //mainWin.ActiveLevel = lvl;
                 mainWin.UpdateActiveLevel(lvl);
             }
+            void ReadLvlPlayedScn() // For Popular course screen
+            {
+
+                //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
+                lvlCode = SubImageText(frame, 1064, 705, 250, 40, "code");
+                lvlCode = lvlCode.Replace(" ", "");
+                lvlCode = lvlCode.Replace("\n", "");
+
+                if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
+                    return;
+                if (mainWin.ActiveLevel.Code == lvlCode)
+                    return;
+                flagEnd = GetCreatorStart(bmap);
+                lvlName = SubImageText(frame, 477, 235, 1044, 57);
+                lvlCreator = SubImageText(frame, flagEnd.X, 428, 1586 - flagEnd.X, 41); //1586 end of possible txt area
+                //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
+                lvl = new Level(lvlCode, lvlName, lvlCreator);
+                lvl.Active = true;
+
+                //mainWin.ActiveLevel = lvl;
+                mainWin.UpdateActiveLevel(lvl);
+            }
 
             switch (state)
             {
                 case ScreenState.LevelStart:
                     //MessageBox.Show(SubImageText(frame, 110, 265, 263, 40));
                     ReadLvlStartScn();
+                    if (mainWin.LvlViewEndless && !mainWin.ActiveLevel.AutoOpened)
+                    {
+                        Utils.OpenLink(mainWin.ActiveLevel.Link);
+                        mainWin.ActiveLevel.AutoOpened = true;
+                    }
+                    if (!mainWin.ActiveLevel.Logged && mainWin.LogAll)
+                    {
+                        Utils.UpdateLog();
+                        mainWin.ActiveLevel.Logged = true;
+                    }
                     break;
                 case ScreenState.LvlScreen:
                     ReadLvlScn();
@@ -576,6 +679,18 @@ namespace MM2Buddy
                     break;
                 case ScreenState.LvlScreenPopRpt:
                     ReadLvlPopScn();
+
+                    if (mainWin.LvlViewReport && !mainWin.ActiveLevel.AutoOpened)
+                    {
+                        Utils.OpenLink(mainWin.ActiveLevel.Link);
+                        mainWin.ActiveLevel.AutoOpened = true;
+                    }
+                    break;
+                case ScreenState.LvlPlayedScreen:
+                    ReadLvlPlayedScn();
+                    break;
+                case ScreenState.LvlPlayedScreenRpt:
+                    ReadLvlPlayedScn();
 
                     if (mainWin.LvlViewReport && !mainWin.ActiveLevel.AutoOpened)
                     {
@@ -641,26 +756,31 @@ namespace MM2Buddy
         //
         // There's is not a specific rect box to capture a creator's name without sometimes
         // capturing the country flag.  So detect where the flag and name's respective pixels start
-        // Start at 1200, 461 and move leftwards.
+        // Start at 1200, 461 and move leftwards. 430 for Played screen
         //
         static public PixelColorCheck GetCreatorStart(BitmapSource bmap)
         {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+
             int x = 1200;
+            int y = 461;
+            if (mainWin.ScreenState == ScreenState.LvlPlayedScreen || mainWin.ScreenState == ScreenState.LvlPlayedScreenRpt)
+                y = 430;
             byte[] pixel = new byte[3];
             byte[] pixel2 = new byte[3];
 
-            bmap.CopyPixels(new Int32Rect(1200, 461, 1, 1), pixel, 3, 0);
+            bmap.CopyPixels(new Int32Rect(1200, y, 1, 1), pixel, 3, 0);
             PixelColorCheck startP = new PixelColorCheck(x, 461, pixel[2], pixel[1], pixel[0]);
 
-            bmap.CopyPixels(new Int32Rect(x++, 461, 1, 1), pixel2, 3, 0);
+            bmap.CopyPixels(new Int32Rect(x++, y, 1, 1), pixel2, 3, 0);
             PixelColorCheck nextP = new PixelColorCheck(x, 461, pixel2[2], pixel2[1], pixel2[0]);
 
             while (startP.CompareColor(nextP) > 99)
             {
                 startP = nextP;
 
-                bmap.CopyPixels(new Int32Rect(x++, 461, 1, 1), pixel2, 3, 0);
-                nextP = new PixelColorCheck(x, 461, pixel2[2], pixel2[1], pixel2[0]);
+                bmap.CopyPixels(new Int32Rect(x++, y, 1, 1), pixel2, 3, 0);
+                nextP = new PixelColorCheck(x, y, pixel2[2], pixel2[1], pixel2[0]);
             }
             //MessageBox.Show("Flag Start: " + nextP.X + ", " + nextP.Y);
 

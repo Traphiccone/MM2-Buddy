@@ -56,6 +56,8 @@ namespace MM2Buddy
         public int DeathCnt { get; set; } = 0;
         public DateTime LastPlayed { get; set; }
         public DateTime FirstPlayed { get; set; }
+        public bool Logged { get; set; }
+
 
 
         public Level(string code = "No Level Detected", string name = "-", string creator = "-")
@@ -66,6 +68,7 @@ namespace MM2Buddy
             Link = "https://smm2.wizul.us/smm2/level/" + code;
             AutoOpened = false;
             Active = false;
+            Logged = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
