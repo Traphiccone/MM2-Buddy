@@ -467,7 +467,56 @@ namespace MM2Buddy
                 //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
             }
             // TODO
+            bool checkPauseScreenBoo(BitmapSource bmap) // check if user has heart selected on pause screen
+            {
+                //
+                // Coordinates and colors that represent the Browsing section Level View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(1364, 253, 95, 85, 177); // Left blue heart
+                PixelColorCheck p2 = new PixelColorCheck(1422, 257, 95, 85, 177); // Right blue heart
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+
+                //MessageBox.Show("1Comp Result: " + p1.CompareColor(p1C) + "\n" +
+                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B + "\n" +
+                //    "p2: " + p1C.R + ", " + p1C.G + ", " + p1C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total PauseScreen Comp%: " + totalComp);
+                //if (totalComp > perMatchAllowed)
+                //    MessageBox.Show("LvlScreen Detected");
+                return totalComp > perMatchAllowed;
+                //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
+            }
             bool checkPauseScreenHeart(BitmapSource bmap) // check if user has heart selected on pause screen
+            {
+                //
+                // Coordinates and colors that represent the Browsing section Level View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(1702, 262, 255, 98, 98); // Left red heart
+                PixelColorCheck p2 = new PixelColorCheck(1745, 262, 255, 98, 97); // Right red heart
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+
+                //MessageBox.Show("1Comp Result: " + p2.CompareColor(p2C) + "\n" +
+                //    "p1: " + p2.R + ", " + p2.G + ", " + p2.B + "\n" +
+                //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total PauseScreen Comp%: " + totalComp);
+                //if (totalComp > perMatchAllowed)
+                //    MessageBox.Show("LvlScreen Detected");
+                return totalComp > perMatchAllowed;
+                //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
+            }
+            // TODO
+            bool checkEndScreen(BitmapSource bmap) // check for pause screen
             {
                 //
                 // Coordinates and colors that represent the Browsing section Level View Screen
@@ -528,9 +577,19 @@ namespace MM2Buddy
             pause = checkPauseScreen(bmap);
             if (pause)
             {
-                return ScreenState.Pause;
+                pauseBoo = checkPauseScreenBoo(bmap);
+                if (!pauseBoo)
+                    pauseHeart = checkPauseScreenHeart(bmap);
+                //MessageBox.Show("Pause Detected");
+                // check for heart or boo state
                 //lvlPopScreenRpt = checkPopLvlScreenRpt(bmap);
                 //return lvlPopScreenRpt ? ScreenState.LvlScreenPopRpt : ScreenState.LvlScreenPop;
+                if (pauseBoo)
+                    return ScreenState.PauseBoo;
+                else if (pauseHeart)
+                    return ScreenState.PauseHeart;
+
+                return ScreenState.Pause;
             }
 
             return ScreenState.NoScreen;
@@ -696,6 +755,22 @@ namespace MM2Buddy
                     {
                         Utils.OpenLink(mainWin.ActiveLevel.Link);
                         mainWin.ActiveLevel.AutoOpened = true;
+                    }
+                    break;
+                case ScreenState.PauseBoo:
+                    if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
+                    {
+                        mainWin.ActiveLevel.Hearted = "B";
+                        Utils.UpdateLog();
+                    }
+                    break;
+                case ScreenState.PauseHeart:
+                    //MessageBox.Show("mainWin.LogAll && mainWin.ActiveLevel.Hearted == null");
+                    if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
+                    {
+                        //MessageBox.Show("mainWin.ActiveLevel.Hearted");
+                        mainWin.ActiveLevel.Hearted = "H";
+                        Utils.UpdateLog();
                     }
                     break;
                 default:

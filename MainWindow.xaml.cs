@@ -99,6 +99,8 @@ namespace MM2Buddy
             // Content = "{Binding Code, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             // Content = "{Binding ActiveLevel.Name}"
             // Content = "{Binding ActiveLevel.Creator}"
+
+            // TODO Read Excel file and pull previous death count/other data.
         }
 
         public void ReadAllSettings()

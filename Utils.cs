@@ -67,8 +67,12 @@ namespace MM2Buddy
                         //
 
                         // see if user liked or booed and update
-                        if (worksheet.Cells[i, 4].Value != null && lvl.Hearted != null)
+                        MessageBox.Show((worksheet.Cells[i, 4].Value != null) + " - " + (lvl.Hearted != null));
+                        if (worksheet.Cells[i, 4].Value == null && lvl.Hearted != null)
+                        {
+
                             worksheet.Cells[i, 4].Value = lvl.Hearted;
+                        }
 
                         // Update death count
                         worksheet.Cells[i, 5].Value = int.Parse(worksheet.Cells[i, 5].Value.ToString()) + lvl.DeathCnt;
