@@ -10,6 +10,10 @@ using System.Windows.Markup;
 using System.Diagnostics;
 using OfficeOpenXml;
 using System.IO;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using TesseractOCR.Pix;
 //using System.Management;
 
 namespace MM2Buddy
@@ -67,7 +71,7 @@ namespace MM2Buddy
                         //
 
                         // see if user liked or booed and update
-                        MessageBox.Show((worksheet.Cells[i, 4].Value != null) + " - " + (lvl.Hearted != null));
+                        //MessageBox.Show((worksheet.Cells[i, 4].Value != null) + " - " + (lvl.Hearted != null));
                         if (worksheet.Cells[i, 4].Value == null && lvl.Hearted != null)
                         {
 
@@ -75,7 +79,7 @@ namespace MM2Buddy
                         }
 
                         // Update death count
-                        worksheet.Cells[i, 5].Value = int.Parse(worksheet.Cells[i, 5].Value.ToString()) + lvl.DeathCnt;
+                        worksheet.Cells[i, 5].Value = /*int.Parse(worksheet.Cells[i, 5].Value.ToString()) +*/ lvl.DeathCnt;
 
                         // Update LastPlayed
                         worksheet.Cells[i, 6].Value = lvl.LastPlayed;
@@ -83,6 +87,13 @@ namespace MM2Buddy
                         ExcelRange cell = worksheet.Cells[i, 6];
                         cell.Style.Numberformat.Format = "yyyy/M/d HH:mm";
 
+                        if (worksheet.Cells[3, 8].Value != null && lvl.RecordTime > new TimeSpan(0, 0, 0, 000))
+                        {
+                            // Set the record time value to a cell
+                            worksheet.Cells[3, 8].Value = lvl.RecordTime.ToString(@"mm\:ss\.fff");
+                            // Format the cell as a time value
+                            worksheet.Cells[3, 8].Style.Numberformat.Format = "mm:ss.000";
+                        }
                         //worksheet.Cells[i, 2].Value = 9;
                         rowFound = true;
                         break;
@@ -107,6 +118,14 @@ namespace MM2Buddy
 
                     ExcelRange firstPlay = worksheet.Cells[3, 7];
                     firstPlay.Style.Numberformat.Format = "yyyy/M/d HH:mm";
+
+                    if (lvl.RecordTime > new TimeSpan(0, 0, 0, 000))
+                    {
+                        // Set the record time value to a cell
+                        worksheet.Cells[3, 8].Value = lvl.RecordTime.ToString(@"mm\:ss\.fff");
+                        // Format the cell as a time value
+                        worksheet.Cells[3, 8].Style.Numberformat.Format = "mm:ss.000";
+                    }
                 }
 
                 // Save the changes to the Excel file
@@ -114,6 +133,188 @@ namespace MM2Buddy
             }
         }
 
+        public static void CheckExistingLog()
+        {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+            Level lvl = mainWin.ActiveLevel;
+
+            // Load the Excel file into an ExcelPackage object
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            using (ExcelPackage excelPackage = new ExcelPackage(new FileInfo(mainWin.LogLocation)))
+            {
+                // Get the first worksheet of the Excel file
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+
+                // Loop through all rows in the first column to find a matching code
+                int lastRow = worksheet.Dimension.End.Row;
+                bool rowFound = false;
+                for (int i = 1; i <= lastRow; i++)
+                {
+                    if (worksheet.Cells[i, 1].Value != null && worksheet.Cells[i, 1].Value.ToString() == lvl.Code)
+                    {
+                        //
+                        // Found row.  Update info
+                        //
+
+                        // Update death count
+                        lvl.DeathCnt = int.Parse(worksheet.Cells[i, 5].Value.ToString());
+
+                        //// Update LastPlayed
+                        //worksheet.Cells[i, 6].Value = lvl.LastPlayed;
+                        //// Set the cell format to YYYY/M/D HH:MM
+                        //ExcelRange cell = worksheet.Cells[i, 6];
+                        //cell.Style.Numberformat.Format = "yyyy/M/d HH:mm";
+
+                        //if (worksheet.Cells[3, 8].Value != null && lvl.RecordTime > new TimeSpan(0, 0, 0, 000))
+                        //{
+                        //    // Set the record time value to a cell
+                        //    worksheet.Cells[3, 8].Value = lvl.RecordTime.ToString(@"mm\:ss\.fff");
+                        //    // Format the cell as a time value
+                        //    worksheet.Cells[3, 8].Style.Numberformat.Format = "mm:ss.000";
+                        //}
+                        ////worksheet.Cells[i, 2].Value = 9;
+                        //rowFound = true;
+                        //break;
+                    }
+                }
+            }
+        }
+
+        public static void GrabMM2Info()
+        {
+            //// Create an instance of HttpClient
+            //using var client = new HttpClient();
+
+            //// Set the URL of the API endpoint you want to request
+            //string url = "https://smm2.info/api/level_info.php/?code=4HR-MJN-7RG";
+
+            //// Create a new HttpRequestMessage with the HTTP method and URL
+            //var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            //// Send the HTTP request without waiting for the response
+            //var task = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            ////task.RunSynchronously();
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+            //mainWin.HBGrid.Visibility = Visibility.Hidden;
+
+            //mainWin.ActiveLevel.InfoTask = task;
+            //mainWin.ActiveLevel.HttpClient = client;
+
+            // Continue with other work while the HTTP request is being sent
+
+            Task<string> task = GetDataAsync(mainWin.ActiveLevel.Code);
+            mainWin.ActiveLevel.InfoTask = task;
+            Utils.Log("Ping to MM2.info Attempt", true);
+            //task.Wait();
+
+            // Get the result of the async method
+            //string result = task.Result;
+
+            //// Do something with the result
+            //Console.WriteLine(result);
+
+        }
+        public static void HandleResponse()
+        {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+
+            //HttpResponseMessage response = mainWin.ActiveLevel.InfoTask.Result;
+
+            // Read the content of the response as a string
+            //string json = response.Content.ReadAsStringAsync().Result;
+            string json = mainWin.ActiveLevel.InfoTask.Result;
+            if (!json.Contains("world_record"))
+            {
+
+                //mainWin.HBGrid.Visibility = Visibility.Hidden;
+                Utils.Log("SMM2.info ping failed", true);
+                mainWin.ActiveLevel.InfoTask = null;
+                return;
+            }
+
+            JObject obj = JObject.Parse(json);
+
+            JArray array = new JArray();
+            array.Add(obj["name"]);
+            array.Add(obj["description"]);
+            array.Add(obj["world_record"]);
+            array.Add(obj["likes"]);
+            array.Add(obj["boos"]);
+
+            string newArrayJson = array.ToString();
+
+            // Deserialize the JSON string into a list of MyObject objects
+            List<string> data = JsonConvert.DeserializeObject<List<string>>(newArrayJson);
+
+            //// Do something with the data, such as display it in a UI control
+            ///
+            mainWin.Hearts.Content = data[3];
+            mainWin.Boos.Content = data[4];
+            mainWin.HBGrid.Visibility = Visibility.Visible;
+
+            //foreach (string str in data)
+            //{
+            //    //MessageBox.Show(str);
+            //    //mainWin.Hearts.Content = data["boos"];
+            //    //Console.WriteLine(obj.Property3);
+            //}
+
+            //// Create an instance of HttpClient
+            //using var client = new HttpClient();
+
+            //// Set the URL of the API endpoint you want to request
+            //string url = "https://smm2.info/api/level_info.php/?code=4HR-MJN-7RG";
+
+            //// Create a new HttpRequestMessage with the HTTP method and URL
+            //var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            //// Send the HTTP request without waiting for the response
+            //var task = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            ////task.RunSynchronously();
+            //MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+            ////mainWin.ActiveLevel.InfoTask = task;
+            ////mainWin.ActiveLevel.HttpClient = client;
+
+            //// Continue with other work while the HTTP request is being sent
+
+            //Task<string> task = GetDataAsync();
+            //mainWin.ActiveLevel.InfoTask = task;
+            //task.Wait();
+
+            // Get the result of the async method
+            //string result = task.Result;
+
+            //// Do something with the result
+            //Console.WriteLine(result);
+
+        }
+
+        public static async Task<string> GetDataAsync(string code)
+        {
+            // Make an HTTP request and get the response
+            HttpClient client = new HttpClient();
+            //HttpResponseMessage response = await client.GetAsync("https://smm2.info/api/level_info.php/?code=" + code);
+            HttpResponseMessage response = await client.GetAsync("https://smm2.wizul.us/mm2/level_info/" + code.Replace("-", ""));
+
+            // Read the content of the response as a string
+            string content = await response.Content.ReadAsStringAsync();
+
+            // Return the content as the result of the task
+            return content;
+        }
+
+        public static void Log(string txt, bool showStatus = false)
+        {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+
+            mainWin.LogData.Add(new LogEntry { Timestamp = DateTime.Now, Message = txt });
+            if (showStatus)
+            {
+                mainWin.StatusLabel.Content = txt;
+            }
+        }
 
 
     }

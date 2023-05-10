@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
@@ -57,7 +58,10 @@ namespace MM2Buddy
         public DateTime LastPlayed { get; set; }
         public DateTime FirstPlayed { get; set; }
         public bool Logged { get; set; }
-
+        public bool PulledInfo { get; set; }
+        public Task<string> InfoTask { get; set; }
+        public HttpClient HttpClient { get; set; }
+        public TimeSpan RecordTime { get; set; }    
 
 
         public Level(string code = "No Level Detected", string name = "-", string creator = "-")
@@ -69,6 +73,7 @@ namespace MM2Buddy
             AutoOpened = false;
             Active = false;
             Logged = false;
+            PulledInfo = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };

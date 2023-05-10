@@ -43,8 +43,10 @@ namespace MM2Buddy
 
         public bool IsRunning { get; set; }
         public ScreenState ScreenState { get; set; }
+        public ScreenState LastScreenState { get; set; }
         private Level _activeLevel;
         public Level ActiveLevel { get; set; }
+        public CircularBuffer<LogEntry> LogData { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
@@ -71,8 +73,10 @@ namespace MM2Buddy
             //// Add the image control to the window's content
             //this.Content = _imageControl;
             this.ScreenState = ScreenState.NoScreen;
+            this.LastScreenState = ScreenState.NoScreen;
+            this.LogData = new CircularBuffer<LogEntry>(900);
+            Utils.Log(this.ScreenState.ToString(), true);
 
-         
         }
         public void UpdateActiveLevel(Level lvl)
         {

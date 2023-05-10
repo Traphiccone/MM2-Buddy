@@ -19,6 +19,9 @@ using System.Windows.Controls;
 using System.Security.Cryptography;
 using Emgu.CV.Structure;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Data;
 //using OpenCvSharpExtern;
 
 namespace MM2Buddy
@@ -114,7 +117,7 @@ namespace MM2Buddy
                 var bitmapSource = OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(frame);
                 mainWin.videoPort.Source = bitmapSource;
 
-                var state = CheckScreenState(bitmapSource);
+                var state = CheckScreenState(frame, bitmapSource);
                 //MessageBox.Show(state.ToString());
 
 
@@ -127,6 +130,17 @@ namespace MM2Buddy
                     BreakDownImage(frame, state, bitmapSource);
                 }
                 mainWin.ScreenState = state;
+                if (mainWin.ScreenState != mainWin.LastScreenState)
+                {
+                    if (mainWin.ScreenState == ScreenState.DeathMarker)
+                    {
+                        mainWin.ActiveLevel.DeathCnt++;
+                        mainWin.Deaths.Content = mainWin.ActiveLevel.DeathCnt;
+                        Utils.UpdateLog();
+                    }
+                    Utils.Log(mainWin.ScreenState.ToString(), true);
+                    mainWin.LastScreenState = mainWin.ScreenState;
+                }
 
                 // display the frame in the "Webcam" window
                 //Cv2.ImShow("Large View", frame);
@@ -179,6 +193,8 @@ namespace MM2Buddy
             {
                 using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng+jpn", TesseractOCR.Enums.EngineMode.Default))
                 {
+                    if (type == "num")
+                        engine.SetVariable("tessedit_char_whitelist", "0123456789:.");
                     using (img)
                     //using (var img = Tesseract.Pix.LoadFromMemory(bmap))
                     {
@@ -194,7 +210,7 @@ namespace MM2Buddy
             return ocrtext;
         }
         //static public void CheckScreenState(OpenCvSharp.Mat frame)
-        static public ScreenState CheckScreenState(BitmapSource bmap)
+        static public ScreenState CheckScreenState(OpenCvSharp.Mat frame, BitmapSource bmap)
         {
             var perMatchAllowed = 97; //97
 
@@ -212,6 +228,9 @@ namespace MM2Buddy
             var endScreen = false;
             var endScreenBoo = false;
             var endScreenHeart = false;
+
+            var deathMarker = false;
+
 
             // Screen when starting a level/100 man
             bool checkLvlStartScreen(BitmapSource bmap)
@@ -466,7 +485,6 @@ namespace MM2Buddy
                 return totalComp > perMatchAllowed;
                 //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
             }
-            // TODO
             bool checkPauseScreenBoo(BitmapSource bmap) // check if user has heart selected on pause screen
             {
                 //
@@ -515,34 +533,144 @@ namespace MM2Buddy
                 return totalComp > perMatchAllowed;
                 //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
             }
-            // TODO
             bool checkEndScreen(BitmapSource bmap) // check for pause screen
             {
                 //
                 // Coordinates and colors that represent the Browsing section Level View Screen
                 //
-                PixelColorCheck p1 = new PixelColorCheck(1843, 41, 13, 0, 0); // Top right close btn black
-                PixelColorCheck p2 = new PixelColorCheck(1843, 66, 255, 255, 255); // Top right close btn white
-                PixelColorCheck p3 = new PixelColorCheck(1311, 682, 255, 204, 30); // Start over btn yellow
-                PixelColorCheck p4 = new PixelColorCheck(1311, 827, 255, 204, 30); // Exit course btn yellow
+                PixelColorCheck p1 = new PixelColorCheck(167, 304, 255, 206, 29); // Top right close btn black
+                PixelColorCheck p2 = new PixelColorCheck(1827, 548, 255, 206, 29); // Top right close btn white
+                PixelColorCheck p3 = new PixelColorCheck(512, 707, 255, 206, 29); // Start over btn yellow
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
-                PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
 
                 //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
                 //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
                 //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
 
-                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C)) / 4;
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
 
                 //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
 
-                //MessageBox.Show("Total PauseScreen Comp%: " + totalComp);
+                //MessageBox.Show("Total EndScreen Comp%: " + totalComp);
                 //if (totalComp > perMatchAllowed)
                 //    MessageBox.Show("LvlScreen Detected");
                 return totalComp > perMatchAllowed;
                 //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
+            }
+            bool checkEndScreenHeart(BitmapSource bmap) // check if user has heart selected on pause screen
+            {
+                //
+                // Coordinates and colors that represent the Browsing section Level View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(459, 492, 255, 99, 99); // Left red heart
+                PixelColorCheck p2 = new PixelColorCheck(215, 487, 199, 164, 106); // Booed greyed out
+
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+
+                //MessageBox.Show("1Comp Result: " + p1.CompareColor(p1C) + "\n" +
+                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B + "\n" +
+                //    "p2: " + p1C.R + ", " + p1C.G + ", " + p1C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total EndScreenHeart Comp%: " + totalComp);
+                //if (totalComp > perMatchAllowed)
+                //    MessageBox.Show("LvlScreen Detected");
+                return totalComp > perMatchAllowed;
+            }
+            bool checkEndScreenBoo(BitmapSource bmap) // check if user has heart selected on pause screen
+            {
+                //
+                // Coordinates and colors that represent the Browsing section Level View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(159, 485, 95, 85, 177); // Left blue heart
+                PixelColorCheck p2 = new PixelColorCheck(490, 513, 199, 164, 106); // Hearted greyed out
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+
+                //MessageBox.Show("1Comp Result: " + p2.CompareColor(p2C) + "\n" +
+                //    "p1: " + p2.R + ", " + p2.G + ", " + p2.B + "\n" +
+                //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total EndScreenBoo Comp%: " + totalComp);
+                //if (totalComp > perMatchAllowed)
+                //    MessageBox.Show("LvlScreen Detected");
+                return totalComp > perMatchAllowed;
+            }
+            bool checkDeathMarker() // check if user has heart selected on pause screen
+            {
+                //
+                // Check for the death indicator on screen
+                //
+                try
+                {
+                    using (var exampleImg = new OpenCvSharp.Mat("MarioDeadIndicator.png", ImreadModes.Grayscale))
+                    using (frame)
+                    {
+                        OpenCvSharp.Mat thresholdedExampleImg = new OpenCvSharp.Mat();
+                        Cv2.CvtColor(exampleImg, exampleImg, ColorConversionCodes.BGRA2BGR);
+                        Cv2.Threshold(exampleImg, thresholdedExampleImg, 128, 255, ThresholdTypes.Binary);
+
+                        if (frame.Width < thresholdedExampleImg.Width || frame.Height < thresholdedExampleImg.Height)
+                        {
+                            MessageBox.Show("Error: Example image is larger than the search image.");
+                            return false;
+                        }
+
+                        if (frame.Type() != thresholdedExampleImg.Type())
+                        {
+                            MessageBox.Show("Error: Images are of different types.");
+                            return false;
+                        }
+
+                        OpenCvSharp.Mat result = new OpenCvSharp.Mat();
+                        Cv2.MatchTemplate(frame, thresholdedExampleImg, result, TemplateMatchModes.CCoeffNormed);
+
+                        double minVal, maxVal;
+                        OpenCvSharp.Point minLoc, maxLoc;
+                        Cv2.MinMaxLoc(result, out minVal, out maxVal, out minLoc, out maxLoc);
+                        Utils.Log(maxVal.ToString(), true);
+                        if (maxVal > 0.6) // adjust the threshold as needed
+                        {
+                            OpenCvSharp.Rect detectionRect = new OpenCvSharp.Rect(maxLoc.X, maxLoc.Y, thresholdedExampleImg.Cols, thresholdedExampleImg.Rows);
+                            Cv2.Rectangle(frame, detectionRect, new Scalar(0, 255, 0), 2);
+                            Cv2.ImShow("Large View", frame);
+
+                            OpenCvSharp.Point center = new OpenCvSharp.Point(detectionRect.X + detectionRect.Width / 2, detectionRect.Y + detectionRect.Height / 2);
+                            OpenCvSharp.Size regionSize = new OpenCvSharp.Size(10, 10); // adjust as needed
+                            OpenCvSharp.Mat region = new OpenCvSharp.Mat();
+                            Cv2.GetRectSubPix(frame, regionSize, center, region);
+
+                            // Check color of pixel at center of region
+                            Vec3b pixelColor = region.At<Vec3b>(5, 5); // center pixel of 10x10 region
+                            //MessageBox.Show(pixelColor.Item0 + " " + pixelColor.Item1 + " " + pixelColor.Item2);
+                            Utils.Log("Detected Death Marker color: " + pixelColor.Item0 + ", " + pixelColor.Item1 + ", " + pixelColor.Item2);
+                            // 9 5 255
+                            if (pixelColor.Item0 < 15 && pixelColor.Item1 < 15 && pixelColor.Item2 > 250) // check for red pixel
+                            {
+                                return true;
+                            }
+                            //Cv2.ImShow("Ex View", result);
+                            //largerImg.SaveImage("result.jpg");
+                        }
+                        return false;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    return false;
+                }
+
             }
 
             lvlStartScreen = checkLvlStartScreen(bmap);
@@ -591,6 +719,26 @@ namespace MM2Buddy
 
                 return ScreenState.Pause;
             }
+            endScreen = checkEndScreen(bmap);
+            if (endScreen)
+            {
+                endScreenBoo = checkEndScreenBoo(bmap);
+                if (!endScreenBoo)
+                    endScreenHeart = checkEndScreenHeart(bmap);
+                //MessageBox.Show("Pause Detected");
+                // check for heart or boo state
+                //lvlPopScreenRpt = checkPopLvlScreenRpt(bmap);
+                //return lvlPopScreenRpt ? ScreenState.LvlScreenPopRpt : ScreenState.LvlScreenPop;
+                if (endScreenBoo)
+                    return ScreenState.EndScreenBoo;
+                else if (endScreenHeart)
+                    return ScreenState.EndScreenHeart;
+
+                return ScreenState.EndScreen;
+            }
+            if (checkDeathMarker())
+                return ScreenState.DeathMarker;
+
 
             return ScreenState.NoScreen;
 
@@ -625,7 +773,7 @@ namespace MM2Buddy
                 if (alreadyActive) // user started level from a previous level scn
                 {
                     mainWin.ActiveLevel.LastPlayed = DateTime.Now;
-                    mainWin.ActiveLevel.FirstPlayed = DateTime.Now;
+                    //mainWin.ActiveLevel.FirstPlayed = DateTime.Now;
                 }
                 else // create new level object
                 {
@@ -704,6 +852,40 @@ namespace MM2Buddy
                 //mainWin.ActiveLevel = lvl;
                 mainWin.UpdateActiveLevel(lvl);
             }
+            void ReadEndScn() // For Popular course screen
+            {
+
+                //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
+                var worldRec = SubImageText(frame, 917, 530, 309, 62, "num");
+                worldRec = worldRec.Replace(" ", "");
+                worldRec = worldRec.Replace("\n", "");
+                //MessageBox.Show(worldRec);
+
+                string[] timeParts = worldRec.Split(':');
+                int minutes = int.Parse(timeParts[0]);
+                string[] secondsParts = timeParts[1].Split('.');
+                int seconds = int.Parse(secondsParts[0]);
+                int milliseconds = int.Parse(secondsParts[1]);
+
+                long ticks = (long)((minutes * 60 + seconds) * TimeSpan.TicksPerSecond + milliseconds * TimeSpan.TicksPerMillisecond);
+                TimeSpan recordTime = new TimeSpan(ticks);
+
+                if (mainWin.ActiveLevel.RecordTime != recordTime)
+                {
+                    mainWin.ActiveLevel.RecordTime = recordTime;
+
+                    if (mainWin.LogAll)
+                    {
+                        Utils.UpdateLog();
+                        Utils.Log("Updated Data File WorldRecord: " + worldRec);
+                    }
+                }
+                //MessageBox.Show(ticks.ToString());
+
+
+                //mainWin.ActiveLevel = lvl;
+                //mainWin.UpdateActiveLevel(lvl);
+            }
 
             switch (state)
             {
@@ -720,6 +902,7 @@ namespace MM2Buddy
                         Utils.UpdateLog();
                         mainWin.ActiveLevel.Logged = true;
                     }
+                    Utils.CheckExistingLog();
                     break;
                 case ScreenState.LvlScreen:
                     ReadLvlScn();
@@ -773,14 +956,41 @@ namespace MM2Buddy
                         Utils.UpdateLog();
                     }
                     break;
+                case ScreenState.EndScreen:
+                    ReadEndScn();
+                    break;
+                case ScreenState.EndScreenBoo:
+                    ReadEndScn();
+                    if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
+                    {
+                        mainWin.ActiveLevel.Hearted = "B";
+                        Utils.UpdateLog();
+                    }
+                    break;
+                case ScreenState.EndScreenHeart:
+                    ReadEndScn();
+                    //MessageBox.Show("mainWin.LogAll && mainWin.ActiveLevel.Hearted == null");
+                    if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
+                    {
+                        //MessageBox.Show("mainWin.ActiveLevel.Hearted");
+                        mainWin.ActiveLevel.Hearted = "H";
+                        Utils.UpdateLog();
+                    }
+                    break;
                 default:
                     break;
 
             }
-            //byte[] pixel = new byte[3];
-            //bmap.CopyPixels(new Int32Rect(x, y, 1, 1), pixel, 3, 0);
-            //PixelColorCheck pC = new PixelColorCheck(x, y, pixel[2], pixel[1], pixel[0]);
-            //return pC;
+            if (!mainWin.ActiveLevel.PulledInfo && state != ScreenState.NoScreen)
+            {
+                Utils.GrabMM2Info();
+                mainWin.ActiveLevel.PulledInfo = true;
+            }
+            if (mainWin.ActiveLevel.InfoTask != null && mainWin.ActiveLevel.InfoTask.IsCompleted && mainWin.ActiveLevel.InfoTask.IsCanceled == false)
+            {
+                //Set new info accordingly
+                Utils.HandleResponse();
+            }
         }
         static public string SubImageText(OpenCvSharp.Mat frame, int x, int y, int width, int height, string type = "text")
         {

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="MM2GameStartScreen.png" />
     <None Remove="starship_retro_cropped.jpg" />
   </ItemGroup>
 
@@ -16,6 +17,7 @@
     <PackageReference Include="Emgu.CV" Version="4.7.0.5276" />
     <PackageReference Include="EPPlus" Version="6.2.2" />
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OpenCvSharp4" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="4.7.0.20230115" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.7.0.20230115" />
@@ -25,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="MM2GameStartScreen.png" />
     <Resource Include="starship_retro_cropped.jpg" />
   </ItemGroup>
 

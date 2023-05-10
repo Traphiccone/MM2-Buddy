@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="Mario Maker 2 Buddy" Height="670" Width="620" MinWidth="600" MinHeight="450" Margin="0,0,-5,0">
-    <Grid Background="#FF212121" Margin="0,0,0,-6">
+        Title="Mario Maker 2 Buddy" Height="750" Width="600" MinWidth="600" MinHeight="450" Margin="0,0,-5,0">
+    <Grid Background="#FF212121" Margin="0,0,0,-6" MinHeight="750">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -31,27 +31,55 @@
             <Button Grid.Column="0" x:Name="startBtn" Content="Start" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" Click="startBtn_Click"  />
             <Button Grid.Column="1" x:Name="stopBtn" Content="Stop" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" IsEnabled="False" Click="stopBtn_Click"  />
         </Grid>
-        <Image x:Name="videoPort" Margin="27,355,27,20" Panel.ZIndex="0" Opacity="0.995">
+        <Image x:Name="videoPort" Margin="30,402,30,44" Panel.ZIndex="0" Opacity="0.995" Source="/MM2GameStartScreen.png">
             <Image.OpacityMask>
                 <ImageBrush ImageSource="/starship_retro_cropped.jpg"/>
             </Image.OpacityMask>
         </Image>
         <Label Content="Auto Open Level Viewer&#xD;&#xA;" HorizontalAlignment="Left" Margin="31,118,0,0" VerticalAlignment="Top" Foreground="#FFE2E2E2" FontSize="20" Height="37" Width="367"/>
-        <Grid x:Name="levelInfoGrid" Margin="31,234,31,310" >
+        <Grid x:Name="levelInfoGrid" Margin="31,234,31,346" MinHeight="150" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Content="Active Level:" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FFE2E2E2" FontSize="20" Height="45" Grid.RowSpan="2"/>
             <Label x:Name="CodeLabel" Grid.Column="1" Grid.Row="0" Content="No Active Level"  Background="Transparent" Foreground="White" FontSize="16"/>
-            <Label x:Name="NameLabel" Grid.Column="1" Grid.Row="1" Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="CreatorText" Grid.Column="0" Grid.Row="2" Content="Creator:"  Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="CreatorLabel" Grid.Column="1" Grid.Row="2" Background="Transparent" Foreground="White" FontSize="16"/>
-            <Button Grid.Column="0" Grid.Row="2" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click"/>
+            <Label x:Name="NameText" Grid.Column="0" Grid.Row="1" Content="Name:"  Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="NameLabel" Grid.Column="1" Grid.Row="1" Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="TransText" Grid.Column="0" Grid.Row="3" Content="Translation:"  Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="TransNameLabel" Grid.Column="1" Grid.Row="3" Content="Test" Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="StatusText" Grid.Column="0" Grid.Row="4" Content="MM2Buddy Status:"  Background="Transparent" Foreground="White" FontSize="11"/>
+            <Label x:Name="StatusLabel" Grid.Column="1" Grid.Row="4" Content="Test" Background="Transparent" Foreground="White" FontSize="11"/>
+            <Button Grid.Column="2" Grid.Row="2" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click" HorizontalAlignment="Right" MinWidth="100"/>
+            <Grid x:Name="HBGrid" Grid.Column="2" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="35" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                </Grid.RowDefinitions>
+                <Label x:Name="HeartIcon" Grid.Column="0" Grid.Row="0" Content="❤️"  Background="Transparent" Foreground="#FFED625E" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol"/>
+                <Label x:Name="Hearts" Grid.Column="1" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
+                <Label x:Name="BrokenHeartIcon" Grid.Column="2" Grid.Row="0" Content="💔"  Background="Transparent" Foreground="#FF5F55C0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol"/>
+                <Label x:Name="Boos" Grid.Column="3" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
+                <Label x:Name="SkullIcon" Grid.Column="4" Grid.Row="0" Content="💀"  Background="Transparent" Foreground="#FF8A8A8A" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol"/>
+                <Label x:Name="Deaths" Grid.Column="5" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
+            </Grid>
         </Grid>
         <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="239,86,0,0" VerticalAlignment="Top" Foreground="White" Width="330"/>
     </Grid>

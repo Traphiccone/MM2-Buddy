@@ -23,7 +23,8 @@ namespace MM2Buddy
         PauseHeart,
         EndScreen,
         EndScreenBoo,
-        EndScreenHeart
+        EndScreenHeart,
+        DeathMarker
     }
 };
     //    LevelScreen = {
