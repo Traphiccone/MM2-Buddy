@@ -51,6 +51,8 @@ namespace MM2Buddy
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
             Level lvl = mainWin.ActiveLevel;
+            if (lvl.Code == "No Level Detected")
+                return;
 
             // Load the Excel file into an ExcelPackage object
             ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
@@ -87,7 +89,7 @@ namespace MM2Buddy
                         ExcelRange cell = worksheet.Cells[i, 6];
                         cell.Style.Numberformat.Format = "yyyy/M/d HH:mm";
 
-                        if (worksheet.Cells[3, 8].Value != null && lvl.RecordTime > new TimeSpan(0, 0, 0, 000))
+                        if (/*worksheet.Cells[3, 8].Value != null &&*/ lvl.RecordTime > new TimeSpan(0, 0, 0, 000))
                         {
                             // Set the record time value to a cell
                             worksheet.Cells[3, 8].Value = lvl.RecordTime.ToString(@"mm\:ss\.fff");

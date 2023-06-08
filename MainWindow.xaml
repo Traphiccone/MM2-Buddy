@@ -22,7 +22,7 @@
         <Label Content="Device Input" HorizontalAlignment="Left" Margin="31,11,0,0" VerticalAlignment="Top" Foreground="#FFE2E2E2" FontSize="20"/>
         <CheckBox x:Name="lvlViewEndlessCB" Content="  On Level Start" HorizontalAlignment="Left" Margin="31,157,0,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontStretch="ExtraExpanded" Padding="4,-7,9,0" UseLayoutRounding="True" FontWeight="Regular" Height="16" Click="lvlViewEndless_Click" IsChecked="False"/>
         <CheckBox x:Name="lvlViewReportCB" Content="  On Report Hover" HorizontalAlignment="Left" Margin="205,157,0,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontStretch="ExtraExpanded" Padding="4,-7,9,0" UseLayoutRounding="True" FontWeight="Regular" Height="16" SnapsToDevicePixels="True" BorderThickness="0,1,1,1" Click="lvlViewReport_Click" IsChecked="False"/>
-        <CheckBox x:Name="logAllCB" Content="  Log All Played Levels" HorizontalAlignment="Left" Margin="31,92,0,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontStretch="ExtraExpanded" Padding="4,-7,9,0" UseLayoutRounding="True" FontWeight="Regular" Height="16" SnapsToDevicePixels="True" BorderThickness="0,1,1,1" Click="logAll_Click" IsChecked="False"/>
+        <CheckBox x:Name="logAllCB" Content="  Log All Played Levels" HorizontalAlignment="Left" Margin="31,92,0,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontStretch="ExtraExpanded" Padding="4,-7,9,0" UseLayoutRounding="True" FontWeight="Regular" Height="16" SnapsToDevicePixels="True" BorderThickness="0,1,1,1" Click="logAll_Click" IsChecked="False" Checked="logAllCB_Checked"/>
         <Grid VerticalAlignment="Top" Margin="31,191,31,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -81,6 +81,7 @@
                 <Label x:Name="Deaths" Grid.Column="5" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
             </Grid>
         </Grid>
-        <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="239,86,0,0" VerticalAlignment="Top" Foreground="White" Width="330"/>
+        <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="320,86,0,0" VerticalAlignment="Top" Foreground="White" Width="249"/>
+        <Button Content="Import Log" HorizontalAlignment="Left" Margin="239,88,0,0" VerticalAlignment="Top" Height="20" Width="76" ToolTip="Import an Existing MM2Log.xlsx File" Click="Button_Click_1"/>
     </Grid>
 </Window>

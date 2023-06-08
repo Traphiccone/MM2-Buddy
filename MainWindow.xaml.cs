@@ -340,15 +340,22 @@ namespace MM2Buddy
                 saveFileDialog.ShowDialog();
 
                 // If the user selects a location, save the copy of the Excel file to that location
+                //MessageBox.Show(saveFileDialog.FileName);
                 if (saveFileDialog.FileName != "")
                 {
                     string newFilePath = saveFileDialog.FileName;
 
                     // Make a copy of the original Excel file
+                    //MessageBox.Show("1:" + newFilePath);
+                    //MessageBox.Show("2:" + saveFileDialog.FileName);
+                    //MessageBox.Show((newFilePath == saveFileDialog.FileName).ToString());
+                    //if (newFilePath == saveFileDialog.FileName)
+                    //    return;
+                    //MessageBox.Show("halp");
                     File.Copy(filePath, newFilePath);
 
                     // Display a success message
-                    Console.WriteLine("Excel file copied successfully.");
+                    //MessageBox.Show("Excel file copied successfully.");
                     this.LogLocation = newFilePath;
                     this.logLocation.Content = newFilePath;
                     saveUserSettings();
@@ -360,6 +367,35 @@ namespace MM2Buddy
         {
             //this.Device = "test";
             Utils.OpenLink(ActiveLevel.Link);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            // Set the filter and initial directory for the file dialog
+            openFileDialog.Filter = "Excel files (*.xlsx)|*.xlsx";
+            openFileDialog.InitialDirectory = "C:\\";
+
+            // Show the dialog and check if the user clicked the "OK" button
+            if (openFileDialog.ShowDialog() == true)
+            {
+                // Get the selected file path
+                string filePath = openFileDialog.FileName;
+
+                this.LogLocation = filePath;
+                this.logLocation.Content = filePath;
+                // Do something with the file path (e.g., open the file)
+                // ...
+
+                // Display a message to the user
+                //MessageBox.Show("File opened: " + filePath);
+            }
+        }
+
+        private void logAllCB_Checked(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -228,6 +228,7 @@ namespace MM2Buddy
             var endScreen = false;
             var endScreenBoo = false;
             var endScreenHeart = false;
+            var endScreenAlt = false;
 
             var deathMarker = false;
 
@@ -491,13 +492,13 @@ namespace MM2Buddy
                 // Coordinates and colors that represent the Browsing section Level View Screen
                 //
                 PixelColorCheck p1 = new PixelColorCheck(1364, 253, 95, 85, 177); // Left blue heart
-                PixelColorCheck p2 = new PixelColorCheck(1422, 257, 95, 85, 177); // Right blue heart
+                PixelColorCheck p2 = new PixelColorCheck(1724, 276, 85, 85, 87); // Right gray heart
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
 
-                //MessageBox.Show("1Comp Result: " + p1.CompareColor(p1C) + "\n" +
-                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B + "\n" +
-                //    "p2: " + p1C.R + ", " + p1C.G + ", " + p1C.B);
+                //MessageBox.Show("1Comp Result: " + p2.CompareColor(p2C) + "\n" +
+                //    "p1: " + p2.R + ", " + p2.G + ", " + p2.B + "\n" +
+                //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
 
                 double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
 
@@ -514,8 +515,8 @@ namespace MM2Buddy
                 //
                 // Coordinates and colors that represent the Browsing section Level View Screen
                 //
-                PixelColorCheck p1 = new PixelColorCheck(1702, 262, 255, 98, 98); // Left red heart
-                PixelColorCheck p2 = new PixelColorCheck(1745, 262, 255, 98, 97); // Right red heart
+                PixelColorCheck p1 = new PixelColorCheck(1702, 262, 255, 98, 98); // Right red heart
+                PixelColorCheck p2 = new PixelColorCheck(1414, 262, 85, 85, 87); // Left gray boo
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
 
@@ -538,9 +539,9 @@ namespace MM2Buddy
                 //
                 // Coordinates and colors that represent the Browsing section Level View Screen
                 //
-                PixelColorCheck p1 = new PixelColorCheck(167, 304, 255, 206, 29); // Top right close btn black
-                PixelColorCheck p2 = new PixelColorCheck(1827, 548, 255, 206, 29); // Top right close btn white
-                PixelColorCheck p3 = new PixelColorCheck(512, 707, 255, 206, 29); // Start over btn yellow
+                PixelColorCheck p1 = new PixelColorCheck(22, 237, 255, 206, 29); // 
+                PixelColorCheck p2 = new PixelColorCheck(1887, 245, 255, 206, 29); // 
+                PixelColorCheck p3 = new PixelColorCheck(22, 354, 255, 206, 29); // 
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
@@ -549,14 +550,27 @@ namespace MM2Buddy
                 //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
                 //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
 
-                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
+                double totalCompEnd = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
+                if (totalCompEnd > perMatchAllowed)
+                {
+                    // On end screen, check if on alternate end screen (comments on bottom)
+                    // check the blue at the top
+                    PixelColorCheck p4 = new PixelColorCheck(960, 20, 255, 206, 29); // 
+                    PixelColorCheck p4C = GenerateCompPixel(bmap, p3.X, p3.Y);
+                    if (p4.CompareColor(p4C) < perMatchAllowed)
+                    {
+                        endScreenAlt = true;
+                    }
+                    return true;
 
+                }
+                return false;
                 //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
 
                 //MessageBox.Show("Total EndScreen Comp%: " + totalComp);
                 //if (totalComp > perMatchAllowed)
                 //    MessageBox.Show("LvlScreen Detected");
-                return totalComp > perMatchAllowed;
+                //return totalComp > perMatchAllowed;
                 //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
             }
             bool checkEndScreenHeart(BitmapSource bmap) // check if user has heart selected on pause screen
@@ -564,8 +578,9 @@ namespace MM2Buddy
                 //
                 // Coordinates and colors that represent the Browsing section Level View Screen
                 //
-                PixelColorCheck p1 = new PixelColorCheck(459, 492, 255, 99, 99); // Left red heart
-                PixelColorCheck p2 = new PixelColorCheck(215, 487, 199, 164, 106); // Booed greyed out
+                // sub 193 from y value if alt screen
+                PixelColorCheck p1 = new PixelColorCheck(459, endScreenAlt ? 299 : 492, 255, 99, 99); // Left red heart
+                PixelColorCheck p2 = new PixelColorCheck(215, endScreenAlt ? 294 : 487, 199, 164, 106); // Booed greyed out
 
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
@@ -588,8 +603,8 @@ namespace MM2Buddy
                 //
                 // Coordinates and colors that represent the Browsing section Level View Screen
                 //
-                PixelColorCheck p1 = new PixelColorCheck(159, 485, 95, 85, 177); // Left blue heart
-                PixelColorCheck p2 = new PixelColorCheck(490, 513, 199, 164, 106); // Hearted greyed out
+                PixelColorCheck p1 = new PixelColorCheck(159, endScreenAlt ? 292 : 485, 95, 85, 177); // Left blue heart
+                PixelColorCheck p2 = new PixelColorCheck(490, endScreenAlt ? 320 : 513, 199, 164, 106); // Hearted greyed out
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
 
@@ -638,12 +653,12 @@ namespace MM2Buddy
                         double minVal, maxVal;
                         OpenCvSharp.Point minLoc, maxLoc;
                         Cv2.MinMaxLoc(result, out minVal, out maxVal, out minLoc, out maxLoc);
-                        Utils.Log(maxVal.ToString(), true);
+                        //Utils.Log(maxVal.ToString(), true);
                         if (maxVal > 0.6) // adjust the threshold as needed
                         {
                             OpenCvSharp.Rect detectionRect = new OpenCvSharp.Rect(maxLoc.X, maxLoc.Y, thresholdedExampleImg.Cols, thresholdedExampleImg.Rows);
                             Cv2.Rectangle(frame, detectionRect, new Scalar(0, 255, 0), 2);
-                            Cv2.ImShow("Large View", frame);
+                            //Cv2.ImShow("Large View", frame);
 
                             OpenCvSharp.Point center = new OpenCvSharp.Point(detectionRect.X + detectionRect.Width / 2, detectionRect.Y + detectionRect.Height / 2);
                             OpenCvSharp.Size regionSize = new OpenCvSharp.Size(10, 10); // adjust as needed
@@ -730,14 +745,17 @@ namespace MM2Buddy
                 //lvlPopScreenRpt = checkPopLvlScreenRpt(bmap);
                 //return lvlPopScreenRpt ? ScreenState.LvlScreenPopRpt : ScreenState.LvlScreenPop;
                 if (endScreenBoo)
-                    return ScreenState.EndScreenBoo;
+                    return endScreenAlt ? ScreenState.EndScreenBooAlt : ScreenState.EndScreenBoo;
                 else if (endScreenHeart)
-                    return ScreenState.EndScreenHeart;
+                    return endScreenAlt ? ScreenState.EndScreenHeartAlt : ScreenState.EndScreenHeart;
 
-                return ScreenState.EndScreen;
+                return endScreenAlt ? ScreenState.EndScreenAlt : ScreenState.EndScreen;
             }
             if (checkDeathMarker())
+            {
+                Utils.Log("Logged +1 Death", true);
                 return ScreenState.DeathMarker;
+            }
 
 
             return ScreenState.NoScreen;
@@ -763,13 +781,12 @@ namespace MM2Buddy
 
             void ReadLvlStartScn ()
             {
-                lvlCode = SubImageText(frame, 110, 265, 263, 40, "code");
+                lvlCode = SubImageText(frame, 110, 265, 310, 40, "code");
                 lvlCode = lvlCode.Replace(" ", "");
                 lvlCode = lvlCode.Replace("\n", "");
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
                 var alreadyActive = mainWin.ActiveLevel.Code == lvlCode;
-         
                 if (alreadyActive) // user started level from a previous level scn
                 {
                     mainWin.ActiveLevel.LastPlayed = DateTime.Now;
@@ -856,9 +873,15 @@ namespace MM2Buddy
             {
 
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
-                var worldRec = SubImageText(frame, 917, 530, 309, 62, "num");
+                var worldRec = SubImageText(frame, 917, state == ScreenState.EndScreenAlt ? 337 : 530, 309, 62, "num");
                 worldRec = worldRec.Replace(" ", "");
                 worldRec = worldRec.Replace("\n", "");
+                //
+                // End screen will be detected before user record time is shown
+                // make sure it has numbers and can be read.
+                //
+                if (!System.Text.RegularExpressions.Regex.IsMatch(worldRec, @"[\d.:]+"))
+                    return;
                 //MessageBox.Show(worldRec);
 
                 string[] timeParts = worldRec.Split(':');
@@ -877,7 +900,7 @@ namespace MM2Buddy
                     if (mainWin.LogAll)
                     {
                         Utils.UpdateLog();
-                        Utils.Log("Updated Data File WorldRecord: " + worldRec);
+                        Utils.Log("Updated Data File WorldRecord: " + worldRec, true);
                     }
                 }
                 //MessageBox.Show(ticks.ToString());
@@ -1019,6 +1042,7 @@ namespace MM2Buddy
             //if (type == "code")
             //    Cv2.ImShow("Large View", binary);
             var codeTxt = GetOCRText(binary, type);
+            //MessageBox.Show(codeTxt);
             codeTxt = codeTxt.Replace("\n", "");
             return codeTxt;
             //}

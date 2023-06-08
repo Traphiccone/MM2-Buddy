@@ -24,6 +24,9 @@ namespace MM2Buddy
         EndScreen,
         EndScreenBoo,
         EndScreenHeart,
+        EndScreenAlt,
+        EndScreenBooAlt,
+        EndScreenHeartAlt,
         DeathMarker
     }
 };
