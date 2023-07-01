@@ -54,12 +54,17 @@ namespace MM2Buddy
         public bool AutoOpened { get; set; }
         public bool Active { get; set; }
         public string Hearted { get; set; } //H or B or null
+        public string Translation { get; set; } //H or B or null
         public int DeathCnt { get; set; } = 0;
         public DateTime LastPlayed { get; set; }
         public DateTime FirstPlayed { get; set; }
         public bool Logged { get; set; }
         public bool PulledInfo { get; set; }
+        public int SMM2InfoSuccess { get; set; } = 1; //1=unsent, 2=sent, 3=success, 4=failed
+        public int GoogleTransSuccess { get; set; } = 1; //1=unsent, 2=sent, 3=success, 4=failed
+        public bool TransTaskSent { get; set; } = false;
         public Task<string> InfoTask { get; set; }
+        public Task<string> TransTask { get; set; }
         public HttpClient HttpClient { get; set; }
         public TimeSpan RecordTime { get; set; }    
 
@@ -74,6 +79,7 @@ namespace MM2Buddy
             Active = false;
             Logged = false;
             PulledInfo = false;
+            TransTaskSent = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };

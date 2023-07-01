@@ -195,12 +195,15 @@ namespace MM2Buddy
                 {
                     if (type == "num")
                         engine.SetVariable("tessedit_char_whitelist", "0123456789:.");
+                    //else
+                    //    Cv2.ImShow("Test", frame);
                     using (img)
                     //using (var img = Tesseract.Pix.LoadFromMemory(bmap))
                     {
                         using (var page = engine.Process(img))
                         {
                             ocrtext = page.Text;
+                            //MessageBox.Show(ocrtext);
                         }
                     }
                 }
@@ -340,22 +343,25 @@ namespace MM2Buddy
                 PixelColorCheck p3 = new PixelColorCheck(850, 490, 253, 252, 238); // White area under tags button yellow
                 PixelColorCheck p4 = new PixelColorCheck(736, 366, 101, 29, 29); // Heart icon brown maroon 
                 PixelColorCheck p5 = new PixelColorCheck(1770, 600, 0, 153, 130); // area to the far right teal
+                PixelColorCheck p6 = new PixelColorCheck(797, 148, 129, 239, 227); // Upper Tab Teal Color
+
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
                 PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
                 PixelColorCheck p5C = GenerateCompPixel(bmap, p5.X, p5.Y);
+                PixelColorCheck p6C = GenerateCompPixel(bmap, p6.X, p6.Y);
 
                 //Vec3b pixel = frame.At<Vec3b>(1290, 935);
                 //byte[] pixel = new byte[3];
                 //bmap.CopyPixels(new Int32Rect(1695, 580, 1, 1), pixel, 3, 0);
 
 
-                //MessageBox.Show("1Comp Result: " + p1.CompareColor(p1C) + "\n" +
-                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B + "\n" +
-                //    "p2: " + p1C.R + ", " + p1C.G + ", " + p1C.B);
+                //MessageBox.Show("LvlScreenComp Result: " + p6.CompareColor(p1C) + "\n" +
+                //    "p1: " + p6.R + ", " + p6.G + ", " + p6.B + "\n" +
+                //    "p2: " + p6C.R + ", " + p6C.G + ", " + p6C.B);
 
-                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C) + p5.CompareColor(p5C)) / 5;
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C) + p5.CompareColor(p5C) + p6.CompareColor(p6C)) / 6;
 
                 //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
 
@@ -402,12 +408,12 @@ namespace MM2Buddy
                 PixelColorCheck p1 = new PixelColorCheck(1436, 944, 255, 204, 30); // Play button yellow
                 PixelColorCheck p2 = new PixelColorCheck(1020, 937, 255, 204, 30); // Play Together button yellow
                 PixelColorCheck p3 = new PixelColorCheck(850, 490, 253, 252, 238); // White area under tags button yellow
-                //PixelColorCheck p4 = new PixelColorCheck(830, 368, 101, 29, 29); // Heart icon brown maroon 
+                PixelColorCheck p4 = new PixelColorCheck(797, 148, 0, 153, 131); // Upper Tab Teal Color
                 PixelColorCheck p5 = new PixelColorCheck(1770, 600, 0, 153, 130); // area to the far right teal
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
-                //PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
+                PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
                 PixelColorCheck p5C = GenerateCompPixel(bmap, p5.X, p5.Y);
 
                 //Vec3b pixel = frame.At<Vec3b>(1290, 935);
@@ -415,15 +421,15 @@ namespace MM2Buddy
                 //bmap.CopyPixels(new Int32Rect(1695, 580, 1, 1), pixel, 3, 0);
 
 
-                //MessageBox.Show("1Comp Result: " + p1.CompareColor(p1C) + "\n" +
-                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B + "\n" +
-                //    "p2: " + p1C.R + ", " + p1C.G + ", " + p1C.B);
+                //MessageBox.Show("LvlScnPopComp Result: " + p5.CompareColor(p5C) + "\n" +
+                //    "p1: " + p5.R + ", " + p5.G + ", " + p5.B + "\n" +
+                //    "p2: " + p5C.R + ", " + p5C.G + ", " + p5C.B);
 
-                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) /*+ p4.CompareColor(p4C)*/ + p5.CompareColor(p5C)) / 4;
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C) + p5.CompareColor(p5C)) / 5;
 
                 //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
 
-                //MessageBox.Show("Total LvlScreen Comp%: " + totalComp);
+                //MessageBox.Show("Total LvlScreenPop Comp%: " + totalComp);
                 //if (totalComp > perMatchAllowed)
                 //    MessageBox.Show("LvlScreen Detected");
                 return totalComp > perMatchAllowed;
@@ -816,6 +822,14 @@ namespace MM2Buddy
                 if (mainWin.ActiveLevel.Code == lvlCode)
                     return;
                 flagEnd = GetCreatorStart(bmap);
+                //
+                // Found unique issue where some users do not have flags..
+                //
+                if (flagEnd.X > 1600)
+                {
+                    flagEnd.X = 1161;
+                    flagEnd.Y = 456;
+                }
                 lvlName = SubImageText(frame, 504, 275, 875, 50);
                 lvlCreator = SubImageText(frame, flagEnd.X, 456, 1610 - flagEnd.X, 52);
 
@@ -838,6 +852,14 @@ namespace MM2Buddy
                 if (mainWin.ActiveLevel.Code == lvlCode)
                     return;
                 flagEnd = GetCreatorStart(bmap);
+                //
+                // Found unique issue where some users do not have flags..
+                //
+                if (flagEnd.X > 1600)
+                {
+                    flagEnd.X = 1161;
+                    flagEnd.Y = 456;
+                }
                 lvlName = SubImageText(frame, 593, 271, 1044, 57);
                 lvlCreator = SubImageText(frame, flagEnd.X, 459, 1699 - flagEnd.X, 41); //1699
                 //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
@@ -860,6 +882,14 @@ namespace MM2Buddy
                 if (mainWin.ActiveLevel.Code == lvlCode)
                     return;
                 flagEnd = GetCreatorStart(bmap);
+                //
+                // Found unique issue where some users do not have flags..
+                //
+                if (flagEnd.X > 1600)
+                {
+                    flagEnd.X = 1161;
+                    flagEnd.Y = 456;
+                }
                 lvlName = SubImageText(frame, 477, 235, 1044, 57);
                 lvlCreator = SubImageText(frame, flagEnd.X, 428, 1586 - flagEnd.X, 41); //1586 end of possible txt area
                 //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
@@ -1007,12 +1037,33 @@ namespace MM2Buddy
             if (!mainWin.ActiveLevel.PulledInfo && state != ScreenState.NoScreen)
             {
                 Utils.GrabMM2Info();
+                mainWin.ActiveLevel.SMM2InfoSuccess = 2;
                 mainWin.ActiveLevel.PulledInfo = true;
+                Utils.Log("Name: " + mainWin.ActiveLevel.Name);
+                Utils.Log("Code: " + mainWin.ActiveLevel.Code);
+                Utils.Log("Creator: " + mainWin.ActiveLevel.Creator);
+            }
+            if (!mainWin.ActiveLevel.TransTaskSent && state != ScreenState.NoScreen)
+            {
+                if (Utils.ContainsJapanChar(mainWin.ActiveLevel.Name))
+                {
+                    Utils.GrabTranslation();
+                    mainWin.ActiveLevel.GoogleTransSuccess = 2;
+                    mainWin.ActiveLevel.TransTaskSent = true;
+                }
             }
             if (mainWin.ActiveLevel.InfoTask != null && mainWin.ActiveLevel.InfoTask.IsCompleted && mainWin.ActiveLevel.InfoTask.IsCanceled == false)
             {
                 //Set new info accordingly
-                Utils.HandleResponse();
+                //MessageBox.Show(mainWin.ActiveLevel.SMM2InfoSuccess.ToString());
+                if (mainWin.ActiveLevel.SMM2InfoSuccess == 2)
+                    Utils.HandleResponse();
+            }
+            if (mainWin.ActiveLevel.TransTask != null && mainWin.ActiveLevel.TransTask.IsCompleted && mainWin.ActiveLevel.TransTask.IsCanceled == false)
+            {
+                //Set new info accordingly
+                if (mainWin.ActiveLevel.GoogleTransSuccess == 2)
+                    Utils.HandleTransResponse();
             }
         }
         static public string SubImageText(OpenCvSharp.Mat frame, int x, int y, int width, int height, string type = "text")
@@ -1039,7 +1090,7 @@ namespace MM2Buddy
             //    //Cv2.Filter2D(dst, dst, -1, kernel);
             //    //Cv2.Filter2D(dst, dst, -1, kernel);
 
-            //if (type == "code")
+            //if (type != "code")
             //    Cv2.ImShow("Large View", binary);
             var codeTxt = GetOCRText(binary, type);
             //MessageBox.Show(codeTxt);

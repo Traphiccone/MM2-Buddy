@@ -14,6 +14,10 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TesseractOCR.Pix;
+using Google.Cloud.Translate.V3;
+using Grpc.Core;
+using Google.Api.Gax.ResourceNames;
+using System.Text.RegularExpressions;
 //using System.Management;
 
 namespace MM2Buddy
@@ -96,6 +100,11 @@ namespace MM2Buddy
                             // Format the cell as a time value
                             worksheet.Cells[3, 8].Style.Numberformat.Format = "mm:ss.000";
                         }
+                        if (worksheet.Cells[i, 9].Value == null && lvl.Translation != null)
+                        {
+                            worksheet.Cells[i, 9].Value = lvl.Translation;
+                        }
+
                         //worksheet.Cells[i, 2].Value = 9;
                         rowFound = true;
                         break;
@@ -128,6 +137,7 @@ namespace MM2Buddy
                         // Format the cell as a time value
                         worksheet.Cells[3, 8].Style.Numberformat.Format = "mm:ss.000";
                     }
+                    worksheet.Cells[3, 9].Value = lvl.Translation;
                 }
 
                 // Save the changes to the Excel file
@@ -217,6 +227,22 @@ namespace MM2Buddy
             //Console.WriteLine(result);
 
         }
+        public static void GrabTranslation()
+        {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+
+            Task<string> task = TranslateJapaneseToEnglish(mainWin.ActiveLevel.Name);
+            mainWin.ActiveLevel.TransTask = task;
+            Utils.Log("Ping to Google Translate Attempt", true);
+            //task.Wait();
+
+            // Get the result of the async method
+            //string result = task.Result;
+
+            //// Do something with the result
+            //Console.WriteLine(result);
+
+        }
         public static void HandleResponse()
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
@@ -231,9 +257,12 @@ namespace MM2Buddy
 
                 //mainWin.HBGrid.Visibility = Visibility.Hidden;
                 Utils.Log("SMM2.info ping failed", true);
+                mainWin.ActiveLevel.SMM2InfoSuccess = 4;
                 mainWin.ActiveLevel.InfoTask = null;
                 return;
             }
+            mainWin.ActiveLevel.SMM2InfoSuccess = 3;
+            Utils.Log("SMM2.info ping success", true);
 
             JObject obj = JObject.Parse(json);
 
@@ -292,6 +321,42 @@ namespace MM2Buddy
             //Console.WriteLine(result);
 
         }
+        public static void HandleTransResponse()
+        {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+
+            //HttpResponseMessage response = mainWin.ActiveLevel.InfoTask.Result;
+
+            // Read the content of the response as a string
+            try
+            {
+                string json = mainWin.ActiveLevel.TransTask.Result;
+
+                if (json.Contains("null"))
+                {
+                    //mainWin.HBGrid.Visibility = Visibility.Hidden;
+                    Utils.Log("Google Translate ping failed", true);
+                    mainWin.ActiveLevel.GoogleTransSuccess = 4;
+                    mainWin.TransNameLabel.Content = "<request failed>";
+                    mainWin.ActiveLevel.TransTask = null;
+                    return;
+                }
+                mainWin.ActiveLevel.Translation = json;
+                mainWin.TransNameLabel.Content = json;
+                mainWin.ActiveLevel.GoogleTransSuccess = 3;
+                Utils.Log("Google Translate ping success", true);
+                if (mainWin.ActiveLevel.Active)
+                    Utils.UpdateLog();
+            }
+            catch (Exception ex)
+            {
+                Utils.Log(ex.ToString());
+                mainWin.TransNameLabel.Content = "<request failed>";
+                mainWin.ActiveLevel.GoogleTransSuccess = 4;
+                mainWin.ActiveLevel.TransTask = null;
+                return;
+            }
+        }
 
         public static async Task<string> GetDataAsync(string code)
         {
@@ -316,6 +381,40 @@ namespace MM2Buddy
             {
                 mainWin.StatusLabel.Content = txt;
             }
+        }
+
+        public static async Task<string> TranslateJapaneseToEnglish(string japaneseText)
+        {
+            string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "quixotic-tesla-186114-b70a8508470d.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
+
+            TranslationServiceClient translationClient = await TranslationServiceClient.CreateAsync();
+
+            TranslateTextRequest request = new TranslateTextRequest
+            {
+                Contents = { japaneseText },
+                TargetLanguageCode = "en",
+                Parent = new LocationName("quixotic-tesla-186114", "us-central1").ToString()
+            };
+            TranslateTextResponse response = await translationClient.TranslateTextAsync(request);
+
+            string englishTranslation = response.Translations[0].TranslatedText;
+            return englishTranslation;
+        }
+
+        public static bool ContainsJapanChar(string input)
+        {
+            // Define the Unicode character ranges for Japanese script
+            //string japanesePattern = @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}\p{IsCJKSymbolsAndPunctuation}\p{IsCJKCompatibility}\p{IsCJKUnifiedIdeographsExtensionA}\p{IsCJKUnifiedIdeographsExtensionB}]";
+            //string japanesePattern = @"[\p{IsHiragana}\p{IsKatakana}\p{IsCJKUnifiedIdeographs}\p{IsCJKSymbolsAndPunctuation}\p{IsCJKCompatibility}\p{IsCJKUnifiedIdeographsExtensionA}\p{IsCJKUnifiedIdeographsExtensionB}]";
+            string japanesePattern = @"[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF\u3000-\u303F\uFF00-\uFFEF]";
+
+
+            // Create a regular expression pattern to match Japanese characters
+            Regex regex = new Regex(japanesePattern);
+
+            // Check if the input string contains any Japanese characters
+            return regex.IsMatch(input);
         }
 
 

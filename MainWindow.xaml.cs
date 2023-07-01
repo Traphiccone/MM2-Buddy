@@ -25,6 +25,8 @@ using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using Emgu.CV;
 using OfficeOpenXml;
+using System.Timers;
+using System.Windows.Threading;
 
 namespace MM2Buddy
 {
@@ -49,6 +51,15 @@ namespace MM2Buddy
         public CircularBuffer<LogEntry> LogData { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly LogWindow logWindow;
+
+        //private DispatcherTimer timer;
+        //private TimeSpan elapsedTime;
+        //private bool isTimerRunning;
+        private Timer timer;
+        private TimeSpan elapsedTime;
+        private bool isTimerRunning;
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -77,6 +88,12 @@ namespace MM2Buddy
             this.LogData = new CircularBuffer<LogEntry>(900);
             Utils.Log(this.ScreenState.ToString(), true);
 
+            //timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromSeconds(0.1);
+            //timer.Tick += Timer_Tick;
+            timer = new Timer(100); // Timer interval in milliseconds (0.1 seconds)
+            timer.Elapsed += Timer_Elapsed;
+            timer.AutoReset = true;
         }
         public void UpdateActiveLevel(Level lvl)
         {
@@ -90,6 +107,7 @@ namespace MM2Buddy
             this.CodeLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Code);
             this.NameLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Name);
             this.CreatorLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Creator);
+            this.TransNameLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Translation);
 
             //this.OnPropertyChanged(nameof(_page))levelInfoGrid;
             //Binding bind = new Binding("ActiveLevel");
@@ -105,6 +123,9 @@ namespace MM2Buddy
             // Content = "{Binding ActiveLevel.Creator}"
 
             // TODO Read Excel file and pull previous death count/other data.
+
+            // Start Timer
+            StartTimer();
         }
 
         public void ReadAllSettings()
@@ -167,6 +188,7 @@ namespace MM2Buddy
             {
                 MessageBox.Show("Error reading app settings");
             }
+            Utils.Log("Read User Settings");
         }
 
         static void ReadSetting(string key)
@@ -270,6 +292,7 @@ namespace MM2Buddy
             //string filePath = this.LogLocation;
 
             VideoProcessor.Process();
+            Utils.Log("Main Start", true);
         }
 
         private void stopBtn_Click(object sender, RoutedEventArgs e)
@@ -277,6 +300,7 @@ namespace MM2Buddy
             this.IsRunning = false;
             this.startBtn.IsEnabled = true;
             this.stopBtn.IsEnabled = false;
+            Utils.Log("Main Stop", true);
         }
 
         private void deviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -301,6 +325,7 @@ namespace MM2Buddy
             AddUpdateAppSettings("LogLocation", logLocation.Content.ToString());
             //ConfigurationManager.AppSettings["LvlViewEndless"] = textBoxPassword.Text;
             //ConfigurationManager.AppSettings.
+            Utils.Log("User Settings Updated");
         }
 
         private void lvlViewEndless_Click(object sender, RoutedEventArgs e)
@@ -396,6 +421,54 @@ namespace MM2Buddy
         private void logAllCB_Checked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            //this.logWindow = new LogWindow();
+            var logWindow = new LogWindow();
+            var entries = this.LogData.GetAll();
+            logWindow.SetLogData(entries);
+            logWindow.Show();
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(0.1));
+            Dispatcher.Invoke(() => timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss\.f")); // Update the text on the UI thread
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(0.1));
+            timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss\.f"); // Update the text
+            // Update your UI elements to display the elapsed time
+        }
+
+        private void StartTimer()
+        {
+            if (!isTimerRunning)
+            {
+                timer.Start();
+                isTimerRunning = true;
+            }
+        }
+
+        private void PauseTimer()
+        {
+            if (isTimerRunning)
+            {
+                timer.Stop();
+                isTimerRunning = false;
+            }
+        }
+
+        private void ResetTimer()
+        {
+            timer.Stop();
+            elapsedTime = TimeSpan.Zero;
+            isTimerRunning = false;
+            Dispatcher.Invoke(() => timerTextBlock.Content = "00:00:00.0"); // Reset the text on the UI thread
         }
     }
 }
