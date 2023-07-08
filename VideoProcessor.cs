@@ -471,16 +471,16 @@ namespace MM2Buddy
                 //
                 PixelColorCheck p1 = new PixelColorCheck(1843, 41, 13, 0, 0); // Top right close btn black
                 PixelColorCheck p2 = new PixelColorCheck(1843, 66, 255, 255, 255); // Top right close btn white
-                PixelColorCheck p3 = new PixelColorCheck(1311, 682, 255, 204, 30); // Start over btn yellow
+                PixelColorCheck p3 = new PixelColorCheck(1799, 990, 255, 255, 255); // White Settings Icon
                 PixelColorCheck p4 = new PixelColorCheck(1311, 827, 255, 204, 30); // Exit course btn yellow
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
                 PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
 
-                //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
-                //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
-                //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
+                MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
+                    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
+                    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
 
                 double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C)) / 4;
 
