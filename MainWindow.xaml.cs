@@ -434,14 +434,14 @@ namespace MM2Buddy
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(0.1));
-            Dispatcher.Invoke(() => timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss\.f")); // Update the text on the UI thread
+            elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(1));
+            Dispatcher.Invoke(() => timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss")); // Update the text on the UI thread
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(0.1));
-            timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss\.f"); // Update the text
+            elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(1));
+            timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss"); // Update the text
             // Update your UI elements to display the elapsed time
         }
 
@@ -468,7 +468,7 @@ namespace MM2Buddy
             timer.Stop();
             elapsedTime = TimeSpan.Zero;
             isTimerRunning = false;
-            Dispatcher.Invoke(() => timerTextBlock.Content = "00:00:00.0"); // Reset the text on the UI thread
+            Dispatcher.Invoke(() => timerTextBlock.Content = "00:00:00"); // Reset the text on the UI thread
         }
     }
 }
