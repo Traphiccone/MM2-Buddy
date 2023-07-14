@@ -53,6 +53,7 @@ namespace MM2Buddy
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly LogWindow logWindow;
+        private readonly ScreenOverlayWin screenOverlayWin;
 
         //private DispatcherTimer timer;
         //private TimeSpan elapsedTime;
@@ -122,10 +123,11 @@ namespace MM2Buddy
             // Content = "{Binding ActiveLevel.Name}"
             // Content = "{Binding ActiveLevel.Creator}"
 
-            // TODO Read Excel file and pull previous death count/other data.
+            // TODO Read Excel file and pull
+            // death count/other data.
 
             // Start Timer
-            StartTimer();
+            //StartTimer();
         }
 
         public void ReadAllSettings()
@@ -445,7 +447,7 @@ namespace MM2Buddy
             // Update your UI elements to display the elapsed time
         }
 
-        private void StartTimer()
+        public void StartTimer()
         {
             if (!isTimerRunning)
             {
@@ -454,7 +456,7 @@ namespace MM2Buddy
             }
         }
 
-        private void PauseTimer()
+        public void PauseTimer()
         {
             if (isTimerRunning)
             {
@@ -463,12 +465,32 @@ namespace MM2Buddy
             }
         }
 
-        private void ResetTimer()
+        public void ResetTimer()
         {
             timer.Stop();
             elapsedTime = TimeSpan.Zero;
             isTimerRunning = false;
             Dispatcher.Invoke(() => timerTextBlock.Content = "00:00:00"); // Reset the text on the UI thread
+        }
+
+        // Create new window with a new image RGBA Mat to display relevant information
+        private void StreamPlay_Click(object sender, RoutedEventArgs e)
+        {
+            // Open new Open CV Mat window that updates once per second
+            var overlayWin = new ScreenOverlayWin();
+            overlayWin.Show();
+        }
+
+        // Function for clearing all level info after user has completed a level or quit
+        public void ClearLevelInfo()
+        {
+            ResetTimer();
+
+            // TODO remove all remaining level info
+            CodeLabel.Content = "";
+            this.NameLabel.Content = "";
+            this.CreatorLabel.Content = "";
+            this.TransNameLabel.Content = "";
         }
     }
 }

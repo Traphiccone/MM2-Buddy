@@ -54,6 +54,8 @@ namespace MM2Buddy
         public static void UpdateLog()
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+            if (!mainWin.LogAll)
+                return;
             Level lvl = mainWin.ActiveLevel;
             if (lvl.Code == "No Level Detected")
                 return;

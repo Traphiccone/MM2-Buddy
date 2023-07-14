@@ -130,15 +130,44 @@ namespace MM2Buddy
                     BreakDownImage(frame, state, bitmapSource);
                 }
                 mainWin.ScreenState = state;
+
+                // Check for if the screen state has changed
                 if (mainWin.ScreenState != mainWin.LastScreenState)
                 {
-                    if (mainWin.ScreenState == ScreenState.DeathMarker)
+                    if (mainWin.ScreenState == ScreenState.DeathMarker ||
+                        mainWin.ScreenState == ScreenState.PauseStartOver)
                     {
                         mainWin.ActiveLevel.DeathCnt++;
                         mainWin.Deaths.Content = mainWin.ActiveLevel.DeathCnt;
                         Utils.UpdateLog();
                     }
                     Utils.Log(mainWin.ScreenState.ToString(), true);
+
+                    // Function for clearing the level if user quit of completed the level
+                    void clearLevelInfo()
+                    {
+                        mainWin.ResetTimer();
+                    }
+
+                    if (state == ScreenState.NoScreen)
+                    {
+                        // Resume Timer if pause screen was removed
+                        if (mainWin.LastScreenState >= ScreenState.Pause &&
+                        mainWin.LastScreenState <= ScreenState.PauseHeart)
+                        {
+                            mainWin.StartTimer();
+                        }
+                        // Reset Timer if end screen was removed
+                        else if (mainWin.LastScreenState >= ScreenState.EndScreen &&
+                            mainWin.LastScreenState <= ScreenState.EndScreenHeartAlt)
+                        {
+                            mainWin.ClearLevelInfo();
+                        }
+                    }
+                    if (state == ScreenState.PauseQuit)
+                    {
+                        mainWin.ClearLevelInfo();
+                    }   
                     mainWin.LastScreenState = mainWin.ScreenState;
                 }
 
@@ -228,6 +257,8 @@ namespace MM2Buddy
             var pause = false;
             var pauseBoo = false;
             var pauseHeart = false;
+            var pauseStartOver = false;
+            var pauseQuit = false;
             var endScreen = false;
             var endScreenBoo = false;
             var endScreenHeart = false;
@@ -478,9 +509,9 @@ namespace MM2Buddy
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
                 PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
 
-                MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
-                    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
-                    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
+                //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
+                //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
+                //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
 
                 double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C)) / 4;
 
@@ -540,10 +571,36 @@ namespace MM2Buddy
                 return totalComp > perMatchAllowed;
                 //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
             }
+            bool checkPauseStartOver(BitmapSource bmap)
+            {
+                PixelColorCheck p1 = new PixelColorCheck(1350, 680, 103, 28, 29); // Brown start over button
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+
+                //MessageBox.Show("StartOver Result: " + p1.CompareColor(p1C) + "\n" +
+                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B + "\n" +
+                //    "p2: " + p1C.R + ", " + p1C.G + ", " + p1C.B);
+
+                return p1.CompareColor(p1C) > perMatchAllowed;
+            }
+            bool checkPauseQuit(BitmapSource bmap)
+            {
+                PixelColorCheck p1 = new PixelColorCheck(1843, 41, 15, 0, 0); // Top right close btn black
+                PixelColorCheck p2 = new PixelColorCheck(1300, 775, 104, 27, 28); // Brown start over button
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+
+                //MessageBox.Show("Quit Result: " + p2.CompareColor(p2C) + "\n" +
+                //    "p1: " + p2.R + ", " + p2.G + ", " + p2.B + "\n" +
+                //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
+
+
+                return totalComp > perMatchAllowed;
+            }
             bool checkEndScreen(BitmapSource bmap) // check for pause screen
             {
                 //
-                // Coordinates and colors that represent the Browsing section Level View Screen
+                // Coordinates and colors that represent the end screen
                 //
                 PixelColorCheck p1 = new PixelColorCheck(22, 237, 255, 206, 29); // 
                 PixelColorCheck p2 = new PixelColorCheck(1887, 245, 255, 206, 29); // 
@@ -562,7 +619,10 @@ namespace MM2Buddy
                     // On end screen, check if on alternate end screen (comments on bottom)
                     // check the blue at the top
                     PixelColorCheck p4 = new PixelColorCheck(960, 20, 255, 206, 29); // 
-                    PixelColorCheck p4C = GenerateCompPixel(bmap, p3.X, p3.Y);
+                    PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
+                    //MessageBox.Show("1Comp Result: " + p4.CompareColor(p4C) + "\n" +
+                    //    "p1: " + p4.R + ", " + p4.G + ", " + p4.B + "\n" +
+                    //    "p2: " + p4C.R + ", " + p4C.G + ", " + p4C.B);
                     if (p4.CompareColor(p4C) < perMatchAllowed)
                     {
                         endScreenAlt = true;
@@ -729,17 +789,28 @@ namespace MM2Buddy
                 pauseBoo = checkPauseScreenBoo(bmap);
                 if (!pauseBoo)
                     pauseHeart = checkPauseScreenHeart(bmap);
+
+                pauseStartOver = checkPauseStartOver(bmap);
+                if (!pauseStartOver)
+                    pauseQuit = checkPauseQuit(bmap);
                 //MessageBox.Show("Pause Detected");
                 // check for heart or boo state
                 //lvlPopScreenRpt = checkPopLvlScreenRpt(bmap);
                 //return lvlPopScreenRpt ? ScreenState.LvlScreenPopRpt : ScreenState.LvlScreenPop;
-                if (pauseBoo)
+                if (pauseQuit)
+                    return ScreenState.PauseQuit;
+                else if (pauseStartOver)
+                    return ScreenState.PauseStartOver;
+                else if (pauseBoo)
                     return ScreenState.PauseBoo;
                 else if (pauseHeart)
                     return ScreenState.PauseHeart;
 
                 return ScreenState.Pause;
             }
+            pauseQuit = checkPauseQuit(bmap);
+            if (pauseQuit)
+                return ScreenState.PauseQuit;
             endScreen = checkEndScreen(bmap);
             if (endScreen)
             {
@@ -785,15 +856,16 @@ namespace MM2Buddy
             PixelColorCheck flagEnd;
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
 
-            void ReadLvlStartScn ()
+            void ReadLvlStartScn () // Start screen right before user begins playing a lvl
             {
                 lvlCode = SubImageText(frame, 110, 265, 310, 40, "code");
                 lvlCode = lvlCode.Replace(" ", "");
                 lvlCode = lvlCode.Replace("\n", "");
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
+
                 var alreadyActive = mainWin.ActiveLevel.Code == lvlCode;
-                if (alreadyActive) // user started level from a previous level scn
+                if (alreadyActive) // user started level from a previous level scn or died/restarted
                 {
                     mainWin.ActiveLevel.LastPlayed = DateTime.Now;
                     //mainWin.ActiveLevel.FirstPlayed = DateTime.Now;
@@ -955,7 +1027,11 @@ namespace MM2Buddy
                         Utils.UpdateLog();
                         mainWin.ActiveLevel.Logged = true;
                     }
-                    Utils.CheckExistingLog();
+                    if (mainWin.LogAll)
+                        Utils.CheckExistingLog();
+
+                    // Only start timer when start screen is seen
+                    mainWin.StartTimer();
                     break;
                 case ScreenState.LvlScreen:
                     ReadLvlScn();
@@ -993,7 +1069,11 @@ namespace MM2Buddy
                         mainWin.ActiveLevel.AutoOpened = true;
                     }
                     break;
+                case ScreenState.Pause:
+                    mainWin.PauseTimer();
+                    break;
                 case ScreenState.PauseBoo:
+                    mainWin.PauseTimer();
                     if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
                     {
                         mainWin.ActiveLevel.Hearted = "B";
@@ -1001,6 +1081,7 @@ namespace MM2Buddy
                     }
                     break;
                 case ScreenState.PauseHeart:
+                    mainWin.PauseTimer();
                     //MessageBox.Show("mainWin.LogAll && mainWin.ActiveLevel.Hearted == null");
                     if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
                     {
@@ -1011,9 +1092,11 @@ namespace MM2Buddy
                     break;
                 case ScreenState.EndScreen:
                     ReadEndScn();
+                    mainWin.PauseTimer();
                     break;
                 case ScreenState.EndScreenBoo:
                     ReadEndScn();
+                    mainWin.PauseTimer();
                     if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
                     {
                         mainWin.ActiveLevel.Hearted = "B";
@@ -1022,6 +1105,7 @@ namespace MM2Buddy
                     break;
                 case ScreenState.EndScreenHeart:
                     ReadEndScn();
+                    mainWin.PauseTimer();
                     //MessageBox.Show("mainWin.LogAll && mainWin.ActiveLevel.Hearted == null");
                     if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
                     {

@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="Mario Maker 2 Buddy" Height="750" Width="600" MinWidth="600" MinHeight="450" Margin="0,0,-5,0">
+        Title="Mario Maker 2 Buddy" Height="750" Width="650" MinWidth="650" MinHeight="450" Margin="0,0,-5,0" Icon="/Logo.png">
     <Grid Background="#FF212121" Margin="0,0,0,-6" MinHeight="750">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -32,9 +32,6 @@
             <Button Grid.Column="1" x:Name="stopBtn" Content="Stop" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" IsEnabled="False" Click="stopBtn_Click"  />
         </Grid>
         <Image x:Name="videoPort" Margin="30,402,30,44" Panel.ZIndex="0" Opacity="0.995" Source="/MM2GameStartScreen.png">
-            <Image.OpacityMask>
-                <ImageBrush ImageSource="/starship_retro_cropped.jpg"/>
-            </Image.OpacityMask>
         </Image>
         <Label Content="Auto Open Level Viewer&#xD;&#xA;" HorizontalAlignment="Left" Margin="31,118,0,0" VerticalAlignment="Top" Foreground="#FFE2E2E2" FontSize="20" Height="37" Width="367"/>
         <Grid x:Name="levelInfoGrid" Margin="31,234,31,346" MinHeight="150" >
@@ -67,16 +64,16 @@
                     <RowDefinition Height="30" />
                 </Grid.RowDefinitions>
                 <Label x:Name="StreamLabel" Grid.Column="0" Grid.Row="0" Content="Stream Overlay:"  Background="Transparent" Foreground="White" FontSize="16"/>
-                <Button x:Name="StreamPlay" Grid.Column="1" Grid.Row="0" Content="&#x25B6;"  Foreground="White" FontSize="16" Width="30" Background="#00DDDDDD"/>
+                <Button x:Name="StreamPlay" Grid.Column="1" Grid.Row="0" Content="&#x25B6;"  Foreground="White" FontSize="16" Width="30" Background="#00DDDDDD" Click="StreamPlay_Click"/>
                 <Button x:Name="StreamSettings" Grid.Column="2" Grid.Row="0" Content="&#x2699;"  Foreground="White" FontSize="16" Width="30" Background="#00DDDDDD"/>
             </Grid>
             <Label x:Name="TransText" Grid.Column="0" Grid.Row="3" Content="Translation:"  Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="TransNameLabel" Grid.Column="1" Grid.Row="3" Content="" Background="Transparent" Foreground="White" FontSize="16"/>
-            <Label x:Name="timerTextBlock" Grid.Column="2" Grid.Row="3" Content="" Background="Transparent" Foreground="White" FontSize="16" HorizontalAlignment="Right"/>
+            <Label x:Name="timerTextBlock" Grid.Column="2" Grid.Row="3" Content="00:00:00" Background="Transparent" Foreground="White" FontSize="16" HorizontalAlignment="Right"/>
             <Label x:Name="StatusText" Grid.Column="0" Grid.Row="4" Content="MM2Buddy Status:"  Background="Transparent" Foreground="White" FontSize="11"/>
             <Label x:Name="StatusLabel" Grid.Column="1" Grid.Row="4" Content="Test" Background="Transparent" Foreground="White" FontSize="11"/>
             <Button Grid.Column="2" Grid.Row="2" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click" HorizontalAlignment="Right" MinWidth="100"/>
-            <Grid x:Name="HBGrid" Grid.Column="2" HorizontalAlignment="Right">
+            <Grid x:Name="HBGrid" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,0,-6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="35" />
                     <ColumnDefinition Width="Auto" />
@@ -88,11 +85,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35" />
                 </Grid.RowDefinitions>
-                <Label x:Name="HeartIcon" Grid.Column="0" Grid.Row="0" Content="❤️"  Background="Transparent" Foreground="#FFED625E" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol"/>
+                <Label x:Name="HeartIcon" Grid.Column="0" Grid.Row="0" Content="❤️"  Background="Transparent" Foreground="#FFED625E" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol" VerticalAlignment="Top" Padding="5,0,5,5"/>
                 <Label x:Name="Hearts" Grid.Column="1" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
-                <Label x:Name="BrokenHeartIcon" Grid.Column="2" Grid.Row="0" Content="💔"  Background="Transparent" Foreground="#FF5F55C0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol"/>
+                <Label x:Name="BrokenHeartIcon" Grid.Column="2" Grid.Row="0" Content="💔"  Background="Transparent" Foreground="#FF5F55C0" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol" Padding="5,0,5,5"/>
                 <Label x:Name="Boos" Grid.Column="3" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
-                <Label x:Name="SkullIcon" Grid.Column="4" Grid.Row="0" Content="💀"  Background="Transparent" Foreground="#FF8A8A8A" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol"/>
+                <Label x:Name="SkullIcon" Grid.Column="4" Grid.Row="0" Content="💀"  Background="Transparent" Foreground="#FF8A8A8A" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol" Padding="5,0,5,0" UseLayoutRounding="True" VerticalAlignment="Top"/>
                 <Label x:Name="Deaths" Grid.Column="5" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
             </Grid>
         </Grid>

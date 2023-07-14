@@ -27,7 +27,9 @@ namespace MM2Buddy
         EndScreenAlt,
         EndScreenBooAlt,
         EndScreenHeartAlt,
-        DeathMarker
+        DeathMarker,
+        PauseStartOver,
+        PauseQuit
     }
 };
     //    LevelScreen = {

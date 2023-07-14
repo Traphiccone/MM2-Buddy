@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Logo.png" />
     <None Remove="MM2GameStartScreen.png" />
     <None Remove="starship_retro_cropped.jpg" />
   </ItemGroup>
@@ -28,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Logo.png" />
     <Resource Include="MM2GameStartScreen.png" />
     <Resource Include="starship_retro_cropped.jpg" />
   </ItemGroup>
