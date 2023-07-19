@@ -364,21 +364,15 @@ namespace MM2Buddy
                 saveFileDialog.Filter = "Excel Files (*.xlsx)|*.xlsx";
                 saveFileDialog.Title = "Select A Location For the MM2 Buddy Excel File";
                 saveFileDialog.FileName = "MM2Log.xlsx";
-                saveFileDialog.ShowDialog();
+                bool? result = saveFileDialog.ShowDialog();
 
                 // If the user selects a location, save the copy of the Excel file to that location
                 //MessageBox.Show(saveFileDialog.FileName);
-                if (saveFileDialog.FileName != "")
+                if (result == true && saveFileDialog.FileName != "")
                 {
                     string newFilePath = saveFileDialog.FileName;
 
                     // Make a copy of the original Excel file
-                    //MessageBox.Show("1:" + newFilePath);
-                    //MessageBox.Show("2:" + saveFileDialog.FileName);
-                    //MessageBox.Show((newFilePath == saveFileDialog.FileName).ToString());
-                    //if (newFilePath == saveFileDialog.FileName)
-                    //    return;
-                    //MessageBox.Show("halp");
                     File.Copy(filePath, newFilePath);
 
                     // Display a success message
@@ -386,6 +380,14 @@ namespace MM2Buddy
                     this.LogLocation = newFilePath;
                     this.logLocation.Content = newFilePath;
                     saveUserSettings();
+                }
+                else if (result == false)
+                {
+                    // User clicked "Cancel" or closed the dialog
+                    // So reset the LogAll checkbox
+                    //MessageBox.Show("Save operation was canceled.");
+                    this.LogAll = false;
+                    logAllCB.IsChecked = false;
                 }
             }
         }
