@@ -18,6 +18,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Runtime.InteropServices;
+using DirectShowLib;
+//using OpenCvSharp.Extensions;
 
 namespace MM2Buddy
 {
@@ -26,9 +29,14 @@ namespace MM2Buddy
     /// </summary>
     public partial class ScreenOverlayWin : System.Windows.Window
     {
-        private const int WindowWidth = 800;
-        private const int WindowHeight = 450;
+        private VideoCapture capture;
+        private VideoWriter videoWriter;
+
+        private const int WindowWidth = 1920;
+        private const int WindowHeight = 1080;
         private const int BallRadius = 50;
+
+
 
         private readonly Scalar _ballColor = new Scalar(0, 0, 255); // Red color
         private readonly Random _random = new Random();
@@ -40,6 +48,10 @@ namespace MM2Buddy
         private int _ballSpeedY;
         public ScreenOverlayWin()
         {
+            int frameRate = 30;
+            int width = 1920;
+            int height = 1080;
+
             InitializeComponent();
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
@@ -50,6 +62,24 @@ namespace MM2Buddy
 
             // Create a blank window
             _mat.SetTo(new Scalar(0, 0, 0)); // Transparent black
+
+            // Initialize the VideoCapture object
+            capture = new VideoCapture();
+            capture.Open(2); // Use 0 for the default camera, adjust accordingly if you have multiple cameras
+
+            if (capture.IsOpened())
+            {
+                capture.Set(VideoCaptureProperties.FrameWidth, 800);
+                capture.Set(VideoCaptureProperties.FrameHeight, 450);
+                capture.Set(VideoCaptureProperties.Fps, frameRate);
+            }
+            else
+            {
+                throw new Exception("Error opening video capture.");
+            }
+
+            // Initialize VideoWriter to save frames to a video file
+            videoWriter = new VideoWriter("animation_output.avi", FourCC.XVID, frameRate, new OpenCvSharp.Size(width, height), true);
 
             // Show the initial frame
             UpdateImage();
@@ -86,6 +116,7 @@ namespace MM2Buddy
         private void UpdateImage()
         {
             //Cv2.ImShow("ScreenOverlayWin", _mat);
+            //videoWriter.Write(_mat);
             //var bitmapSource = OpenCvSharp.WpfExtensions.BitmapSourceConverter.ToBitmapSource(_mat);
             var bitmapSource = BitmapSourceConverter.ToBitmapSource(_mat);
             streamOverlayOut.Source = bitmapSource;

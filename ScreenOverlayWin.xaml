@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="ScreenOverlayWin" Height="450" Width="800">
+        Title="ScreenOverlayWin" Height="1080" Width="1920">
     <Window.Background>
         <SolidColorBrush Color="Transparent" Opacity="0"/>
     </Window.Background>

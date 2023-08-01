@@ -54,6 +54,7 @@ namespace MM2Buddy
 
         private readonly LogWindow logWindow;
         private readonly ScreenOverlayWin screenOverlayWin;
+        private VirtualCameraOld2 virtualCam;
 
         //private DispatcherTimer timer;
         //private TimeSpan elapsedTime;
@@ -303,6 +304,7 @@ namespace MM2Buddy
             this.startBtn.IsEnabled = true;
             this.stopBtn.IsEnabled = false;
             Utils.Log("Main Stop", true);
+            //this.videoPort.Source = "/LaunchScreen.png";
         }
 
         private void deviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -478,9 +480,12 @@ namespace MM2Buddy
         // Create new window with a new image RGBA Mat to display relevant information
         private void StreamPlay_Click(object sender, RoutedEventArgs e)
         {
-            // Open new Open CV Mat window that updates once per second
-            var overlayWin = new ScreenOverlayWin();
-            overlayWin.Show();
+            //Open new Open CV Mat window that updates once per second
+            //var virtualCam = new VirtualCamera();
+            //virtualCam.StartAnimation();
+
+            var scnOverlayWin = new ScreenOverlayWin();
+            scnOverlayWin.Show();
         }
 
         // Function for clearing all level info after user has completed a level or quit

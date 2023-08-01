@@ -274,6 +274,10 @@ namespace MM2Buddy
             array.Add(obj["world_record"]);
             array.Add(obj["likes"]);
             array.Add(obj["boos"]);
+            array.Add(obj["clear_rate_pretty"]);
+            array.Add(obj["clears"]);
+            array.Add(obj["attempts"]);
+            array.Add(obj["uploader"]["name"]);
 
             string newArrayJson = array.ToString();
 
@@ -284,7 +288,15 @@ namespace MM2Buddy
             ///
             mainWin.Hearts.Content = data[3];
             mainWin.Boos.Content = data[4];
+            mainWin.ClearRate.Content = data[5];
+            mainWin.ClearCount.Content = data[6];
+            mainWin.ClearAttempts.Content = data[7];
             mainWin.HBGrid.Visibility = Visibility.Visible;
+
+            if (mainWin.CreatorLabel.Content == "")
+            {
+                mainWin.CreatorLabel.Content = data[8];
+            }
 
             //foreach (string str in data)
             //{

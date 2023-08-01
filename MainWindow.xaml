@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="Mario Maker 2 Buddy" Height="750" Width="650" MinWidth="650" MinHeight="450" Margin="0,0,-5,0" Icon="/Logo.png">
+        Title="Mario Maker 2 Buddy" Height="750" Width="700" MinWidth="650" MinHeight="450" Margin="0,0,-5,0" Icon="/Logo.png">
     <Grid Background="#FF212121" Margin="0,0,0,-6" MinHeight="750">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -31,7 +31,7 @@
             <Button Grid.Column="0" x:Name="startBtn" Content="Start" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" Click="startBtn_Click"  />
             <Button Grid.Column="1" x:Name="stopBtn" Content="Stop" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" IsEnabled="False" Click="stopBtn_Click"  />
         </Grid>
-        <Image x:Name="videoPort" Margin="30,402,30,44" Panel.ZIndex="0" Opacity="0.995" Source="/MM2GameStartScreen.png">
+        <Image x:Name="videoPort" Margin="30,402,30,44" Panel.ZIndex="0" Opacity="0.995" Source="/LaunchScreen.png">
         </Image>
         <Label Content="Auto Open Level Viewer&#xD;&#xA;" HorizontalAlignment="Left" Margin="31,118,0,0" VerticalAlignment="Top" Foreground="#FFE2E2E2" FontSize="20" Height="37" Width="367"/>
         <Grid x:Name="levelInfoGrid" Margin="31,234,31,346" MinHeight="150" >
@@ -53,7 +53,7 @@
             <Label x:Name="CreatorLabel" Grid.Column="1" Grid.Row="2" Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="NameText" Grid.Column="0" Grid.Row="1" Content="Name:"  Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="NameLabel" Grid.Column="1" Grid.Row="1" Background="Transparent" Foreground="White" FontSize="16"/>
-            <Grid x:Name="HBGrid2"  Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right">
+            <Grid x:Name="HBGrid2"  Grid.Column="2" Grid.Row="2" HorizontalAlignment="Right">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="120" />
                     <ColumnDefinition Width="35" />
@@ -69,10 +69,10 @@
             </Grid>
             <Label x:Name="TransText" Grid.Column="0" Grid.Row="3" Content="Translation:"  Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="TransNameLabel" Grid.Column="1" Grid.Row="3" Content="" Background="Transparent" Foreground="White" FontSize="16"/>
-            <Label x:Name="timerTextBlock" Grid.Column="2" Grid.Row="3" Content="00:00:00" Background="Transparent" Foreground="White" FontSize="16" HorizontalAlignment="Right"/>
+            <Label x:Name="timerTextBlock" Grid.Column="2" Grid.Row="4" Content="00:00:00" Background="Transparent" Foreground="White" FontSize="16" HorizontalAlignment="Right"/>
             <Label x:Name="StatusText" Grid.Column="0" Grid.Row="4" Content="MM2Buddy Status:"  Background="Transparent" Foreground="White" FontSize="11"/>
             <Label x:Name="StatusLabel" Grid.Column="1" Grid.Row="4" Content="Test" Background="Transparent" Foreground="White" FontSize="11"/>
-            <Button Grid.Column="2" Grid.Row="2" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click" HorizontalAlignment="Right" MinWidth="100"/>
+            <Button Grid.Column="2" Grid.Row="3" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click" HorizontalAlignment="Right" MinWidth="100"/>
             <Grid x:Name="HBGrid" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,0,-6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="35" />
@@ -91,6 +91,23 @@
                 <Label x:Name="Boos" Grid.Column="3" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
                 <Label x:Name="SkullIcon" Grid.Column="4" Grid.Row="0" Content="💀"  Background="Transparent" Foreground="#FF8A8A8A" FontSize="20" FontWeight="Bold" FontFamily="Segoe UI Symbol" Padding="5,0,5,0" UseLayoutRounding="True" VerticalAlignment="Top"/>
                 <Label x:Name="Deaths" Grid.Column="5" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16"/>
+            </Grid>
+            <Grid x:Name="ClearGrid" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,0,-6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35" />
+                </Grid.RowDefinitions>
+                <Label x:Name="ClearLabel" Grid.Column="0" Grid.Row="0" Content="Clears:"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" Width="70" MinWidth="70" Padding="15,5,5,5" />
+                <Label x:Name="ClearRate" Grid.Column="1" Grid.Row="0" Content="0.488%"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
+                <Label x:Name="ClearCount" Grid.Column="2" Grid.Row="0" Content="150703"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
+                <Label x:Name="Divider" Grid.Column="3" Grid.Row="0" Content="/"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
+                <Label x:Name="ClearAttempts" Grid.Column="4" Grid.Row="0" Content="31715772"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
             </Grid>
         </Grid>
         <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="320,86,0,0" VerticalAlignment="Top" Foreground="White" Width="249"/>
