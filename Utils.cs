@@ -172,7 +172,7 @@ namespace MM2Buddy
 
                         // Update death count
                         lvl.DeathCnt = int.Parse(worksheet.Cells[i, 5].Value.ToString());
-
+                        mainWin.Deaths.Content = lvl.DeathCnt;
                         //// Update LastPlayed
                         //worksheet.Cells[i, 6].Value = lvl.LastPlayed;
                         //// Set the cell format to YYYY/M/D HH:MM

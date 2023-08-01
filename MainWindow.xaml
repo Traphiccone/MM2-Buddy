@@ -104,8 +104,8 @@
                     <RowDefinition Height="35" />
                 </Grid.RowDefinitions>
                 <Label x:Name="ClearLabel" Grid.Column="0" Grid.Row="0" Content="Clears:"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" Width="70" MinWidth="70" Padding="15,5,5,5" />
-                <Label x:Name="ClearRate" Grid.Column="1" Grid.Row="0" Content="0.488%"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
-                <Label x:Name="ClearCount" Grid.Column="2" Grid.Row="0" Content="150703"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
+                <Label x:Name="ClearRate" Grid.Column="1" Grid.Row="0" Content="0.0%"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
+                <Label x:Name="ClearCount" Grid.Column="2" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
                 <Label x:Name="Divider" Grid.Column="3" Grid.Row="0" Content="/"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
                 <Label x:Name="ClearAttempts" Grid.Column="4" Grid.Row="0" Content="31715772"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
             </Grid>

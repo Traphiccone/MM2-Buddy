@@ -102,6 +102,9 @@ namespace MM2Buddy
             ActiveLevel = lvl;
             _activeLevel = lvl;
 
+            if (this.LogAll)
+                Utils.CheckExistingLog();
+
             //
             // TL I can't for the life of me get the binding to update.
             // so set manually for now...
@@ -110,6 +113,7 @@ namespace MM2Buddy
             this.NameLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Name);
             this.CreatorLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Creator);
             this.TransNameLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Translation);
+            this.Deaths.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.DeathCnt);
 
             //this.OnPropertyChanged(nameof(_page))levelInfoGrid;
             //Binding bind = new Binding("ActiveLevel");
@@ -498,6 +502,12 @@ namespace MM2Buddy
             this.NameLabel.Content = "";
             this.CreatorLabel.Content = "";
             this.TransNameLabel.Content = "";
+            this.Hearts.Content = "";
+            this.Boos.Content = "";
+            this.Deaths.Content = "";
+            this.ClearRate.Content = "0.0%";
+            this.ClearCount.Content = "";
+            this.ClearAttempts.Content = "";
         }
     }
 }

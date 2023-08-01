@@ -143,12 +143,6 @@ namespace MM2Buddy
                     }
                     Utils.Log(mainWin.ScreenState.ToString(), true);
 
-                    // Function for clearing the level if user quit of completed the level
-                    void clearLevelInfo()
-                    {
-                        mainWin.ResetTimer();
-                    }
-
                     if (state == ScreenState.NoScreen)
                     {
                         // Resume Timer if pause screen was removed
