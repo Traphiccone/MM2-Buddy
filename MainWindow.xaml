@@ -7,6 +7,9 @@
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
         Title="Mario Maker 2 Buddy" Height="750" Width="700" MinWidth="650" MinHeight="450" Margin="0,0,-5,0" Icon="/Logo.png">
+    <Window.Background>
+        <SolidColorBrush Color="White" Opacity="1"/>
+    </Window.Background>
     <Grid Background="#FF212121" Margin="0,0,0,-6" MinHeight="750">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -65,7 +68,7 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="StreamLabel" Grid.Column="0" Grid.Row="0" Content="Stream Overlay:"  Background="Transparent" Foreground="White" FontSize="16"/>
                 <Button x:Name="StreamPlay" Grid.Column="1" Grid.Row="0" Content="&#x25B6;"  Foreground="White" FontSize="16" Width="30" Background="#00DDDDDD" Click="StreamPlay_Click"/>
-                <Button x:Name="StreamSettings" Grid.Column="2" Grid.Row="0" Content="&#x2699;"  Foreground="White" FontSize="16" Width="30" Background="#00DDDDDD"/>
+                <Button x:Name="StreamSettings" Grid.Column="2" Grid.Row="0" Content="&#x2699;"  Foreground="White" FontSize="16" Width="30" Background="#00DDDDDD" Click="StreamSettings_Click"/>
             </Grid>
             <Label x:Name="TransText" Grid.Column="0" Grid.Row="3" Content="Translation:"  Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="TransNameLabel" Grid.Column="1" Grid.Row="3" Content="" Background="Transparent" Foreground="White" FontSize="16"/>
@@ -113,5 +116,6 @@
         <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="320,86,0,0" VerticalAlignment="Top" Foreground="White" Width="249"/>
         <Button Content="Import Log" HorizontalAlignment="Left" Margin="239,88,0,0" VerticalAlignment="Top" Height="20" Width="76" ToolTip="Import an Existing MM2Log.xlsx File" Click="Button_Click_1"/>
         <Button Content="Dev Log" HorizontalAlignment="Left" Margin="37,375,0,0" VerticalAlignment="Top" Height="16" Width="49" ToolTip="View Development Logging" FontSize="10" Click="Button_Click_2" />
+        <ComboBox HorizontalAlignment="Left" Margin="477,117,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>

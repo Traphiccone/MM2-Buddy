@@ -81,9 +81,13 @@ namespace MM2Buddy
             //Cv2.NamedWindow("Webcam");
 
             // loop through the frames in the camera feed
+            int loopCnt = 0;
 
             while (mainWin.stopBtn.IsEnabled)
             {
+                //loopCnt++;
+                //Utils.Log("Loop Count: " + loopCnt.ToString());
+
                 // read a new frame from the camera feed
                 OpenCvSharp.Mat frame = new OpenCvSharp.Mat();
                 capture.Read(frame);
@@ -681,7 +685,7 @@ namespace MM2Buddy
                 //    MessageBox.Show("LvlScreen Detected");
                 return totalComp > perMatchAllowed;
             }
-            bool checkDeathMarker() // check if user has heart selected on pause screen
+            bool checkDeathMarker()
             {
                 //
                 // Check for the death indicator on screen
@@ -822,7 +826,7 @@ namespace MM2Buddy
 
                 return endScreenAlt ? ScreenState.EndScreenAlt : ScreenState.EndScreen;
             }
-            if (checkDeathMarker())
+            if (checkDeathMarker()) // TODO check only every 2 seconds.  Death marker lasts ~3s.
             {
                 Utils.Log("Logged +1 Death", true);
                 return ScreenState.DeathMarker;
@@ -982,7 +986,7 @@ namespace MM2Buddy
 
                 string[] timeParts = worldRec.Split(':');
                 int minutes = int.Parse(timeParts[0]);
-                string[] secondsParts = timeParts[1].Split('.');
+                string[] secondsParts = timeParts[1].Split('.'); //TODO
                 int seconds = int.Parse(secondsParts[0]);
                 int milliseconds = int.Parse(secondsParts[1]);
 

@@ -8,5 +8,43 @@
 		<add key="LogLocation" value="Value5" />
 		<add key="WinWidth" value="Value6" />
 		<add key="WinHeight" value="Value7" />
+		
+		<!-- Other settings -->
+
+		<!-- Code Column settings -->
+		<add key="CodeSettings" value="Value8" />
+		<add key="XPosCode" value="Value9" />
+		<add key="YPosCode" value="Value10" />
+		<add key="FSizeCode" value="Value11" />
+		<add key="FontCode" value="Value12" />
+
+		<!-- Name Column settings -->
+		<add key="NameSettings" value="Value13" />
+		<add key="XPosName" value="Value14" />
+		<add key="YPosName" value="Value15" />
+		<add key="FSizeName" value="Value16" />
+		<add key="FontName" value="Value17" />
+
+		<!-- Creator Column settings -->
+		<add key="CreatorSettings" value="Value18" />
+		<add key="XPosCreator" value="Value19" />
+		<add key="YPosCreator" value="Value20" />
+		<add key="FSizeCreator" value="Value21" />
+		<add key="FontCreator" value="Value22" />
+
+		<!-- Time Column settings -->
+		<add key="TimeSettings" value="Value23" />
+		<add key="XPosTime" value="Value24" />
+		<add key="YPosTime" value="Value25" />
+		<add key="FSizeTime" value="Value26" />
+		<add key="FontTime" value="Value27" />
+
+		<add key="OverlaySelection" value="Value28" />
+
+		<CodeSettings>false</CodeSettings>
+		<XPosCode>0</XPosCode>
+		<YPosCode>0</YPosCode>
+		<FSizeCode>30</FSizeCode>
+		<FontCode>Arial</FontCode>
 	</appSettings>
 </configuration>

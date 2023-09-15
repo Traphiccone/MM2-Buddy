@@ -93,7 +93,7 @@ namespace MM2Buddy
             //timer = new DispatcherTimer();
             //timer.Interval = TimeSpan.FromSeconds(0.1);
             //timer.Tick += Timer_Tick;
-            timer = new Timer(100); // Timer interval in milliseconds (0.1 seconds)
+            timer = new Timer(1000); // Timer interval in milliseconds (0.1 seconds)
             timer.Elapsed += Timer_Elapsed;
             timer.AutoReset = true;
         }
@@ -307,6 +307,7 @@ namespace MM2Buddy
             this.IsRunning = false;
             this.startBtn.IsEnabled = true;
             this.stopBtn.IsEnabled = false;
+            ResetTimer();
             Utils.Log("Main Stop", true);
             //this.videoPort.Source = "/LaunchScreen.png";
         }
@@ -450,6 +451,7 @@ namespace MM2Buddy
 
         private void Timer_Tick(object sender, EventArgs e)
         {
+            Utils.Log("Timer Tick");
             elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(1));
             timerTextBlock.Content = elapsedTime.ToString(@"hh\:mm\:ss"); // Update the text
             // Update your UI elements to display the elapsed time
@@ -508,6 +510,12 @@ namespace MM2Buddy
             this.ClearRate.Content = "0.0%";
             this.ClearCount.Content = "";
             this.ClearAttempts.Content = "";
+        }
+
+        private void StreamSettings_Click(object sender, RoutedEventArgs e)
+        {
+            var scnOverlaySettings = new ScreenOverlaySettings();
+            scnOverlaySettings.Show();
         }
     }
 }

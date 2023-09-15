@@ -1,0 +1,96 @@
+﻿<Window x:Class="MM2Buddy.ScreenOverlaySettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MM2Buddy"
+        mc:Ignorable="d"
+        Title="ScreenOverlaySettings" Height="450" Width="800" Background="#FF292929" >
+    <Grid>
+        <Grid x:Name="CustomSettings" MinHeight="200" Margin="41,191,41,0" ShowGridLines="True" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <Label x:Name="XPos" Grid.Column="0" Grid.Row="1" Content="X Pos:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
+            <Label x:Name="YPos" Grid.Column="0" Grid.Row="2" Content="Y Pos:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
+            <Label x:Name="FSize" Grid.Column="0" Grid.Row="3" Content="Font Size:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
+            <Label x:Name="FType" Grid.Column="0" Grid.Row="4" Content="Font Type:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
+            
+            <!-- Code Column Settings -->
+            <CheckBox x:Name="CodeSettings" Grid.Column="1" Grid.Row="0"  Content="Code" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888" ></CheckBox>
+            <!--IsChecked="{Binding CodeSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+            <TextBox x:Name="XPosCode" Grid.Column="1" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange" ForceCursor="True"/>
+            <TextBox x:Name="YPosCode" Grid.Column="1" Grid.Row="2"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <TextBox x:Name="FSizeCode" Grid.Column="1" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontCode" Grid.Column="1" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem Content="Select a font..." IsSelected="True" />
+            </ComboBox>
+            <!-- Name Column Settings -->
+            <CheckBox x:Name="NameSettings" Grid.Column="2" Grid.Row="0"  Content="Name" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <TextBox x:Name="XPosName" Grid.Column="2" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange" ForceCursor="True"/>
+            <TextBox x:Name="YPosName" Grid.Column="2" Grid.Row="2"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <TextBox x:Name="FSizeName" Grid.Column="2" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontName" Grid.Column="2" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem Content="Select a font..." IsSelected="True" />
+            </ComboBox>
+            <!-- Creator Column Settings -->
+            <CheckBox x:Name="CreatorSettings" Grid.Column="3" Grid.Row="0"  Content="Creator" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <TextBox x:Name="XPosCreator" Grid.Column="3" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange" ForceCursor="True"/>
+            <TextBox x:Name="YPosCreator" Grid.Column="3" Grid.Row="2"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <TextBox x:Name="FSizeCreator" Grid.Column="3" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontCreator" Grid.Column="3" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem Content="Select a font..." IsSelected="True" />
+            </ComboBox>
+            <!-- Time Column Settings -->
+            <CheckBox x:Name="TimeSettings" Grid.Column="4" Grid.Row="0"  Content="Time" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <TextBox x:Name="XPosTime" Grid.Column="4" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange" ForceCursor="True"/>
+            <TextBox x:Name="YPosTime" Grid.Column="4" Grid.Row="2"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <TextBox x:Name="FSizeTime" Grid.Column="4" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontTime" Grid.Column="4" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem Content="Select a font..." IsSelected="True" />
+            </ComboBox>
+        </Grid>
+        <ComboBox x:Name="OverlaySelection" SelectionChanged="ValueChange" SelectedValuePath="Content" HorizontalAlignment="Left" Margin="41,71,0,0" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center">
+            <ComboBoxItem Name="cbb1">Default 1</ComboBoxItem>
+            <ComboBoxItem Name="cbb2">Default 2</ComboBoxItem>
+            <ComboBoxItem Name="cbb3">Custom</ComboBoxItem>
+        </ComboBox>
+        <Label Content="Profile:" HorizontalAlignment="Left" Margin="41,40,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+    </Grid>
+</Window>
