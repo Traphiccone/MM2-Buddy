@@ -40,6 +40,8 @@
 		<add key="FontTime" value="Value27" />
 
 		<add key="OverlaySelection" value="Value28" />
+		<add key="Default1Entry" value="Value29" />
+		<add key="Default2Entry" value="Value30" />
 
 		<CodeSettings>false</CodeSettings>
 		<XPosCode>0</XPosCode>

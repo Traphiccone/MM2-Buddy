@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Default1Filler.png" />
     <None Remove="LaunchScreen.png" />
     <None Remove="Logo.png" />
     <None Remove="MM2GameStartScreen.png" />
@@ -33,6 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Default1Filler.png" />
     <Resource Include="LaunchScreen.png" />
     <Resource Include="Logo.png" />
     <Resource Include="MM2GameStartScreen.png" />

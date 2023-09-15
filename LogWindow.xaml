@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="LogWindow" Height="300" Width="400">
+        Title="LogWindow" Height="500" Width="500">
     <Grid ScrollViewer.CanContentScroll="True">
-        <TextBox x:Name="txtLog" IsReadOnly="True" />
+        <TextBox x:Name="txtLog" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
     </Grid>
 </Window>

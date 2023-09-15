@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="ScreenOverlaySettings" Height="450" Width="800" Background="#FF292929" >
+        Title="ScreenOverlaySettings" Height="450" Width="800" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Background="#FF292929" >
     <Grid>
-        <Grid x:Name="CustomSettings" MinHeight="200" Margin="41,191,41,0" ShowGridLines="True" >
+        <Grid x:Name="CustomSettings" MinHeight="200" Margin="41,191,41,0" ShowGridLines="True" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -86,10 +86,54 @@
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
         </Grid>
+        <Grid x:Name="Default1" MinHeight="200" Margin="41,136,92,55" ShowGridLines="True" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+   
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <Image x:Name="Default1Image" Grid.Column="0" Grid.Row="0" Source="/Default1Filler.png" VerticalAlignment="Top" Panel.ZIndex="5" Grid.RowSpan="5" Height="181"/>
+            <Label Grid.Column="1" Grid.Row="0" Content="Enter from..." FontSize="20" Foreground="White" FontWeight="Bold" />
+            <ComboBox x:Name="Default1Entry" SelectedValuePath="Content" Grid.Column="1" Grid.Row="1" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem >Bottom</ComboBoxItem>
+                <ComboBoxItem >Top</ComboBoxItem>
+                <ComboBoxItem >Left</ComboBoxItem>
+                <ComboBoxItem >Right</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+        <Grid x:Name="Default2" MinHeight="200" Margin="41,136,92,55" ShowGridLines="True" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <Image x:Name="Default2Image" Grid.Column="0" Grid.Row="0" Source="/Logo.png" VerticalAlignment="Top" Panel.ZIndex="5" Grid.RowSpan="5" Height="181"/>
+            <Label Grid.Column="1" Grid.Row="0" Content="Enter from..." FontSize="20" Foreground="White" FontWeight="Bold" />
+            <ComboBox x:Name="Default2Entry" SelectedValuePath="Content" Grid.Column="1" Grid.Row="1" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem >Bottom</ComboBoxItem>
+                <ComboBoxItem >Top</ComboBoxItem>
+                <ComboBoxItem >Left</ComboBoxItem>
+                <ComboBoxItem >Right</ComboBoxItem>
+            </ComboBox>
+        </Grid>
         <ComboBox x:Name="OverlaySelection" SelectionChanged="ValueChange" SelectedValuePath="Content" HorizontalAlignment="Left" Margin="41,71,0,0" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center">
-            <ComboBoxItem Name="cbb1">Default 1</ComboBoxItem>
-            <ComboBoxItem Name="cbb2">Default 2</ComboBoxItem>
-            <ComboBoxItem Name="cbb3">Custom</ComboBoxItem>
+            <ComboBoxItem >Default 1</ComboBoxItem>
+            <ComboBoxItem >Default 2</ComboBoxItem>
+            <ComboBoxItem >Custom</ComboBoxItem>
         </ComboBox>
         <Label Content="Profile:" HorizontalAlignment="Left" Margin="41,40,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
     </Grid>

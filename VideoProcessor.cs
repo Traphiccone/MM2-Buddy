@@ -983,6 +983,11 @@ namespace MM2Buddy
                 if (!System.Text.RegularExpressions.Regex.IsMatch(worldRec, @"[\d.:]+"))
                     return;
                 //MessageBox.Show(worldRec);
+                if (!worldRec.Contains(':') || !worldRec.Contains('.'))
+                {
+                    Utils.Log("OCR WR Failed: Captured String: " + worldRec, true);
+                    return;
+                }
 
                 string[] timeParts = worldRec.Split(':');
                 int minutes = int.Parse(timeParts[0]);

@@ -32,9 +32,10 @@ namespace MM2Buddy
         {
             InitializeComponent();
             PopulateFontComboBox();
+            Loaded += SettingsWinLoaded;
             _settings = new UserSettings();
             DataContext = _settings;
-            LoadSettings();
+            
         }
 
         private void numberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -103,7 +104,7 @@ namespace MM2Buddy
                 comboBoxItem.Content = fontFamily.Name;
                 FontTime.Items.Add(comboBoxItem);
             }
-            LoadSettings();
+            //LoadSettings();
         }
 
         private void FontComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -183,29 +184,28 @@ namespace MM2Buddy
                                 break;
                             }
                             // ComboBoxes
+                            case "OverlaySelection":
                             case "FontCode":
                             case "FontName":
                             case "FontCreator":
                             case "FontTime":
-                            case "OverlaySelection":
+                            case "Default1Entry":
+                            case "Default2Entry":
                             {
                                 ComboBox foundComboBox = (ComboBox)FindName(key);
                                 if (foundComboBox != null)
                                 {
-                                    if (foundComboBox.Items.Contains(appSettings[key]))
+                                    foreach(ComboBoxItem x in foundComboBox.Items)
                                     {
-                                        MessageBox.Show(appSettings[key]);
-                                        var idx = foundComboBox.Items.IndexOf(appSettings[key]);
-                                        foundComboBox.SelectedIndex = idx;
-                                    }
-                                    else
-                                    {
-                                        //MessageBox.Show(key);
+                                        if (x.Content.ToString() == appSettings[key])
+                                        {
+                                            foundComboBox.SelectedItem = x;
+                                        }
                                     }
                                 }
                                 else
                                 {
-                                    MessageBox.Show("derp");
+                                    //MessageBox.Show("derp");
                                 }
                                 break;
                             }
@@ -245,6 +245,8 @@ namespace MM2Buddy
 
         private void ValueChange(object sender, RoutedEventArgs e)
         {
+            if (!this.IsLoaded)
+                return;
             if (sender is CheckBox checkBox)
             {
                 string checkBoxName = checkBox.Name;
@@ -258,10 +260,35 @@ namespace MM2Buddy
             }
             else if (sender is ComboBox comboBox)
             {
-                if (comboBox.SelectedItem != null)
+                if (comboBox.SelectedItem != null && ((ComboBoxItem)comboBox.SelectedItem).Content.ToString() != "Select a font...")
                 {
                     string comboBoxName = comboBox.Name;
                     UpdateOverlaySettings(comboBoxName, ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
+
+                    if (comboBoxName == "OverlaySelection")
+                    {
+                        switch (((ComboBoxItem)comboBox.SelectedItem).Content.ToString())
+                        {
+                            case "Default 2":
+                                // Show Default 2 settings/hide all others
+                                CustomSettings.Visibility = Visibility.Hidden;
+                                Default1.Visibility = Visibility.Hidden;
+                                Default2.Visibility = Visibility.Visible;
+                                break;
+                            case "Custom":
+                                // Show large custom settings screen/hide all others
+                                Default1.Visibility = Visibility.Hidden;
+                                Default2.Visibility = Visibility.Hidden;
+                                CustomSettings.Visibility = Visibility.Visible;
+                                break;
+                            default:
+                                // Show Default 1/hide all others
+                                CustomSettings.Visibility = Visibility.Hidden;
+                                Default2.Visibility = Visibility.Hidden;
+                                Default1.Visibility = Visibility.Visible;
+                                break;
+                        }
+                    }
                 }
             }
         }
@@ -287,6 +314,12 @@ namespace MM2Buddy
             {
                 MessageBox.Show("Error writing app settings");
             }
+        }
+
+        private void SettingsWinLoaded(object sender, RoutedEventArgs e)
+        {
+            // Load user settings if available for the overlay video
+            LoadSettings();
         }
     }
 }
