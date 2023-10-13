@@ -16,6 +16,7 @@ using MM2Buddy.Models;
 using System.Xml.Linq;
 using System.IO;
 using System.Configuration;
+using System.Windows.Controls.Primitives;
 
 namespace MM2Buddy
 {
@@ -40,10 +41,16 @@ namespace MM2Buddy
 
         private void numberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (!char.IsDigit(e.Text, e.Text.Length - 1))
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("[^0-9.]+");
+
+            if (regex.IsMatch(e.Text))
             {
                 e.Handled = true;
             }
+            //if (!char.IsDigit(e.Text, e.Text.Length - 1))
+            //{
+            //    e.Handled = true;
+            //}
         }
 
         // TextChanged event to validate the entered number range
@@ -247,16 +254,35 @@ namespace MM2Buddy
         {
             if (!this.IsLoaded)
                 return;
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+            Type mainWindowType = mainWin.GetType();
+
             if (sender is CheckBox checkBox)
             {
                 string checkBoxName = checkBox.Name;
-                // Now you can use the checkBoxName variable as the Name of the checkbox.
                 UpdateOverlaySettings(checkBoxName, checkBox.IsChecked.ToString());
+                if (mainWin != null)
+                {
+                    var propertyInfo = mainWindowType.GetProperty(checkBoxName);
+                    if (propertyInfo != null && propertyInfo.CanWrite)
+                        propertyInfo.SetValue(mainWin, checkBox.IsChecked);
+                }
             }
             else if (sender is TextBox textBox)
             {
                 string textBoxName = textBox.Name;
                 UpdateOverlaySettings(textBoxName, textBox.Text.ToString());
+                if (mainWin != null)
+                {
+                    var propertyInfo = mainWindowType.GetProperty(textBoxName); 
+                    if (propertyInfo != null && propertyInfo.CanWrite)
+                    {
+                        if (int.TryParse(textBox.Text, out int intValue))
+                        {
+                            propertyInfo.SetValue(mainWin, intValue);
+                        }
+                    }
+                }
             }
             else if (sender is ComboBox comboBox)
             {
@@ -264,6 +290,12 @@ namespace MM2Buddy
                 {
                     string comboBoxName = comboBox.Name;
                     UpdateOverlaySettings(comboBoxName, ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
+                    if (mainWin != null)
+                    {
+                        var propertyInfo = mainWindowType.GetProperty(comboBoxName);
+                        if (propertyInfo != null && propertyInfo.CanWrite)
+                            propertyInfo.SetValue(mainWin, ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
+                    }
 
                     if (comboBoxName == "OverlaySelection")
                     {

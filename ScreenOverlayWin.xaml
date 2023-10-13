@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="ScreenOverlayWin" Height="1080" Width="1920">
-    <Window.Background>
+        Title="ScreenOverlayWin" Height="540" Width="960" ResizeMode="NoResize" Background="#FF2FAB16">
+    <!--<Window.Background>
         <SolidColorBrush Color="Transparent" Opacity="0"/>
-    </Window.Background>
-    <Grid>
-        <Image x:Name="streamOverlayOut" Stretch="None"/>
+    </Window.Background>-->
+    <Grid x:Name="mainGrid">
+        <TextBlock x:Name="codeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="test" FontSize="18" Margin="300,0,0,0"/>
+        <Image x:Name="streamOverlayOut" Stretch="None" OpacityMask="#0055FF47"/>
     </Grid>
 </Window>

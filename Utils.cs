@@ -142,8 +142,26 @@ namespace MM2Buddy
                     worksheet.Cells[3, 9].Value = lvl.Translation;
                 }
 
-                // Save the changes to the Excel file
-                excelPackage.Save(); // TODO
+                void AttemptSave()
+                {
+                    // Save the changes to the Excel file
+                    excelPackage.Save(); // TODO Add try again option
+                }
+                try
+                {
+                    AttemptSave();
+                }
+                catch (Exception ex)
+                {
+                    Utils.Log("Excel Save Error", true);
+                    CustomMessageBox customMessageBox = new CustomMessageBox("Excel Save Error \n Make Sure Excel Document Is Closed");
+                    //customMessageBox.excelPack = excelPackage;
+                    //customMessageBox.CustomFunction = () =>
+                    //{
+                    //    excelPackage.Save();
+                    //};
+                    customMessageBox.Show();
+                }
             }
         }
 
@@ -286,6 +304,7 @@ namespace MM2Buddy
 
             //// Do something with the data, such as display it in a UI control
             ///
+            mainWin.DescLabel.Content = data[1];
             mainWin.Hearts.Content = data[3];
             mainWin.Boos.Content = data[4];
             mainWin.ClearRate.Content = data[5];
@@ -431,6 +450,34 @@ namespace MM2Buddy
             return regex.IsMatch(input);
         }
 
+        bool IsExcelFileOpen()
+        {
+            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+
+            try
+            {
+                using (var fileStream = new FileStream(mainWin.LogLocation, FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    // If you reach this point, the file is not locked by another process
+                    // Close the file immediately to release the lock
+                    fileStream.Close();
+                    return false;
+                }
+                // Now you can safely proceed with writing to the file using OfficeOpenXml
+            }
+            catch (IOException ex)
+            {
+                // Handle the case where the file is locked by another process
+                Console.WriteLine("The file is currently open in another application: " + ex.Message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                Console.WriteLine("An error occurred: " + ex.Message);
+                return true;
+            }
+        }
 
     }
 }

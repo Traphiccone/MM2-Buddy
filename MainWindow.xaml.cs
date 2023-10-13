@@ -52,7 +52,37 @@ namespace MM2Buddy
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly LogWindow logWindow;
+        private ScreenOverlaySettings screenOverlaySettingsWin;
+
+        /// <summary>
+        /// Overlay settings
+        /// </summary>
+        public bool CodeSettings { get; set; }
+        public int XPosCode { get; set; }
+        public int YPosCode { get; set; }
+        public double FSizeCode { get; set; }
+        public string FontCode { get; set; }
+        public bool NameSettings { get; set; }
+        public int XPosName { get; set; }
+        public int YPosName { get; set; }
+        public double FSizeName { get; set; }
+        public string FontName { get; set; }
+        public bool CreatorSettings { get; set; }
+        public int XPosCreator { get; set; }
+        public int YPosCreator { get; set; }
+        public double FSizeCreator { get; set; }
+        public string FontCreator { get; set; }
+        public bool TimeSettings { get; set; }
+        public int XPosTime { get; set; }
+        public int YPosTime { get; set; }
+        public double FSizeTime { get; set; }
+        public string FontTime { get; set; }
+        public string OverlaySelection { get; set; }
+        public string Default1Entry { get; set; }
+        public string Default2Entry { get; set; }
+
+
+        private LogWindow logWindow;
         private readonly ScreenOverlayWin screenOverlayWin;
         private VirtualCameraOld2 virtualCam;
 
@@ -182,13 +212,31 @@ namespace MM2Buddy
                                 this.LogLocation = appSettings[key];
                                 break;
                             default:
-                                // code block
+                                Type mainWindowType = this.GetType();
+                                var propertyInfo = mainWindowType.GetProperty(key); 
+                                if (propertyInfo != null && propertyInfo.CanWrite)
+                                {
+                                    if (int.TryParse(appSettings[key], out int intValue))
+                                    {
+                                        propertyInfo.SetValue(this, intValue);
+                                    }
+                                    else if (bool.TryParse(appSettings[key], out bool boolValue))
+                                    {
+                                        propertyInfo.SetValue(this, boolValue);
+                                    }
+                                    else
+                                    {
+                                        propertyInfo.SetValue(this, appSettings[key]);
+                                    }
+                                }
                                 break;
                         }
+
                         //MessageBox.Show(key + "  " + appSettings[key]);
                         //Console.WriteLine("Key: {0} Value: {1}", key, appSettings[key]);
 
                     }
+               
                 }
             }
             catch (ConfigurationErrorsException)
@@ -436,8 +484,8 @@ namespace MM2Buddy
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            //this.logWindow = new LogWindow();
-            var logWindow = new LogWindow();
+            this.logWindow = new LogWindow();
+            //var logWindow = new LogWindow();
             var entries = this.LogData.GetAll();
             logWindow.SetLogData(entries);
             logWindow.Show();
@@ -504,6 +552,7 @@ namespace MM2Buddy
             this.NameLabel.Content = "";
             this.CreatorLabel.Content = "";
             this.TransNameLabel.Content = "";
+            this.DescLabel.Content = "";
             this.Hearts.Content = "";
             this.Boos.Content = "";
             this.Deaths.Content = "";
@@ -514,8 +563,8 @@ namespace MM2Buddy
 
         private void StreamSettings_Click(object sender, RoutedEventArgs e)
         {
-            var scnOverlaySettings = new ScreenOverlaySettings();
-            scnOverlaySettings.Show();
+            screenOverlaySettingsWin = new ScreenOverlaySettings();
+            screenOverlaySettingsWin.Show();
         }
     }
 }

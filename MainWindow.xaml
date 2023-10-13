@@ -34,7 +34,7 @@
             <Button Grid.Column="0" x:Name="startBtn" Content="Start" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" Click="startBtn_Click"  />
             <Button Grid.Column="1" x:Name="stopBtn" Content="Stop" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontSize="18" Height="40" IsEnabled="False" Click="stopBtn_Click"  />
         </Grid>
-        <Image x:Name="videoPort" Margin="30,402,30,44" Panel.ZIndex="0" Opacity="0.995" Source="/LaunchScreen.png">
+        <Image x:Name="videoPort" Margin="30,420,30,44" Panel.ZIndex="0" Opacity="0.995" Source="/LaunchScreen.png">
         </Image>
         <Label Content="Auto Open Level Viewer&#xD;&#xA;" HorizontalAlignment="Left" Margin="31,118,0,0" VerticalAlignment="Top" Foreground="#FFE2E2E2" FontSize="20" Height="37" Width="367"/>
         <Grid x:Name="levelInfoGrid" Margin="31,234,31,346" MinHeight="150" >
@@ -44,6 +44,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="30" />
@@ -72,9 +73,11 @@
             </Grid>
             <Label x:Name="TransText" Grid.Column="0" Grid.Row="3" Content="Translation:"  Background="Transparent" Foreground="White" FontSize="16"/>
             <Label x:Name="TransNameLabel" Grid.Column="1" Grid.Row="3" Content="" Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="DescText" Grid.Column="0" Grid.Row="4" Content="Desc:"  Background="Transparent" Foreground="White" FontSize="16"/>
+            <Label x:Name="DescLabel" Grid.Column="1" Grid.Row="4" Content="" Background="Transparent" Foreground="White" FontSize="16" Grid.ColumnSpan="2"/>
             <Label x:Name="timerTextBlock" Grid.Column="2" Grid.Row="4" Content="00:00:00" Background="Transparent" Foreground="White" FontSize="16" HorizontalAlignment="Right"/>
-            <Label x:Name="StatusText" Grid.Column="0" Grid.Row="4" Content="MM2Buddy Status:"  Background="Transparent" Foreground="White" FontSize="11"/>
-            <Label x:Name="StatusLabel" Grid.Column="1" Grid.Row="4" Content="Test" Background="Transparent" Foreground="White" FontSize="11"/>
+            <Label x:Name="StatusText" Grid.Column="0" Grid.Row="5" Content="MM2Buddy Status:"  Background="Transparent" Foreground="White" FontSize="11"/>
+            <Label x:Name="StatusLabel" Grid.Column="1" Grid.Row="5" Content="Test" Background="Transparent" Foreground="White" FontSize="11"/>
             <Button Grid.Column="2" Grid.Row="3" Content="Level Viewer" BorderThickness="0,0,0,0" Click="Button_Click" HorizontalAlignment="Right" MinWidth="100"/>
             <Grid x:Name="HBGrid" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,0,-6">
                 <Grid.ColumnDefinitions>
@@ -110,12 +113,12 @@
                 <Label x:Name="ClearRate" Grid.Column="1" Grid.Row="0" Content="0.0%"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
                 <Label x:Name="ClearCount" Grid.Column="2" Grid.Row="0" Content=""  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
                 <Label x:Name="Divider" Grid.Column="3" Grid.Row="0" Content="/"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
-                <Label x:Name="ClearAttempts" Grid.Column="4" Grid.Row="0" Content="31715772"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
+                <Label x:Name="ClearAttempts" Grid.Column="4" Grid.Row="0" Content="0"  Background="Transparent" Foreground="White" FontSize="16" FontWeight="Bold" FontFamily="Segoe UI Light" VerticalAlignment="Top" />
             </Grid>
         </Grid>
         <Label x:Name="logLocation" Content="" HorizontalAlignment="Left" Margin="320,86,0,0" VerticalAlignment="Top" Foreground="White" Width="249"/>
         <Button Content="Import Log" HorizontalAlignment="Left" Margin="239,88,0,0" VerticalAlignment="Top" Height="20" Width="76" ToolTip="Import an Existing MM2Log.xlsx File" Click="Button_Click_1"/>
-        <Button Content="Dev Log" HorizontalAlignment="Left" Margin="37,375,0,0" VerticalAlignment="Top" Height="16" Width="49" ToolTip="View Development Logging" FontSize="10" Click="Button_Click_2" />
+        <Button Content="Dev Log" HorizontalAlignment="Left" Margin="37,405,0,3" VerticalAlignment="Top" Height="16" Width="49" ToolTip="View Development Logging" FontSize="10" Click="Button_Click_2" />
         <ComboBox HorizontalAlignment="Left" Margin="477,117,0,0" VerticalAlignment="Top" Width="120"/>
     </Grid>
 </Window>

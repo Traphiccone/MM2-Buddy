@@ -1,0 +1,13 @@
+﻿<Window x:Class="MM2Buddy.CustomMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MM2Buddy"
+        mc:Ignorable="d"
+        Title="MM2 Buddy Alert" Height="150" Width="300">
+    <Grid Background="#FF2D2D2D">
+        <TextBlock x:Name="MessageText" Text="Your message goes here." HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="WhiteSmoke"/>
+        <Button Content="OK" HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="CloseButtonClick" Width="50" Height="30" Background="#FF929292" Margin="0,0,0,10"/>
+    </Grid>
+</Window>

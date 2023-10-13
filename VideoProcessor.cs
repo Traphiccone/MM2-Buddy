@@ -123,6 +123,7 @@ namespace MM2Buddy
 
                 var state = CheckScreenState(frame, bitmapSource);
                 //MessageBox.Show(state.ToString());
+                mainWin.ScreenState = state;
 
 
                 //
@@ -133,7 +134,6 @@ namespace MM2Buddy
                 {
                     BreakDownImage(frame, state, bitmapSource);
                 }
-                mainWin.ScreenState = state;
 
                 // Check for if the screen state has changed
                 if (mainWin.ScreenState != mainWin.LastScreenState)
@@ -247,6 +247,9 @@ namespace MM2Buddy
             var lvlStartScreen = false;
             var lvlPlayedScreen = false;
             var lvlPlayedScreenRpt = false;
+            var lvlSearchScreen = false;
+            var lvlSearchScreenRpt = false;
+
             var lvlScreen = false;
             var lvlScreenRpt = false;
             var lvlPopScreen = false;
@@ -345,6 +348,68 @@ namespace MM2Buddy
                 PixelColorCheck p2 = GenerateCompPixel(bmap, 528, 936);
                 PixelColorCheck p3 = GenerateCompPixel(bmap, 349, 991);
                 PixelColorCheck p4 = GenerateCompPixel(bmap, 528, 991);
+
+                //MessageBox.Show("Total Report Comp%: " + totalComp);
+
+                // Check that they are nearly identical and mostly red
+                //MessageBox.Show("Report Corner Match: " + (p1.CompareColor(p2) + p2.CompareColor(p3) + p3.CompareColor(p4)) / 3);
+                if ((p1.CompareColor(p2) + p2.CompareColor(p3) + p3.CompareColor(p4)) / 3 < perMatchAllowed)
+                    return false;
+
+                //MessageBox.Show("Is Red? : " + (p1.R) + " " + (p1.G) + " " + (p1.B));
+                //if (p1.R > 200 && p1.G < 150 && p1.B < 150)
+                //    MessageBox.Show("LvlPlayedScreenRpt Detected");
+
+                // Check for Red
+                return ((p1.R > 200) && (p1.G < 150) && (p1.B < 150));
+                //MessageBox.Show("Comp Result: \n" +
+                //    "p1: " + p1.R + ", " + p1.G + ", " + p1.B);
+            }
+            bool checkLvlSearchScreen(BitmapSource bmap) // Almost identical to Level/Liked screen
+            {
+                //
+                // Coordinates and colors that represent the Search View Screen
+                //
+                PixelColorCheck p1 = new PixelColorCheck(1290, 935, 255, 204, 30); // Play button yellow
+                PixelColorCheck p2 = new PixelColorCheck(912, 945, 255, 204, 30); // Play Together button yellow
+                PixelColorCheck p3 = new PixelColorCheck(718, 430, 253, 252, 238); // White area under tags 
+                PixelColorCheck p4 = new PixelColorCheck(713, 310, 101, 29, 29); // Heart icon brown maroon 
+                PixelColorCheck p5 = new PixelColorCheck(1695, 580, 207, 206, 194); // area to the far right light grey 
+                PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
+                PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+                PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
+                PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
+                PixelColorCheck p5C = GenerateCompPixel(bmap, p5.X, p5.Y);
+
+                //Vec3b pixel = frame.At<Vec3b>(1290, 935);
+                //byte[] pixel = new byte[3];
+                //bmap.CopyPixels(new Int32Rect(1695, 580, 1, 1), pixel, 3, 0);
+
+
+                //MessageBox.Show("Comp Result: " + p1.CompareColor(p1C) + "\n" +
+                //    "p1: " + p5.R + ", " + p5.G + ", " + p5.B + "\n" +
+                //    "p2: " + p5C.R + ", " + p5C.G + ", " + p5C.B);
+
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C) + p5.CompareColor(p5C)) / 5;
+
+                //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
+
+                //MessageBox.Show("Total Comp%: " + totalComp);
+                return totalComp > perMatchAllowed;
+                //PixelColorCheck p1C = new PixelColorCheck(1290, 935, frame.at)
+            }
+            //
+            // If Search Screen detected, check for Report Button hover
+            //
+            bool checkLvlSearchScreenRpt(BitmapSource bmap)
+            {
+                //
+                // Coordinates for 4 corners of report box
+                //
+                PixelColorCheck p1 = GenerateCompPixel(bmap, 347, 913); //911
+                PixelColorCheck p2 = GenerateCompPixel(bmap, 528, 913);
+                PixelColorCheck p3 = GenerateCompPixel(bmap, 347, 968); //966
+                PixelColorCheck p4 = GenerateCompPixel(bmap, 528, 968);
 
                 //MessageBox.Show("Total Report Comp%: " + totalComp);
 
@@ -765,6 +830,13 @@ namespace MM2Buddy
                 return lvlPlayedScreenRpt ? ScreenState.LvlPlayedScreenRpt : ScreenState.LvlPlayedScreen;
             }
 
+            lvlSearchScreen = checkLvlSearchScreen(bmap);
+            if (lvlSearchScreen)
+            {
+                lvlSearchScreenRpt = checkLvlSearchScreenRpt(bmap);
+                return lvlSearchScreenRpt ? ScreenState.LvlSearchScreenRpt : ScreenState.LvlSearchScreen;
+            }
+
             lvlScreen = checkLvlScreen(bmap);
             if (lvlScreen)
             {
@@ -969,6 +1041,36 @@ namespace MM2Buddy
                 //mainWin.ActiveLevel = lvl;
                 mainWin.UpdateActiveLevel(lvl);
             }
+            void ReadLvlSearchScn() // For Popular course screen
+            {
+
+                //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
+                lvlCode = SubImageText(frame, 1064, 680, 250, 40, "code");
+                lvlCode = lvlCode.Replace(" ", "");
+                lvlCode = lvlCode.Replace("\n", "");
+
+                if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
+                    return;
+                if (mainWin.ActiveLevel.Code == lvlCode)
+                    return;
+                flagEnd = GetCreatorStart(bmap);
+                //
+                // Found unique issue where some users do not have flags..
+                //
+                if (flagEnd.X > 1600)
+                {
+                    flagEnd.X = 1161;
+                    flagEnd.Y = 431;
+                }
+                lvlName = SubImageText(frame, 477, 210, 1044, 57);
+                lvlCreator = SubImageText(frame, flagEnd.X, 408, 1586 - flagEnd.X, 41); //1586 end of possible txt area
+                //MessageBox.Show(lvlCode + '\n' + lvlName + '\n' + lvlCreator);
+                lvl = new Level(lvlCode, lvlName, lvlCreator);
+                lvl.Active = true;
+
+                //mainWin.ActiveLevel = lvl;
+                mainWin.UpdateActiveLevel(lvl);
+            }
             void ReadEndScn() // For Popular course screen
             {
 
@@ -1065,7 +1167,17 @@ namespace MM2Buddy
                     break;
                 case ScreenState.LvlPlayedScreenRpt:
                     ReadLvlPlayedScn();
-
+                    if (mainWin.LvlViewReport && !mainWin.ActiveLevel.AutoOpened)
+                    {
+                        Utils.OpenLink(mainWin.ActiveLevel.Link);
+                        mainWin.ActiveLevel.AutoOpened = true;
+                    }
+                    break;
+                case ScreenState.LvlSearchScreen:
+                    ReadLvlSearchScn();
+                    break;
+                case ScreenState.LvlSearchScreenRpt:
+                    ReadLvlSearchScn();
                     if (mainWin.LvlViewReport && !mainWin.ActiveLevel.AutoOpened)
                     {
                         Utils.OpenLink(mainWin.ActiveLevel.Link);
@@ -1203,7 +1315,7 @@ namespace MM2Buddy
         //
         // There's is not a specific rect box to capture a creator's name without sometimes
         // capturing the country flag.  So detect where the flag and name's respective pixels start
-        // Start at 1200, 461 and move leftwards. 430 for Played screen
+        // Start at 1200, 461 and move leftwards. 430 for Played screen, 408 for search
         //
         static public PixelColorCheck GetCreatorStart(BitmapSource bmap)
         {
@@ -1213,6 +1325,9 @@ namespace MM2Buddy
             int y = 461;
             if (mainWin.ScreenState == ScreenState.LvlPlayedScreen || mainWin.ScreenState == ScreenState.LvlPlayedScreenRpt)
                 y = 430;
+            if (mainWin.ScreenState == ScreenState.LvlSearchScreen || mainWin.ScreenState == ScreenState.LvlSearchScreenRpt)
+                y = 408;
+
             byte[] pixel = new byte[3];
             byte[] pixel2 = new byte[3];
 

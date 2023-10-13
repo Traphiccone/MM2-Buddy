@@ -14,6 +14,8 @@ namespace MM2Buddy
         LevelStart,
         LvlPlayedScreen,
         LvlPlayedScreenRpt,
+        LvlSearchScreen,
+        LvlSearchScreenRpt,
         LvlScreen,
         LvlScreenRpt,
         LvlScreenPop,
