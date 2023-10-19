@@ -43,6 +43,9 @@
 		<add key="Default1Entry" value="Value29" />
 		<add key="Default2Entry" value="Value30" />
 
+		<add key="PlayerVisible" value="Value7" />
+
+
 		<CodeSettings>false</CodeSettings>
 		<XPosCode>0</XPosCode>
 		<YPosCode>0</YPosCode>

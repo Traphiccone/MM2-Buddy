@@ -27,6 +27,7 @@ using Emgu.CV;
 using OfficeOpenXml;
 using System.Timers;
 using System.Windows.Threading;
+using System.Windows.Media.Media3D;
 
 namespace MM2Buddy
 {
@@ -86,12 +87,13 @@ namespace MM2Buddy
         private readonly ScreenOverlayWin screenOverlayWin;
         private VirtualCameraOld2 virtualCam;
 
-        //private DispatcherTimer timer;
-        //private TimeSpan elapsedTime;
-        //private bool isTimerRunning;
         private Timer timer;
         private TimeSpan elapsedTime;
         private bool isTimerRunning;
+
+
+        private bool isResizing = false;
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -101,6 +103,7 @@ namespace MM2Buddy
             ////PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ActiveLevel"));
             //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Level"));
         }
+
         public MainWindow()
         {
             InitializeComponent();
@@ -127,6 +130,11 @@ namespace MM2Buddy
             timer.Elapsed += Timer_Elapsed;
             timer.AutoReset = true;
         }
+
+        /// <summary>
+        /// Loads in all major level information onto the main window
+        /// </summary>
+        /// <param name="lvl">The most recent active Level object</param>
         public void UpdateActiveLevel(Level lvl)
         {
             ActiveLevel = lvl;
@@ -157,14 +165,11 @@ namespace MM2Buddy
             // Content = "{Binding Code, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             // Content = "{Binding ActiveLevel.Name}"
             // Content = "{Binding ActiveLevel.Creator}"
-
-            // TODO Read Excel file and pull
-            // death count/other data.
-
-            // Start Timer
-            //StartTimer();
         }
 
+        /// <summary>
+        /// Read all locally saved user settings
+        /// </summary>
         public void ReadAllSettings()
         {
             try
@@ -184,15 +189,12 @@ namespace MM2Buddy
                         {
                             case "VidDevice":
                             {
-                                //deviceCombo.SetValue(LeftProperty, "test");
-                                //var x = deviceCombo.Items.Contains(appSettings[key]);
                                 if (deviceCombo.Items.Contains(appSettings[key]))
                                 {
                                     var idx = deviceCombo.Items.IndexOf(appSettings[key]);
                                     deviceCombo.SelectedIndex = idx;
                                     this.Device = appSettings[key];
                                 }
-                                // code block
                                 break;
                             }
                             case "LvlViewEndless":
@@ -210,6 +212,18 @@ namespace MM2Buddy
                             case "LogLocation":
                                 logLocation.Content = appSettings[key];
                                 this.LogLocation = appSettings[key];
+                                break;
+                            case "WinWidth":
+                                Width = Double.Parse(appSettings[key]);
+                                break;
+                            case "WinHeight":
+                                Height = Double.Parse(appSettings[key]);
+                                break;
+                            case "PlayerVisible":
+                                if (bool.Parse(appSettings[key]))
+                                    videoPort.Visibility = Visibility.Visible;
+                                else
+                                    videoPort.Visibility = Visibility.Collapsed;
                                 break;
                             default:
                                 Type mainWindowType = this.GetType();
@@ -252,7 +266,6 @@ namespace MM2Buddy
             {
                 var appSettings = ConfigurationManager.AppSettings;
                 string result = appSettings[key] ?? "Not Found";
-                MessageBox.Show(result);
             }
             catch (ConfigurationErrorsException)
             {
@@ -301,6 +314,56 @@ namespace MM2Buddy
 
             // TODO load user settings if available
             ReadAllSettings();
+
+
+            // For catching user window resize event because wpf doesn't
+            // have a proper resizeevent that fires AFTER resize is completed
+            HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+            source.AddHook(new HwndSourceHook(WndProc));
+        }
+
+        // For catching user window resize
+        const int WM_SIZING = 0x214;
+        const int WM_EXITSIZEMOVE = 0x232;
+        private static bool WindowWasResized = false;
+
+        // For catching user window resize
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == WM_SIZING)
+            {
+
+                if (WindowWasResized == false)
+                {
+
+                    //    'indicate the the user is resizing and not moving the window
+                    WindowWasResized = true;
+                }
+            }
+
+            if (msg == WM_EXITSIZEMOVE)
+            {
+
+                // 'check that this is the end of resize and not move operation          
+                if (WindowWasResized == true)
+                {
+
+                    // your stuff to do 
+                    Console.WriteLine("End");
+
+                    // 'set it back to false for the next resize/move
+                    WindowWasResized = false;
+
+                    //MessageBox.Show(newWidth.ToString() + ", " + newHeight.ToString());
+                    //MessageBox.Show("Resized");
+                    //saveUserSettings();
+                    AddUpdateAppSettings("WinWidth", ActualWidth.ToString());
+                    AddUpdateAppSettings("WinHeight", ActualHeight.ToString());
+
+                }
+            }
+
+            return IntPtr.Zero;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -320,16 +383,11 @@ namespace MM2Buddy
             //}
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            //
-            // TODO save window size if user changes the size
-
-            // Get the new size of the window
-            //double newWidth = e.NewSize.Width;
-            //double newHeight = e.NewSize.Height;
-
-            // Do something with the new size, such as updating the layout of your UI
+            // The user has initiated a resize action.
+            isResizing = true;
+            //MessageBox.Show("halps");
         }
 
         private void DeviceCombo_Initialized(object? sender, EventArgs e)
@@ -380,6 +438,7 @@ namespace MM2Buddy
             AddUpdateAppSettings("LvlViewReport", lvlViewReportCB.IsChecked.ToString());
             AddUpdateAppSettings("LogAll", logAllCB.IsChecked.ToString());
             AddUpdateAppSettings("LogLocation", logLocation.Content.ToString());
+
             //ConfigurationManager.AppSettings["LvlViewEndless"] = textBoxPassword.Text;
             //ConfigurationManager.AppSettings.
             Utils.Log("User Settings Updated");
@@ -447,13 +506,16 @@ namespace MM2Buddy
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+        private void OpenLvlViewer(object sender, RoutedEventArgs e)
         {
-            //this.Device = "test";
             Utils.OpenLink(ActiveLevel.Link);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Allows user to import a previously used Excel log
+        /// </summary>
+        private void ImportExcelLog(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -477,12 +539,10 @@ namespace MM2Buddy
             }
         }
 
-        private void logAllCB_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Open development log
+        /// </summary>
+        private void OpenDevLog(object sender, RoutedEventArgs e)
         {
             this.logWindow = new LogWindow();
             //var logWindow = new LogWindow();
@@ -491,6 +551,11 @@ namespace MM2Buddy
             logWindow.Show();
         }
 
+        /// <summary>
+        /// Timer functions are for users who like to log total 
+        /// play time on a particular level so they know when
+        /// to move on
+        /// </summary>
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(1));
@@ -531,7 +596,10 @@ namespace MM2Buddy
             Dispatcher.Invoke(() => timerTextBlock.Content = "00:00:00"); // Reset the text on the UI thread
         }
 
-        // Create new window with a new image RGBA Mat to display relevant information
+        /// <summary>
+        /// Create new window with a new image RGBA Mat to display relevant information
+        /// and be imported into OBS/other streaming software
+        /// </summary>
         private void StreamPlay_Click(object sender, RoutedEventArgs e)
         {
             //Open new Open CV Mat window that updates once per second
@@ -542,7 +610,9 @@ namespace MM2Buddy
             scnOverlayWin.Show();
         }
 
-        // Function for clearing all level info after user has completed a level or quit
+        /// <summary>
+        /// Function for clearing all level info after user has completed a level or quit
+        /// </summary>
         public void ClearLevelInfo()
         {
             ResetTimer();
@@ -561,10 +631,42 @@ namespace MM2Buddy
             this.ClearAttempts.Content = "";
         }
 
+        /// <summary>
+        /// Open Stream Settings Window
+        /// </summary>
         private void StreamSettings_Click(object sender, RoutedEventArgs e)
         {
             screenOverlaySettingsWin = new ScreenOverlaySettings();
             screenOverlaySettingsWin.Show();
+        }
+
+        /// <summary>
+        /// Handle Video Player Collapse/Hiding
+        /// </summary>
+        private void CollapseBtnClick(object sender, RoutedEventArgs e)
+        {
+            //CollapsePlayerBtn.RenderTransform = new RotateTransform(180, 0.5, 0.5);
+            rotateTransform.Angle += 180;
+
+            //MessageBox.Show(videoPort.ActualHeight.ToString());
+            if (videoPort.Visibility == Visibility.Collapsed)
+            {
+                // Reset main window height
+                Height = 730;
+                videoPort.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Adjust main window height
+                Height -= videoPort.ActualHeight;
+                videoPort.Visibility = Visibility.Collapsed;
+            }
+
+            // Save to user settings
+            AddUpdateAppSettings("PlayerVisible", (videoPort.Visibility == Visibility.Visible).ToString());
+            AddUpdateAppSettings("WinWidth", ActualWidth.ToString());
+            AddUpdateAppSettings("WinHeight", ActualHeight.ToString());
+            UpdateLayout();
         }
     }
 }
