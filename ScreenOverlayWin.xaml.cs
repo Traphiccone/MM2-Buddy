@@ -22,6 +22,7 @@ using DirectShowLib;
 using System.Drawing;
 using System.Drawing.Imaging;
 using OpenCvSharp.Internal;
+using OfficeOpenXml.Drawing;
 //using Emgu.CV;
 //using OpenCvSharp.Extensions;
 
@@ -141,7 +142,10 @@ namespace MM2Buddy
                 currentOpacity += 0.20; // Increase the opacity increment for a faster fade-in effect
                 if (currentOpacity > 1.0)
                     currentOpacity = 1.0; // Ensure opacity doesn't go beyond 1
-                textBlock.Opacity = currentOpacity;
+                codeBlock.Opacity = currentOpacity;
+                nameBlock.Opacity = currentOpacity;
+                creatorBlock.Opacity = currentOpacity;
+                timeBlock.Opacity = currentOpacity;
             }
             else
             {
@@ -152,28 +156,78 @@ namespace MM2Buddy
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             MainWindow mWin = (MainWindow)Application.Current.MainWindow;
+            Level lvl = mWin.ActiveLevel;
 
             if (mWin.OverlaySelection == "Custom")
             {
                 //
                 // Create custom overlay using user's settings
                 // 
-                if (mWin.ActiveLevel.Active)
+                if (lvl.Active)
                 {
-                    codeBlock.Text = "000-000-000";
+                    if (mWin.CodeSettings)
+                        ProcessTextBlock(codeBlock, lvl.Code, mWin.FSizeCode, mWin.FontCode, mWin.XPosCode, mWin.YPosCode);
+                    else
+                        codeBlock.Visibility = Visibility.Hidden;
+
+                    if (mWin.NameSettings)
+                        ProcessTextBlock(nameBlock, lvl.Name, mWin.FSizeName, mWin.FontName, mWin.XPosName, mWin.YPosName);
+                    else
+                        nameBlock.Visibility = Visibility.Hidden;
+
+                    if (mWin.CreatorSettings)
+                        ProcessTextBlock(creatorBlock, lvl.Creator, mWin.FSizeCreator, mWin.FontCreator, mWin.XPosCreator, mWin.YPosCreator);
+                    else
+                        creatorBlock.Visibility = Visibility.Hidden;
+
+                    if (mWin.TimeSettings)
+                        ProcessTextBlock(timeBlock, mWin.elapsedTime.ToString(@"hh\:mm\:ss"), mWin.FSizeTime, mWin.FontTime, mWin.XPosTime, mWin.YPosTime);
+                    else
+                        timeBlock.Visibility = Visibility.Hidden;
 
                     // Create a DispatcherTimer for fading in
-                    fadeTimer = new DispatcherTimer
-                    {
-                        Interval = TimeSpan.FromMilliseconds(10)
-                    };
-                    fadeTimer.Tick += FadeInText;
-                    fadeTimer.Start();
+                    //fadeTimer = new DispatcherTimer
+                    //{
+                    //    Interval = TimeSpan.FromMilliseconds(10)
+                    //};
+                    //fadeTimer.Tick += FadeInText;
+                    //fadeTimer.Start();
                     // Start a timer to update the text alpha value
                 }
             }
 
             //UpdateImage();
+        }
+
+        /// <summary>
+        /// This processes all the user parameters set for each piece of data to display
+        /// </summary>
+        /// <param name="textBlock">The textBlock to be processed</param>
+        /// <param name="text">Text string to go in textBlock</param>
+        /// <param name="fontSize">Font size of text</param>
+        /// <param name="font">Font code for the text</param>
+        /// <param name="x">X position on screen</param>
+        /// <param name="y"> position on screen</param>
+        private void ProcessTextBlock(TextBlock textBlock, string text, double fontSize, string font, int x, int y)
+        {
+            MainWindow mWin = (MainWindow)Application.Current.MainWindow;
+            textBlock.Visibility = Visibility.Visible;
+
+            textBlock.Text = text;
+            textBlock.FontSize = fontSize > 0 ? fontSize : 1;
+
+            // Convert the font type string to a FontFamily
+            System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily(font);
+            // Apply the FontFamily to the TextBlock
+            textBlock.FontFamily = fontFamily;
+
+            MoveTextBlock(textBlock, x, y);
+        }
+
+        private void MoveTextBlock(TextBlock textBlock, double x, double y)
+        {
+            // Set the Margin of the TextBlock to position it
+            textBlock.Margin = new Thickness(x, y, 0, 0);
         }
         //private void UpdateImage()
         //{

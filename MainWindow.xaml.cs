@@ -87,8 +87,8 @@ namespace MM2Buddy
         private readonly ScreenOverlayWin screenOverlayWin;
         private VirtualCameraOld2 virtualCam;
 
+        public TimeSpan elapsedTime;
         private Timer timer;
-        private TimeSpan elapsedTime;
         private bool isTimerRunning;
 
 

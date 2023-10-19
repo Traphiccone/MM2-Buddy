@@ -10,7 +10,11 @@
         <SolidColorBrush Color="Transparent" Opacity="0"/>
     </Window.Background>-->
     <Grid x:Name="mainGrid">
-        <TextBlock x:Name="codeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="test" FontSize="18" Margin="300,0,0,0"/>
+        <TextBlock x:Name="codeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="test" FontSize="18" Margin="0,0,0,0"/>
+        <TextBlock x:Name="nameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="app" FontSize="18" Margin="0,0,0,0"/>
+        <TextBlock x:Name="creatorBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="HALP" FontSize="18" Margin="0,0,0,0"/>
+        <TextBlock x:Name="timeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="" FontSize="18" Margin="0,0,0,0"/>
+        <TextBlock x:Name="deathBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="" FontSize="18" Margin="0,0,0,0"/>
         <Image x:Name="streamOverlayOut" Stretch="None" OpacityMask="#0055FF47"/>
     </Grid>
 </Window>
