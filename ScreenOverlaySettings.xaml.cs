@@ -78,31 +78,6 @@ namespace MM2Buddy
             //}
         }
 
-        private bool IsHex(string input)
-        {
-            //return Regex.IsMatch(input, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
-            // Remove any leading "0x" if present
-            if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-            {
-                input = input.Substring(2);
-            }
-
-            // Check if the remaining characters are valid hexadecimal digits
-            foreach (char c in input)
-            {
-                if (!IsHexDigit(c))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool IsHexDigit(char c)
-        {
-            return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
-        }
 
         // TextChanged event to validate the entered number range
         private void pos_Changed(object sender, TextChangedEventArgs e)
