@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="ScreenOverlaySettings" Height="450" Width="800" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Background="#FF292929" >
     <Grid>
-        <Grid x:Name="CustomSettings" MinHeight="200" Margin="41,191,41,0" ShowGridLines="True" Visibility="Collapsed" >
+        <Grid x:Name="CustomSettings" MinHeight="200" Margin="41,191,41,0" ShowGridLines="True" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -22,11 +22,13 @@
                 <RowDefinition Height="35" />
                 <RowDefinition Height="35" />
                 <RowDefinition Height="35" />
+                <RowDefinition Height="35" />
             </Grid.RowDefinitions>
             <Label x:Name="XPos" Grid.Column="0" Grid.Row="1" Content="X Pos:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
             <Label x:Name="YPos" Grid.Column="0" Grid.Row="2" Content="Y Pos:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
             <Label x:Name="FSize" Grid.Column="0" Grid.Row="3" Content="Font Size:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
-            <Label x:Name="FType" Grid.Column="0" Grid.Row="4" Content="Font Type:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
+            <Label x:Name="FColor" Grid.Column="0" Grid.Row="4" Content="Font Color:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
+            <Label x:Name="FType" Grid.Column="0" Grid.Row="5" Content="Font Type:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
             
             <!-- Code Column Settings -->
             <CheckBox x:Name="CodeSettings" Grid.Column="1" Grid.Row="0"  Content="Code" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888" ></CheckBox>
@@ -40,7 +42,18 @@
             <TextBox x:Name="FSizeCode" Grid.Column="1" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
-            <ComboBox x:Name="FontCode" Grid.Column="1" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+            <!--<Grid Grid.Column="1" Grid.Row="4">
+                <TextBox Name="colorTextBox" Grid.Column="0" Grid.Row="0"   />
+                <Button Content="" Grid.Column="1" Grid.Row="0" Click="PickColor_Click" Width="30" Height="30" HorizontalAlignment="Right" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/ColorWheelIcon.png"/>
+                    </Button.Background>
+                </Button>
+                <Rectangle Name="colorPreview" Width="30" Height="30" Fill="Transparent" HorizontalAlignment="Right" />
+            </Grid>-->
+            <TextBox x:Name="ColorCode" Grid.Column="1" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontCode" Grid.Column="1" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Name Column Settings -->
@@ -54,7 +67,9 @@
             <TextBox x:Name="FSizeName" Grid.Column="2" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
-            <ComboBox x:Name="FontName" Grid.Column="2" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+            <TextBox x:Name="ColorName" Grid.Column="2" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontName" Grid.Column="2" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Creator Column Settings -->
@@ -68,7 +83,9 @@
             <TextBox x:Name="FSizeCreator" Grid.Column="3" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
-            <ComboBox x:Name="FontCreator" Grid.Column="3" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+            <TextBox x:Name="ColorCreator" Grid.Column="3" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontCreator" Grid.Column="3" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Time Column Settings -->
@@ -82,11 +99,29 @@
             <TextBox x:Name="FSizeTime" Grid.Column="4" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
-            <ComboBox x:Name="FontTime" Grid.Column="4" Grid.Row="4" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+            <TextBox x:Name="ColorTime" Grid.Column="4" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontTime" Grid.Column="4" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
+                <ComboBoxItem Content="Select a font..." IsSelected="True" />
+            </ComboBox>
+            <!-- Death Column Settings -->
+            <CheckBox x:Name="DeathSettings" Grid.Column="5" Grid.Row="0"  Content="Deaths" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <TextBox x:Name="XPosDeath" Grid.Column="5" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange" ForceCursor="True"/>
+            <TextBox x:Name="YPosDeath" Grid.Column="5" Grid.Row="2"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <TextBox x:Name="FSizeDeath" Grid.Column="5" Grid.Row="3"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
+                PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
+                TextChanged="ValueChange"/>
+            <TextBox x:Name="ColorDeath" Grid.Column="5" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+            <ComboBox x:Name="FontDeath" Grid.Column="5" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
         </Grid>
-        <Grid x:Name="Default1" MinHeight="200" Margin="41,136,92,55" ShowGridLines="True" >
+        <Grid x:Name="Default1" MinHeight="200" Margin="41,136,92,55" ShowGridLines="True" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -108,7 +143,7 @@
                 <ComboBoxItem >Right</ComboBoxItem>
             </ComboBox>
         </Grid>
-        <Grid x:Name="Default2" MinHeight="200" Margin="41,136,92,55" ShowGridLines="True" >
+        <Grid x:Name="Default2" MinHeight="200" Margin="41,136,92,55" ShowGridLines="True" Visibility="Collapsed" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

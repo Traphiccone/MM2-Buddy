@@ -17,6 +17,7 @@ using System.Xml.Linq;
 using System.IO;
 using System.Configuration;
 using System.Windows.Controls.Primitives;
+using System.Text.RegularExpressions;
 
 namespace MM2Buddy
 {
@@ -36,7 +37,8 @@ namespace MM2Buddy
             Loaded += SettingsWinLoaded;
             _settings = new UserSettings();
             DataContext = _settings;
-            
+
+            //ColorCode.TextChanged += colorTextBox_PreviewTextInput;
         }
 
         private void numberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -51,6 +53,55 @@ namespace MM2Buddy
             //{
             //    e.Handled = true;
             //}
+        }
+
+        private void colorTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+            if (regex.IsMatch(e.Text))
+            {
+                e.Handled = true;
+            }
+
+            //string inputHex = ColorCode.Text;
+            //if (IsHex(inputHex))
+            //{
+            //    //ValidationBorder.BorderBrush = new SolidColorBrush(Colors.Green);
+            //    ColorCode.BorderBrush = new SolidColorBrush(Colors.White);
+            //    ColorCode.BorderThickness = new Thickness(0);
+            //}
+            //else
+            //{
+            //    ColorCode.BorderBrush = new SolidColorBrush(Colors.Red);
+            //    ColorCode.BorderThickness = new Thickness(5);
+            //    //ValidationBorder.BorderBrush = new SolidColorBrush(Colors.Red);
+            //}
+        }
+
+        private bool IsHex(string input)
+        {
+            //return Regex.IsMatch(input, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+            // Remove any leading "0x" if present
+            if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            {
+                input = input.Substring(2);
+            }
+
+            // Check if the remaining characters are valid hexadecimal digits
+            foreach (char c in input)
+            {
+                if (!IsHexDigit(c))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool IsHexDigit(char c)
+        {
+            return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
         }
 
         // TextChanged event to validate the entered number range
@@ -111,6 +162,12 @@ namespace MM2Buddy
                 comboBoxItem.Content = fontFamily.Name;
                 FontTime.Items.Add(comboBoxItem);
             }
+            foreach (System.Drawing.FontFamily fontFamily in fontsCollection.Families)
+            {
+                ComboBoxItem comboBoxItem = new ComboBoxItem();
+                comboBoxItem.Content = fontFamily.Name;
+                FontDeath.Items.Add(comboBoxItem);
+            }
             //LoadSettings();
         }
 
@@ -166,20 +223,29 @@ namespace MM2Buddy
                             case "XPosCode":
                             case "YPosCode":
                             case "FSizeCode":
+                            case "ColorCode":
 
                             case "XPosName":
                             case "YPosName":
                             case "FSizeName":
+                            case "ColorName":
 
                             case "XPosCreator":
                             case "YPosCreator":
                             case "FSizeCreator":
+                            case "ColorCreator":
 
                             case "XPosTime":
                             case "YPosTime":
                             case "FSizeTime":
+                            case "ColorTime":
+
+                            case "XPosDeath":
+                            case "YPosDeath":
+                            case "FSizeDeath":
+                            case "ColorDeath":
                             {
-                                TextBox foundTextBox = (TextBox)FindName(key);
+                                    TextBox foundTextBox = (TextBox)FindName(key);
                                 if (foundTextBox != null)
                                 {
                                     // Load string from config file
@@ -196,6 +262,7 @@ namespace MM2Buddy
                             case "FontName":
                             case "FontCreator":
                             case "FontTime":
+                            case "FontDeath":
                             case "Default1Entry":
                             case "Default2Entry":
                             {
@@ -280,6 +347,10 @@ namespace MM2Buddy
                         if (int.TryParse(textBox.Text, out int intValue))
                         {
                             propertyInfo.SetValue(mainWin, intValue);
+                        }
+                        else if (textBoxName.Contains("Color"))
+                        {
+                            propertyInfo.SetValue(mainWin, textBox.Text);
                         }
                     }
                 }

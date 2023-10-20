@@ -62,22 +62,32 @@ namespace MM2Buddy
         public int XPosCode { get; set; }
         public int YPosCode { get; set; }
         public double FSizeCode { get; set; }
+        public string ColorCode { get; set; }
         public string FontCode { get; set; }
         public bool NameSettings { get; set; }
         public int XPosName { get; set; }
         public int YPosName { get; set; }
         public double FSizeName { get; set; }
+        public string ColorName { get; set; }
         public string FontName { get; set; }
         public bool CreatorSettings { get; set; }
         public int XPosCreator { get; set; }
         public int YPosCreator { get; set; }
         public double FSizeCreator { get; set; }
         public string FontCreator { get; set; }
+        public string ColorCreator { get; set; }
         public bool TimeSettings { get; set; }
         public int XPosTime { get; set; }
         public int YPosTime { get; set; }
         public double FSizeTime { get; set; }
+        public string ColorTime { get; set; }
         public string FontTime { get; set; }
+        public bool DeathSettings { get; set; }
+        public int XPosDeath { get; set; }
+        public int YPosDeath { get; set; }
+        public double FSizeDeath { get; set; }
+        public string ColorDeath { get; set; }
+        public string FontDeath { get; set; }
         public string OverlaySelection { get; set; }
         public string Default1Entry { get; set; }
         public string Default2Entry { get; set; }
@@ -616,6 +626,8 @@ namespace MM2Buddy
         public void ClearLevelInfo()
         {
             ResetTimer();
+            ActiveLevel = new Level();
+            ActiveLevel.Active = false;
 
             // TODO remove all remaining level info
             CodeLabel.Content = "";

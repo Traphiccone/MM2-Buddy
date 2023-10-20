@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="CollapseIcon.png" />
+    <None Remove="ColorWheelIcon.png" />
     <None Remove="Default1Filler.png" />
     <None Remove="LaunchScreen.png" />
     <None Remove="Logo.png" />
@@ -36,6 +37,7 @@
 
   <ItemGroup>
     <Resource Include="CollapseIcon.png" />
+    <Resource Include="ColorWheelIcon.png" />
     <Resource Include="Default1Filler.png" />
     <Resource Include="LaunchScreen.png" />
     <Resource Include="Logo.png" />

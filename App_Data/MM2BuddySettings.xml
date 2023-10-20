@@ -16,6 +16,7 @@
 		<add key="XPosCode" value="Value9" />
 		<add key="YPosCode" value="Value10" />
 		<add key="FSizeCode" value="Value11" />
+		<add key="ColorCode" value="Value32" />
 		<add key="FontCode" value="Value12" />
 
 		<!-- Name Column settings -->
@@ -23,6 +24,7 @@
 		<add key="XPosName" value="Value14" />
 		<add key="YPosName" value="Value15" />
 		<add key="FSizeName" value="Value16" />
+		<add key="ColorName" value="Value33" />
 		<add key="FontName" value="Value17" />
 
 		<!-- Creator Column settings -->
@@ -30,6 +32,7 @@
 		<add key="XPosCreator" value="Value19" />
 		<add key="YPosCreator" value="Value20" />
 		<add key="FSizeCreator" value="Value21" />
+		<add key="ColorCreator" value="Value34" />
 		<add key="FontCreator" value="Value22" />
 
 		<!-- Time Column settings -->
@@ -37,13 +40,22 @@
 		<add key="XPosTime" value="Value24" />
 		<add key="YPosTime" value="Value25" />
 		<add key="FSizeTime" value="Value26" />
+		<add key="ColorTime" value="Value35" />
 		<add key="FontTime" value="Value27" />
+
+		<!-- Death Column settings -->
+		<add key="DeathSettings" value="Value36" />
+		<add key="XPosDeath" value="Value37" />
+		<add key="YPosDeath" value="Value38" />
+		<add key="FSizeDeath" value="Value39" />
+		<add key="ColorDeath" value="Value40" />
+		<add key="FontDeath" value="Value41" />
 
 		<add key="OverlaySelection" value="Value28" />
 		<add key="Default1Entry" value="Value29" />
 		<add key="Default2Entry" value="Value30" />
 
-		<add key="PlayerVisible" value="Value7" />
+		<add key="PlayerVisible" value="Value31" />
 
 
 		<CodeSettings>false</CodeSettings>

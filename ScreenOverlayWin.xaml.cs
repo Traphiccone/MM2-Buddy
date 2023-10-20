@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using OpenCvSharp.Internal;
 using OfficeOpenXml.Drawing;
+using Tesseract;
 //using Emgu.CV;
 //using OpenCvSharp.Extensions;
 
@@ -146,6 +147,7 @@ namespace MM2Buddy
                 nameBlock.Opacity = currentOpacity;
                 creatorBlock.Opacity = currentOpacity;
                 timeBlock.Opacity = currentOpacity;
+                deathBlock.Opacity = currentOpacity;
             }
             else
             {
@@ -166,33 +168,52 @@ namespace MM2Buddy
                 if (lvl.Active)
                 {
                     if (mWin.CodeSettings)
-                        ProcessTextBlock(codeBlock, lvl.Code, mWin.FSizeCode, mWin.FontCode, mWin.XPosCode, mWin.YPosCode);
+                        ProcessTextBlock(codeBlock, lvl.Code, mWin.FSizeCode, mWin.FontCode, mWin.XPosCode, mWin.YPosCode, mWin.ColorCode);
                     else
                         codeBlock.Visibility = Visibility.Hidden;
 
                     if (mWin.NameSettings)
-                        ProcessTextBlock(nameBlock, lvl.Name, mWin.FSizeName, mWin.FontName, mWin.XPosName, mWin.YPosName);
+                        ProcessTextBlock(nameBlock, lvl.Name, mWin.FSizeName, mWin.FontName, mWin.XPosName, mWin.YPosName, mWin.ColorName);
                     else
                         nameBlock.Visibility = Visibility.Hidden;
 
                     if (mWin.CreatorSettings)
-                        ProcessTextBlock(creatorBlock, lvl.Creator, mWin.FSizeCreator, mWin.FontCreator, mWin.XPosCreator, mWin.YPosCreator);
+                        ProcessTextBlock(creatorBlock, lvl.Creator, mWin.FSizeCreator, mWin.FontCreator, mWin.XPosCreator, mWin.YPosCreator, mWin.ColorCreator);
                     else
                         creatorBlock.Visibility = Visibility.Hidden;
 
                     if (mWin.TimeSettings)
-                        ProcessTextBlock(timeBlock, mWin.elapsedTime.ToString(@"hh\:mm\:ss"), mWin.FSizeTime, mWin.FontTime, mWin.XPosTime, mWin.YPosTime);
+                    {
+                        // Change time format depending on if time elapsed an hour or not
+                        string timeStr = mWin.elapsedTime > TimeSpan.FromHours(1) ? mWin.elapsedTime.ToString(@"hh\:mm\:ss") : mWin.elapsedTime.ToString(@"mm\:ss");
+
+                        ProcessTextBlock(timeBlock, timeStr, mWin.FSizeTime, mWin.FontTime, mWin.XPosTime, mWin.YPosTime, mWin.ColorTime);
+                    }
                     else
                         timeBlock.Visibility = Visibility.Hidden;
 
-                    // Create a DispatcherTimer for fading in
-                    //fadeTimer = new DispatcherTimer
-                    //{
-                    //    Interval = TimeSpan.FromMilliseconds(10)
-                    //};
-                    //fadeTimer.Tick += FadeInText;
-                    //fadeTimer.Start();
+                    if (mWin.DeathSettings)
+                        ProcessTextBlock(deathBlock, lvl.DeathCnt.ToString(), mWin.FSizeDeath, mWin.FontDeath, mWin.XPosDeath, mWin.YPosDeath, mWin.ColorDeath);
+                    else
+                        deathBlock.Visibility = Visibility.Hidden;
+
+                    //Create a DispatcherTimer for fading in
+
+                   fadeTimer = new DispatcherTimer
+                   {
+                       Interval = TimeSpan.FromMilliseconds(10)
+                   };
+                   fadeTimer.Tick += FadeInText;
+                   fadeTimer.Start();
                     // Start a timer to update the text alpha value
+                }
+                else
+                {
+                    codeBlock.Visibility = Visibility.Hidden;
+                    nameBlock.Visibility = Visibility.Hidden;
+                    creatorBlock.Visibility = Visibility.Hidden;
+                    timeBlock.Visibility = Visibility.Hidden;
+                    deathBlock.Visibility = Visibility.Hidden;
                 }
             }
 
@@ -208,7 +229,7 @@ namespace MM2Buddy
         /// <param name="font">Font code for the text</param>
         /// <param name="x">X position on screen</param>
         /// <param name="y"> position on screen</param>
-        private void ProcessTextBlock(TextBlock textBlock, string text, double fontSize, string font, int x, int y)
+        private void ProcessTextBlock(TextBlock textBlock, string text, double fontSize, string font, int x, int y, string hexColor)
         {
             MainWindow mWin = (MainWindow)Application.Current.MainWindow;
             textBlock.Visibility = Visibility.Visible;
@@ -216,10 +237,19 @@ namespace MM2Buddy
             textBlock.Text = text;
             textBlock.FontSize = fontSize > 0 ? fontSize : 1;
 
-            // Convert the font type string to a FontFamily
-            System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily(font);
-            // Apply the FontFamily to the TextBlock
-            textBlock.FontFamily = fontFamily;
+            if (font != null)
+            {
+                // Convert the font type string to a FontFamily
+                System.Windows.Media.FontFamily fontFamily = new System.Windows.Media.FontFamily(font);
+                // Apply the FontFamily to the TextBlock
+                textBlock.FontFamily = fontFamily;
+            }
+            if (hexColor != null && hexColor.Length == 7)
+            {
+                // TODO check that hexColor is legit
+                SolidColorBrush brush = (SolidColorBrush)(new BrushConverter().ConvertFrom(hexColor));
+                textBlock.Foreground = brush;
+            }
 
             MoveTextBlock(textBlock, x, y);
         }
