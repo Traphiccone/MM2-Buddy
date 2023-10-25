@@ -250,8 +250,11 @@ namespace MM2Buddy
         public static void GrabTranslation()
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
+            string transStr = mainWin.NameLabel.Content.ToString() + "474" +
+                mainWin.DescLabel.Content.ToString();
 
-            Task<string> task = TranslateJapaneseToEnglish(mainWin.ActiveLevel.Name);
+            //Task<string> task = TranslateJapaneseToEnglish(mainWin.ActiveLevel.Name);
+            Task<string> task = TranslateAutoToEnglish(transStr);
             mainWin.ActiveLevel.TransTask = task;
             Utils.Log("Ping to Google Translate Attempt", true);
             //task.Wait();
@@ -304,6 +307,7 @@ namespace MM2Buddy
 
             //// Do something with the data, such as display it in a UI control
             ///
+            mainWin.NameLabel.Content = data[0];
             mainWin.DescLabel.Content = data[1];
             mainWin.Hearts.Content = data[3];
             mainWin.Boos.Content = data[4];
@@ -315,6 +319,22 @@ namespace MM2Buddy
             if (mainWin.CreatorLabel.Content == "")
             {
                 mainWin.CreatorLabel.Content = data[8];
+            }
+
+
+
+            //
+            // Send the new level name & the description to google translate
+            //
+
+            if (!mainWin.ActiveLevel.TransTaskSent)
+            {
+                //if (Utils.ContainsJapanChar(mainWin.ActiveLevel.Name))
+                //{
+                    Utils.GrabTranslation();
+                    mainWin.ActiveLevel.GoogleTransSuccess = 2;
+                    mainWin.ActiveLevel.TransTaskSent = true;
+                //}
             }
 
             //foreach (string str in data)
@@ -370,12 +390,16 @@ namespace MM2Buddy
                     //mainWin.HBGrid.Visibility = Visibility.Hidden;
                     Utils.Log("Google Translate ping failed", true);
                     mainWin.ActiveLevel.GoogleTransSuccess = 4;
-                    mainWin.TransNameLabel.Content = "<request failed>";
+                    mainWin.TransNameLabel.Text = "<request failed>";
                     mainWin.ActiveLevel.TransTask = null;
                     return;
                 }
-                mainWin.ActiveLevel.Translation = json;
-                mainWin.TransNameLabel.Content = json;
+                string transStr = json.Replace("474", "\nDesc: ");
+                transStr = "Name:  " + transStr;
+
+
+                mainWin.ActiveLevel.Translation = transStr;
+                mainWin.TransNameLabel.Text = transStr;
                 mainWin.ActiveLevel.GoogleTransSuccess = 3;
                 Utils.Log("Google Translate ping success", true);
                 if (mainWin.ActiveLevel.Active)
@@ -384,7 +408,7 @@ namespace MM2Buddy
             catch (Exception ex)
             {
                 Utils.Log(ex.ToString());
-                mainWin.TransNameLabel.Content = "<request failed>";
+                mainWin.TransNameLabel.Text = "<request failed>";
                 mainWin.ActiveLevel.GoogleTransSuccess = 4;
                 mainWin.ActiveLevel.TransTask = null;
                 return;
@@ -425,7 +449,7 @@ namespace MM2Buddy
 
             TranslateTextRequest request = new TranslateTextRequest
             {
-                Contents = { japaneseText },
+                Contents = { japaneseText }, //auto?
                 TargetLanguageCode = "en",
                 Parent = new LocationName("quixotic-tesla-186114", "us-central1").ToString()
             };
@@ -448,6 +472,25 @@ namespace MM2Buddy
 
             // Check if the input string contains any Japanese characters
             return regex.IsMatch(input);
+        }
+
+        public static async Task<string> TranslateAutoToEnglish(string text)
+        {
+            string filePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "quixotic-tesla-186114-b70a8508470d.json");
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", filePath);
+
+            TranslationServiceClient translationClient = await TranslationServiceClient.CreateAsync();
+
+            TranslateTextRequest request = new TranslateTextRequest
+            {
+                Contents = { text }, 
+                TargetLanguageCode = "en", //auto?
+                Parent = new LocationName("quixotic-tesla-186114", "us-central1").ToString()
+            };
+            TranslateTextResponse response = await translationClient.TranslateTextAsync(request);
+
+            string englishTranslation = response.Translations[0].TranslatedText;
+            return englishTranslation;
         }
 
         bool IsExcelFileOpen()

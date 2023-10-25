@@ -633,7 +633,7 @@ namespace MM2Buddy
             CodeLabel.Content = "";
             this.NameLabel.Content = "";
             this.CreatorLabel.Content = "";
-            this.TransNameLabel.Content = "";
+            this.TransNameLabel.Text = "";
             this.DescLabel.Content = "";
             this.Hearts.Content = "";
             this.Boos.Content = "";

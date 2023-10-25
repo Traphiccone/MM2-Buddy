@@ -1242,7 +1242,11 @@ namespace MM2Buddy
                 Utils.Log("Code: " + mainWin.ActiveLevel.Code);
                 Utils.Log("Creator: " + mainWin.ActiveLevel.Creator);
             }
-            if (!mainWin.ActiveLevel.TransTaskSent && state != ScreenState.NoScreen)
+            //
+            // Experimenting with Google Auto Translate instead of strictly Japanese
+            // Might go back if prices aren't practical
+            //
+            /*if (!mainWin.ActiveLevel.TransTaskSent && state != ScreenState.NoScreen)
             {
                 if (Utils.ContainsJapanChar(mainWin.ActiveLevel.Name))
                 {
@@ -1250,7 +1254,7 @@ namespace MM2Buddy
                     mainWin.ActiveLevel.GoogleTransSuccess = 2;
                     mainWin.ActiveLevel.TransTaskSent = true;
                 }
-            }
+            }*/
             if (mainWin.ActiveLevel.InfoTask != null && mainWin.ActiveLevel.InfoTask.IsCompleted && mainWin.ActiveLevel.InfoTask.IsCanceled == false)
             {
                 //Set new info accordingly
