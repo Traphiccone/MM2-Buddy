@@ -18,6 +18,7 @@ using System.IO;
 using System.Configuration;
 using System.Windows.Controls.Primitives;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
 
 namespace MM2Buddy
 {
@@ -398,6 +399,16 @@ namespace MM2Buddy
         {
             // Load user settings if available for the overlay video
             LoadSettings();
+        }
+
+        private void CloseOverlaySettings(object sender, CancelEventArgs e)
+        {
+            MainWindow mWin = (MainWindow)Application.Current.MainWindow;
+            if (!mWin.isClosing)
+            {
+                e.Cancel = true;
+                Visibility = Visibility.Hidden;
+            }
         }
     }
 }

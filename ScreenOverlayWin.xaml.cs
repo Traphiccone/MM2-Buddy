@@ -67,6 +67,7 @@ namespace MM2Buddy
 
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+            this.Closed += ScreenOverlayWinClosed;
             CompositionTarget.Rendering += CompositionTarget_Rendering;
 
             //// Create a blank window
@@ -158,6 +159,12 @@ namespace MM2Buddy
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
             MainWindow mWin = (MainWindow)Application.Current.MainWindow;
+            if (mWin == null)
+            {
+                this.Close(); 
+                return;
+            }
+
             Level lvl = mWin.ActiveLevel;
 
             if (mWin.OverlaySelection == "Custom")
@@ -258,6 +265,12 @@ namespace MM2Buddy
         {
             // Set the Margin of the TextBlock to position it
             textBlock.Margin = new Thickness(x, y, 0, 0);
+        }
+
+        private void ScreenOverlayWinClosed(object sender, EventArgs e)
+        {
+            // Unsubscribe from the CompositionTarget_Rendering event
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
         }
         //private void UpdateImage()
         //{

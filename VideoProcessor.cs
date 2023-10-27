@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Data;
+using System.Threading;
 //using OpenCvSharpExtern;
 
 namespace MM2Buddy
@@ -83,10 +84,10 @@ namespace MM2Buddy
             // loop through the frames in the camera feed
             int loopCnt = 0;
 
-            while (mainWin.stopBtn.IsEnabled)
+            while (mainWin.stopBtn.IsEnabled && !mainWin.isClosing)
             {
-                //loopCnt++;
-                //Utils.Log("Loop Count: " + loopCnt.ToString());
+                loopCnt++;
+                Utils.Log("Loop Count: " + loopCnt.ToString());
 
                 // read a new frame from the camera feed
                 OpenCvSharp.Mat frame = new OpenCvSharp.Mat();
@@ -173,7 +174,7 @@ namespace MM2Buddy
                 //Cv2.ImShow("Large View", frame);
 
                 //MessageBox.Show(frame.Width + "    " + frame.Height);
-
+                Thread.Sleep(100);
                 // wait for a key press (100ms)
                 int key = Cv2.WaitKey(100);
 

@@ -28,6 +28,7 @@ using OfficeOpenXml;
 using System.Timers;
 using System.Windows.Threading;
 using System.Windows.Media.Media3D;
+using System.Windows.Controls.Primitives;
 
 namespace MM2Buddy
 {
@@ -94,7 +95,7 @@ namespace MM2Buddy
 
 
         private LogWindow logWindow;
-        private readonly ScreenOverlayWin screenOverlayWin;
+        private ScreenOverlayWin screenOverlayWin;
         private VirtualCameraOld2 virtualCam;
 
         public TimeSpan elapsedTime;
@@ -102,6 +103,7 @@ namespace MM2Buddy
         private bool isTimerRunning;
 
 
+        public bool isClosing { get; set; } = false;
         private bool isResizing = false;
 
         private void OnPropertyChanged(string propertyName)
@@ -409,22 +411,22 @@ namespace MM2Buddy
 
         private void startBtn_Click(object sender, RoutedEventArgs e)
         {
+            Utils.Log("Main Start", true);
             this.IsRunning = true;
             this.startBtn.IsEnabled = false;
             this.stopBtn.IsEnabled = true;
             //string filePath = this.LogLocation;
 
             VideoProcessor.Process();
-            Utils.Log("Main Start", true);
         }
 
         private void stopBtn_Click(object sender, RoutedEventArgs e)
         {
+            Utils.Log("Main Stop", true);
             this.IsRunning = false;
             this.startBtn.IsEnabled = true;
             this.stopBtn.IsEnabled = false;
             ResetTimer();
-            Utils.Log("Main Stop", true);
             //this.videoPort.Source = "/LaunchScreen.png";
         }
 
@@ -616,8 +618,17 @@ namespace MM2Buddy
             //var virtualCam = new VirtualCamera();
             //virtualCam.StartAnimation();
 
-            var scnOverlayWin = new ScreenOverlayWin();
-            scnOverlayWin.Show();
+            if (screenOverlayWin == null)
+            {
+                screenOverlayWin = new ScreenOverlayWin();
+                screenOverlayWin.Show();
+            }
+            else
+            {
+                screenOverlayWin.Visibility = Visibility.Visible;
+                screenOverlayWin.Activate();
+                screenOverlayWin.Focus();
+            }
         }
 
         /// <summary>
@@ -648,8 +659,17 @@ namespace MM2Buddy
         /// </summary>
         private void StreamSettings_Click(object sender, RoutedEventArgs e)
         {
-            screenOverlaySettingsWin = new ScreenOverlaySettings();
-            screenOverlaySettingsWin.Show();
+            if (screenOverlaySettingsWin == null) 
+            { 
+                screenOverlaySettingsWin = new ScreenOverlaySettings();
+                screenOverlaySettingsWin.Show();
+            }
+            else
+            {
+                screenOverlaySettingsWin.Visibility = Visibility.Visible;
+                screenOverlaySettingsWin.Activate();
+                screenOverlaySettingsWin.Focus();
+            }
         }
 
         /// <summary>
@@ -679,6 +699,18 @@ namespace MM2Buddy
             AddUpdateAppSettings("WinWidth", ActualWidth.ToString());
             AddUpdateAppSettings("WinHeight", ActualHeight.ToString());
             UpdateLayout();
+        }
+
+        private void MainWindowClosing(object sender, CancelEventArgs e)
+        {
+            isClosing = true;
+            stopBtn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+
+            if (screenOverlaySettingsWin != null)
+                screenOverlaySettingsWin.Close();
+
+            if (screenOverlayWin != null)
+                screenOverlayWin.Close();
         }
     }
 }
