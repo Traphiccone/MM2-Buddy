@@ -199,6 +199,11 @@ namespace MM2Buddy
             var ocrtext = string.Empty;
             //var engine = new TesseractEngine(@"freeOCR/tessdata", "eng", EngineMode.Default);
             //using var engine = new Engine(@"C:\freeOCR\tessdata", Language.English, TesseractOCR.Enums.EngineMode.Default);
+
+            //
+            // Use a trained OCR dataset for the code ID which is the most important piece of info.
+            // if not the main code, use a standard OCR dataset
+            //
             if (type == "code")
             {
                 //
@@ -243,6 +248,10 @@ namespace MM2Buddy
         //static public void CheckScreenState(OpenCvSharp.Mat frame)
         static public ScreenState CheckScreenState(OpenCvSharp.Mat frame, BitmapSource bmap)
         {
+            //
+            // When checking the state of the game, compare 4-6 known pixels against their expected value,
+            // if the average combined values match by above 97%, that that screen state is the new state
+            //
             var perMatchAllowed = 97; //97
 
             var lvlStartScreen = false;

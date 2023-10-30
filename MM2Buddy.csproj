@@ -7,6 +7,8 @@
     <UseWPF>true</UseWPF>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Platforms>AnyCPU;x86</Platforms>
+    <Version>1.0.0-beta1</Version>
+    <FileVersion>1.0.0-beta1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +18,7 @@
     <None Remove="LaunchScreen.png" />
     <None Remove="Logo.png" />
     <None Remove="MM2GameStartScreen.png" />
+    <None Remove="MM2LogTemplate.xlsx" />
     <None Remove="starship_retro_cropped.jpg" />
   </ItemGroup>
 
@@ -36,11 +39,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="CollapseIcon.png" />
+    <Content Include="CollapseIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MM2LogTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="ColorWheelIcon.png" />
     <Resource Include="Default1Filler.png" />
-    <Resource Include="LaunchScreen.png" />
-    <Resource Include="Logo.png" />
+    <Content Include="LaunchScreen.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="MM2GameStartScreen.png" />
     <Resource Include="starship_retro_cropped.jpg" />
   </ItemGroup>

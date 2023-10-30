@@ -53,7 +53,7 @@
                 <Rectangle Name="colorPreview" Width="30" Height="30" Fill="Transparent" HorizontalAlignment="Right" />
             </Grid>-->
             <TextBox x:Name="ColorCode" Grid.Column="1" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+                  SelectionBrush="#000078D7" TextChanged="ValueChange" ToolTip="Pick a color between #000000 &amp; #FFFFFF  -&gt; Google 'Color Picker' for hex code help"/>
             <ComboBox x:Name="FontCode" Grid.Column="1" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
@@ -69,7 +69,7 @@
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
             <TextBox x:Name="ColorName" Grid.Column="2" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+                  SelectionBrush="#000078D7" TextChanged="ValueChange" ToolTip="Pick a color between #000000 &amp; #FFFFFF  -&gt; Google 'Color Picker' for hex code help"/>
             <ComboBox x:Name="FontName" Grid.Column="2" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
@@ -85,7 +85,7 @@
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
             <TextBox x:Name="ColorCreator" Grid.Column="3" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+                  SelectionBrush="#000078D7" TextChanged="ValueChange" ToolTip="Pick a color between #000000 &amp; #FFFFFF  -&gt; Google 'Color Picker' for hex code help"/>
             <ComboBox x:Name="FontCreator" Grid.Column="3" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
@@ -101,7 +101,7 @@
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
             <TextBox x:Name="ColorTime" Grid.Column="4" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+                  SelectionBrush="#000078D7" TextChanged="ValueChange" ToolTip="Pick a color between #000000 &amp; #FFFFFF  -&gt; Google 'Color Picker' for hex code help"/>
             <ComboBox x:Name="FontTime" Grid.Column="4" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
@@ -117,7 +117,7 @@
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange"/>
             <TextBox x:Name="ColorDeath" Grid.Column="5" Grid.Row="4"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                  SelectionBrush="#000078D7" TextChanged="ValueChange"/>
+                  SelectionBrush="#000078D7" TextChanged="ValueChange" ToolTip="Pick a color between #000000 &amp; #FFFFFF  -&gt; Google 'Color Picker' for hex code help"/>
             <ComboBox x:Name="FontDeath" Grid.Column="5" Grid.Row="5" Width="200" Height="30" Background="Black" SelectionChanged="ValueChange">
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
@@ -167,8 +167,8 @@
             </ComboBox>
         </Grid>
         <ComboBox x:Name="OverlaySelection" SelectionChanged="ValueChange" SelectedValuePath="Content" HorizontalAlignment="Left" Margin="41,71,0,0" VerticalAlignment="Top" Width="300" HorizontalContentAlignment="Center">
-            <ComboBoxItem >Default 1</ComboBoxItem>
-            <ComboBoxItem >Default 2</ComboBoxItem>
+            <ComboBoxItem IsEnabled="False" >Default 1 (Coming Soon)</ComboBoxItem>
+            <ComboBoxItem IsEnabled="False" >Default 2 (Coming Soon)</ComboBoxItem>
             <ComboBoxItem >Custom</ComboBoxItem>
         </ComboBox>
         <Label Content="Profile:" HorizontalAlignment="Left" Margin="41,40,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>

@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
-        Title="Mario Maker 2 Buddy" MinWidth="720" MinHeight="490" Margin="0,0,-5,0" Icon="/Logo.png" VerticalContentAlignment="Stretch" 
+        Title="Mario Maker 2 Buddy" MinWidth="720" MinHeight="490" Margin="0,0,-5,0" 
+        Icon="/Logo.png" 
+        VerticalContentAlignment="Stretch" 
         Closing="MainWindowClosing"
         VerticalAlignment="Top" HorizontalAlignment="Left" Width="730" Height="700">
     <Window.Background>
