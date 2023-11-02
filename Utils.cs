@@ -18,6 +18,7 @@ using Google.Cloud.Translate.V3;
 using Grpc.Core;
 using Google.Api.Gax.ResourceNames;
 using System.Text.RegularExpressions;
+using System.Configuration;
 //using System.Management;
 
 namespace MM2Buddy
@@ -185,10 +186,8 @@ namespace MM2Buddy
                     if (worksheet.Cells[i, 1].Value != null && worksheet.Cells[i, 1].Value.ToString() == lvl.Code)
                     {
                         //
-                        // Found row.  Update info
+                        // Found row.  Update info/death count
                         //
-
-                        // Update death count
                         lvl.DeathCnt = int.Parse(worksheet.Cells[i, 5].Value.ToString());
                         mainWin.Deaths.Content = lvl.DeathCnt;
                         //// Update LastPlayed
@@ -519,6 +518,37 @@ namespace MM2Buddy
                 // Handle other exceptions
                 Console.WriteLine("An error occurred: " + ex.Message);
                 return true;
+            }
+        }
+
+        public static void SaveSetting(string key, string value)
+        {
+            try
+            {
+                //var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                //var settings = configFile.AppSettings.Settings;
+
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string configFile = System.IO.Path.Combine(appDataFolder, "MM2Buddy", "MM2BuddySettings.config");
+                var configFileMap = new ExeConfigurationFileMap { ExeConfigFilename = configFile };
+                var customConfig = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.None);
+
+                var settings = customConfig.AppSettings.Settings;
+
+                if (settings[key] == null)
+                {
+                    settings.Add(key, value);
+                }
+                else
+                {
+                    settings[key].Value = value;
+                }
+                customConfig.Save(ConfigurationSaveMode.Modified);
+                ConfigurationManager.RefreshSection(customConfig.AppSettings.SectionInformation.Name);
+            }
+            catch (ConfigurationErrorsException)
+            {
+                MessageBox.Show("Error writing app settings");
             }
         }
 

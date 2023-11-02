@@ -23,52 +23,43 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Data;
 using System.Threading;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media.TextFormatting;
+using OpenCvSharp.WpfExtensions;
 //using OpenCvSharpExtern;
 
 namespace MM2Buddy
 {
     class VideoProcessor
     {
+        /// <summary>
+        /// Main function to analyze video feed and extract game data
+        /// </summary>
         public static void Process(/*string[] args*/)
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
 
             var ms = new MemoryStream();
-            int idx = mainWin.DeviceIdx;
+            int idx = mainWin.DeviceIdx ?? 0;
             int frameWidth = 1920;
             int frameHeight = 1080;
 
-            //var devices = VideoCapture.GetDevices();
-            //foreach (var device in devices)
-            //{
-            //}
-
-            // create a new VideoCapture object with camera index 0 (default camera)
+            var capture = new OpenCvSharp.VideoCapture(idx, VideoCaptureAPIs.DSHOW);
 
 
-            //var deviceList = Utils.GetAllConnectedCameras();
-
-            //foreach (KeyValuePair<int, string> entry in deviceList)
-            //{
-            //    //deviceCombo.Items.Add(entry.Value);
-            //    MessageBox.Show($"Device: {entry.Value}, Index: {entry.Key}");
-
-            //}
-
-            //
-            //
-            //
-            //OpenCvSharp.VideoCapture capture = new OpenCvSharp.VideoCapture(idx);
-            var capture = new OpenCvSharp.VideoCapture(0, VideoCaptureAPIs.DSHOW);
-
-            //MessageBox.Show("Helppppppppppp");
-            //MessageBox.Show(capture.FrameHeight.ToString());
-            //capture.
             capture.Set(VideoCaptureProperties.FrameWidth, frameWidth);
             capture.Set(VideoCaptureProperties.FrameHeight, frameHeight);
 
-            //MessageBox.Show("Helppppppppppp2");
-
+            int width = (int)capture.FrameWidth;
+            int height = (int)capture.FrameHeight;
+            //MessageBox.Show(width.ToString() + "-" + height.ToString());
+            if (width != 1920 && height != 1080)
+            {
+                CustomMessageBox customMessageBox = new CustomMessageBox("Only 1080p Feed is Supported at this time. \n 720p support coming soon.");
+                customMessageBox.Show();
+                mainWin.stopBtn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+                return;
+            }
 
             // check if the VideoCapture object was successfully created
             if (!capture.IsOpened())
@@ -78,16 +69,13 @@ namespace MM2Buddy
                 return;
             }
 
-            // create a new window to display the camera feed
-            //Cv2.NamedWindow("Webcam");
-
             // loop through the frames in the camera feed
-            int loopCnt = 0;
+            //int loopCnt = 0;
 
             while (mainWin.stopBtn.IsEnabled && !mainWin.isClosing)
             {
-                loopCnt++;
-                Utils.Log("Loop Count: " + loopCnt.ToString());
+                //loopCnt++;
+                //Utils.Log("Loop Count: " + loopCnt.ToString());
 
                 // read a new frame from the camera feed
                 OpenCvSharp.Mat frame = new OpenCvSharp.Mat();
@@ -189,11 +177,15 @@ namespace MM2Buddy
             capture.Release();
             Cv2.DestroyAllWindows();
         }
-        //public string GetOCRText(BitmapSource bmap)
+
+        /// <summary>
+        /// Takes a OpenCV Mat and uses OCR to return a string of text
+        /// </summary>
+        /// <param name="frame">Mat frame to be analyzed</param>
+        /// <param name="type">Specify type of text to help focus the OCR</param>
         static public string GetOCRText(OpenCvSharp.Mat frame, string type = "text")
         {
             //var test = new TesseractEngine();
-            using var img = TesseractOCR.Pix.Image.LoadFromMemory(frame.ToBytes());
             //Pix img = TesseractOCR.Pix.
             //using var img = TesseractOCR.Pix.Image.
             var ocrtext = string.Empty;
@@ -206,24 +198,39 @@ namespace MM2Buddy
             //
             if (type == "code")
             {
+                List<OpenCvSharp.Mat> sepChars = SeparateCharacters(frame);
                 //
                 // For the MM2 code, use specially trained tessdata for conversion
                 //
-                using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata\train", Language.English, TesseractOCR.Enums.EngineMode.Default))
-                {
-                    engine.SetVariable("tessedit_char_whitelist", "0123456789QWERTYUPASDFGHJKLXCVBNM-");
+                // EDIT: 20231101 After extensive testing, Tesseract still mistakes '5's for 'S's and 'B's for '8's
+                // Fixed this by separating the image into separate character mats and then running tesseract on 
+                // each individual character.  This is only done for the 9 character level code.
+                //
+                //using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata\train", Language.English, TesseractOCR.Enums.EngineMode.Default))
 
-                    using (img)
+                foreach (OpenCvSharp.Mat sepChar in sepChars)
+                {
+                    using var img = TesseractOCR.Pix.Image.LoadFromMemory(sepChar.ToBytes());
+
+                    using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata\train", Language.English, TesseractOCR.Enums.EngineMode.Default))
                     {
-                        using (var page = engine.Process(img))
+                        engine.SetVariable("tessedit_char_whitelist", "0123456789QWERTYUPASDFGHJKLXCVBNM-");
+
+                        //Cv2.ImShow("test", frame);
+                        using (img)
                         {
-                            ocrtext = page.Text;
+                            using (var page = engine.Process(img, TesseractOCR.Enums.PageSegMode.SingleChar))
+                            {
+                                ocrtext += page.Text;
+                            }
                         }
                     }
                 }
             }
             else
             {
+                using var img = TesseractOCR.Pix.Image.LoadFromMemory(frame.ToBytes());
+
                 using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng+jpn", TesseractOCR.Enums.EngineMode.Default))
                 {
                     if (type == "num")
@@ -245,14 +252,69 @@ namespace MM2Buddy
 
             return ocrtext;
         }
-        //static public void CheckScreenState(OpenCvSharp.Mat frame)
+
+        /// <summary>
+        /// Separates a B&W Mat into individual mats based on the location of a black character
+        /// </summary>
+        /// <param name="inputImage">The image Mat to be seperated</param>
+        static public List<OpenCvSharp.Mat> SeparateCharacters(OpenCvSharp.Mat inputImage)
+        {
+            List<OpenCvSharp.Mat> croppedMats = new List<OpenCvSharp.Mat>();
+
+            using (inputImage)
+            {
+                bool inObject = false;
+                int startX = -1;
+
+                for (int x = 0; x < inputImage.Cols; x++)
+                {
+                    OpenCvSharp.Mat col = inputImage.Col(x);
+                    Scalar mean = Cv2.Mean(col);
+
+                    if (mean.Val0 < 255)
+                    {
+                        if (!inObject)
+                        {
+                            startX = x;
+                            inObject = true;
+                        }
+                    }
+                    else
+                    {
+                        if (inObject)
+                        {
+                            int endX = x;
+                            inObject = false;
+
+                            if (startX != -1)
+                            {
+                                OpenCvSharp.Rect roi = new OpenCvSharp.Rect(startX, 0, endX - startX, inputImage.Rows);
+                                OpenCvSharp.Mat cropped = new OpenCvSharp.Mat(inputImage, roi);
+                                croppedMats.Add(cropped);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return croppedMats;
+        }
+
+        /// <summary>
+        /// Given a frame, checks several pixels to determine if game is in a specific state
+        /// </summary>
+        /// <param name="frame">Source Mat image frame</param>
+        /// <param name="bmap">BitmapSource image</param>
         static public ScreenState CheckScreenState(OpenCvSharp.Mat frame, BitmapSource bmap)
         {
             //
             // When checking the state of the game, compare 4-6 known pixels against their expected value,
-            // if the average combined values match by above 97%, that that screen state is the new state
+            // if the average combined values match by above 97%, that screen state is the new state
             //
             var perMatchAllowed = 97; //97
+
+            MainWindow mWin = (MainWindow)Application.Current.MainWindow;
+
 
             var lvlStartScreen = false;
             var lvlPlayedScreen = false;
@@ -821,7 +883,10 @@ namespace MM2Buddy
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.ToString());
+                    CustomMessageBox customMessageBox = new CustomMessageBox(ex.ToString());
+                    customMessageBox.Show();
+                    Utils.Log(ex.ToString());
+                    mWin.stopBtn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
                     return false;
                 }
 
@@ -918,6 +983,13 @@ namespace MM2Buddy
             return ScreenState.NoScreen;
 
         }
+
+        /// <summary>
+        /// Generates a PixelColorCheck object which can be easily compared with another.
+        /// </summary>
+        /// <param name="bmap">BitmapSource image</param>
+        /// <param name="x">X coordinate in image</param>
+        /// <param name="y">Y coordinate in image</param>
         static public PixelColorCheck GenerateCompPixel(BitmapSource bmap, int x, int y)
         {
             byte[] pixel = new byte[3];
@@ -925,10 +997,14 @@ namespace MM2Buddy
             PixelColorCheck pC = new PixelColorCheck(x, y, pixel[2], pixel[1], pixel[0]);
             return pC;
         }
-        //
-        // Break down Mat image based on the screen state, run sections thru OCR
-        // then set all level values
-        //
+
+        /// <summary>
+        /// Breaks down Mat image based on the screen state, run sections through OCR
+        /// then set all level values
+        /// </summary>
+        /// <param name="frame">Source Mat image frame</param>
+        /// <param name="state">Detected State of the game/frame</param>
+        /// <param name="bmap">BitmapSource image</param>
         static public void BreakDownImage(OpenCvSharp.Mat frame, ScreenState state, BitmapSource bmap)
         {
             string lvlCode, lvlName, lvlCreator = "";
@@ -1279,6 +1355,18 @@ namespace MM2Buddy
                     Utils.HandleTransResponse();
             }
         }
+
+
+        /// <summary>
+        /// Takes a Mat frame and a defined rectangle section, processes/cleans image, sends to
+        /// OCR and returns the processed text
+        /// </summary>
+        /// <param name="frame">Source Mat image frame</param>
+        /// <param name="x">X coordinate start in image</param>
+        /// <param name="y">Y coordinate start in image</param>
+        /// <param name="width">Width of rectangle</param>
+        /// <param name="height">Height of rectangle</param>
+        /// <param name="type">Type of text to be processed, 'code' or other</param>
         static public string SubImageText(OpenCvSharp.Mat frame, int x, int y, int width, int height, string type = "text")
         {
             OpenCvSharp.Rect roi = new OpenCvSharp.Rect(x, y, width, height); // define the rectangle to crop (x, y, width, height)
@@ -1309,21 +1397,6 @@ namespace MM2Buddy
             //MessageBox.Show(codeTxt);
             codeTxt = codeTxt.Replace("\n", "");
             return codeTxt;
-            //}
-            // Apply adaptive thresholding to create a binary image
-            //OpenCvSharp.Mat binaryImage = new OpenCvSharp.Mat();
-            //Cv2.AdaptiveThreshold(clonedMat, binaryImage, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 11, 2);
-
-            //// Increase the contrast using the CLAHE algorithm
-            //OpenCvSharp.Mat contrastImage = new OpenCvSharp.Mat();
-            ////Cv2.CLAHE(binaryImage, 2.0, new OpenCvSharp.Size(width, height), contrastImage);
-            //var clahe = Cv2.CreateCLAHE(clipLimit: 1.0, tileGridSize: new OpenCvSharp.Size(width, height));
-
-            //// Apply the CLAHE algorithm to the grayscale image to increase contrast
-            ////OpenCvSharp.Mat contrastImage = new OpenCvSharp.Mat();
-            //clahe.Apply(binaryImage, contrastImage);
-
-
         }
 
         //
@@ -1331,6 +1404,11 @@ namespace MM2Buddy
         // capturing the country flag.  So detect where the flag and name's respective pixels start
         // Start at 1200, 461 and move leftwards. 430 for Played screen, 408 for search
         //
+        /// <summary>
+        /// Analyzes pixels near Creators name to determine where the country flag is(if any)
+        /// so a cropped subimage can be captured and the OCR doesn't process the flag.
+        /// </summary>
+        /// <param name="bmap">BitmapSource image</param>
         static public PixelColorCheck GetCreatorStart(BitmapSource bmap)
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
@@ -1369,27 +1447,4 @@ namespace MM2Buddy
 
         }
     }
-
-
-
-
-
-
-
-
-    // Set the language to be used for OCR
-    //var engine = new TesseractEngine(@"path/to/tessdata", "eng", EngineMode.Default);
-
-    //engine.SetVariable("tessedit_char_whitelist", "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-    //// Set the whitelist of characters to recognize
-
-    //engine.Process(bmap)
-    //ocrEngine.Init(@"path/to/tessdata", "eng", OcrEngineMode.Default);
-
-    //// Recognize text from the bitmap using Tesseract OCR
-    //ocrEngine.Recognize(bmap);
-
-    //// Get the recognized text
-    //string recognizedText = ocrEngine.GetText();
-    //return recognizedText;
 };

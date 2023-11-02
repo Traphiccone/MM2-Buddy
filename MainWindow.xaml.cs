@@ -39,7 +39,7 @@ namespace MM2Buddy
     {
         private Image _imageControl;
         public string Device { get; set; }
-        public int DeviceIdx { get; set; }
+        public int? DeviceIdx { get; set; }
         public bool LvlViewEndless { get; set; }
         public bool LvlViewReport { get; set; }
         public bool LogAll { get; set; }
@@ -186,12 +186,19 @@ namespace MM2Buddy
         {
             try
             {
-                var appSettings = ConfigurationManager.AppSettings;
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string configFilePath = System.IO.Path.Combine(appDataFolder, "MM2Buddy", "MM2BuddySettings.config");
+                var configFileMap = new ExeConfigurationFileMap { ExeConfigFilename = configFilePath };
+                var customConfig = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.None);
+
+                //var settingValue = customConfig.AppSettings.Settings;
+                //var appSettings = ConfigurationManager.AppSettings;
+                var appSettings = customConfig.AppSettings.Settings;
                 this.IsRunning = false;
 
                 if (appSettings.Count == 0)
                 {
-                    MessageBox.Show("AppSettings is empty.");
+                    //MessageBox.Show("AppSettings is empty.");
                 }
                 else
                 {
@@ -201,58 +208,58 @@ namespace MM2Buddy
                         {
                             case "VidDevice":
                             {
-                                if (deviceCombo.Items.Contains(appSettings[key]))
+                                if (deviceCombo.Items.Contains(appSettings[key].Value))
                                 {
-                                    var idx = deviceCombo.Items.IndexOf(appSettings[key]);
+                                    var idx = deviceCombo.Items.IndexOf(appSettings[key].Value);
                                     deviceCombo.SelectedIndex = idx;
-                                    this.Device = appSettings[key];
+                                    this.Device = appSettings[key].Value.ToString();
                                 }
                                 break;
                             }
                             case "LvlViewEndless":
-                                lvlViewEndlessCB.IsChecked = bool.Parse(appSettings[key]);
-                                this.LvlViewEndless = bool.Parse(appSettings[key]);
+                                lvlViewEndlessCB.IsChecked = bool.Parse(appSettings[key].Value.ToString());
+                                this.LvlViewEndless = bool.Parse(appSettings[key].Value);
                                 break;
                             case "LvlViewReport":
-                                lvlViewReportCB.IsChecked = bool.Parse(appSettings[key]);
-                                this.LvlViewReport = bool.Parse(appSettings[key]);
+                                lvlViewReportCB.IsChecked = bool.Parse(appSettings[key].Value);
+                                this.LvlViewReport = bool.Parse(appSettings[key].Value);
                                 break;
                             case "LogAll":
-                                logAllCB.IsChecked = bool.Parse(appSettings[key]);
-                                this.LogAll = bool.Parse(appSettings[key]);
+                                logAllCB.IsChecked = bool.Parse(appSettings[key].Value);
+                                this.LogAll = bool.Parse(appSettings[key].Value);
                                 break;
                             case "LogLocation":
-                                logLocation.Content = appSettings[key];
-                                this.LogLocation = appSettings[key];
+                                logLocation.Content = appSettings[key].Value;
+                                this.LogLocation = appSettings[key].Value;
                                 break;
                             case "WinWidth":
-                                Width = Double.Parse(appSettings[key]);
+                                Width = Double.Parse(appSettings[key].Value);
                                 break;
                             case "WinHeight":
-                                Height = Double.Parse(appSettings[key]);
+                                Height = Double.Parse(appSettings[key].Value);
                                 break;
                             case "PlayerVisible":
-                                if (bool.Parse(appSettings[key]))
+                                if (bool.Parse(appSettings[key].Value))
                                     videoPort.Visibility = Visibility.Visible;
                                 else
                                     videoPort.Visibility = Visibility.Collapsed;
                                 break;
                             default:
                                 Type mainWindowType = this.GetType();
-                                var propertyInfo = mainWindowType.GetProperty(key); 
+                                var propertyInfo = mainWindowType.GetProperty(key);
                                 if (propertyInfo != null && propertyInfo.CanWrite)
                                 {
-                                    if (int.TryParse(appSettings[key], out int intValue))
+                                    if (int.TryParse(appSettings[key].Value, out int intValue))
                                     {
                                         propertyInfo.SetValue(this, intValue);
                                     }
-                                    else if (bool.TryParse(appSettings[key], out bool boolValue))
+                                    else if (bool.TryParse(appSettings[key].Value, out bool boolValue))
                                     {
                                         propertyInfo.SetValue(this, boolValue);
                                     }
                                     else
                                     {
-                                        propertyInfo.SetValue(this, appSettings[key]);
+                                        propertyInfo.SetValue(this, appSettings[key].Value);
                                     }
                                 }
                                 break;
@@ -285,30 +292,6 @@ namespace MM2Buddy
             }
         }
 
-        static void AddUpdateAppSettings(string key, string value)
-        {
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-                if (settings[key] == null)
-                {
-                    settings.Add(key, value);
-                }
-                else
-                {
-                    settings[key].Value = value;
-                }
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                MessageBox.Show("Error writing app settings");
-            }
-        }
-
-
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -324,8 +307,15 @@ namespace MM2Buddy
                 deviceCombo.Items.Add(entry.Value);
             }
 
-            // TODO load user settings if available
+            // Load user settings if available
             ReadAllSettings();
+
+            // Don't let LogAll CB be active if no Excel location exists
+            if (LogAll && LogLocation == null)
+            {
+                logAllCB.IsChecked = false;
+                Utils.SaveSetting("LogAll", "False");
+            }
 
 
             // For catching user window resize event because wpf doesn't
@@ -369,30 +359,13 @@ namespace MM2Buddy
                     //MessageBox.Show(newWidth.ToString() + ", " + newHeight.ToString());
                     //MessageBox.Show("Resized");
                     //saveUserSettings();
-                    AddUpdateAppSettings("WinWidth", ActualWidth.ToString());
-                    AddUpdateAppSettings("WinHeight", ActualHeight.ToString());
+                    Utils.SaveSetting("WinWidth", ActualWidth.ToString());
+                    Utils.SaveSetting("WinHeight", ActualHeight.ToString());
 
                 }
             }
 
             return IntPtr.Zero;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            //MessageBox.Show("Test");
-            //throw new NotImplementedException();
-
-            //if (!this.hasLoaded)
-            //{
-            //    this.hasLoaded = true;
-            //    DirectoryInfo di = new DirectoryInfo("."); // "." is the current dir we are in
-            //    FileInfo[] files = di.GetFiles();
-            //    List<string> fileNames = new List<string>(files.Length);
-            //    foreach (FileInfo fi in files)
-            //        fileNames.Add(fi.Name);
-            //    this.listBox1.ItemsSource = fileNames;
-            //}
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -411,6 +384,12 @@ namespace MM2Buddy
 
         private void startBtn_Click(object sender, RoutedEventArgs e)
         {
+            if (this.DeviceIdx == null)
+            {
+                CustomMessageBox customMessageBox = new CustomMessageBox("Must Select an Input Device First");
+                customMessageBox.Show(); 
+                return;
+            }
             Utils.Log("Main Start", true);
             this.IsRunning = true;
             this.startBtn.IsEnabled = false;
@@ -427,7 +406,10 @@ namespace MM2Buddy
             this.startBtn.IsEnabled = true;
             this.stopBtn.IsEnabled = false;
             ResetTimer();
-            //this.videoPort.Source = "/LaunchScreen.png";
+
+            // Reset to launch/off image
+            BitmapImage bitmapImage = new BitmapImage(new Uri("/LaunchScreen.png", UriKind.RelativeOrAbsolute));
+            this.videoPort.Source = bitmapImage;
         }
 
         private void deviceCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -437,43 +419,47 @@ namespace MM2Buddy
             //this.set('Device', deviceCombo.SelectedItem.ToString());
             this.Device = deviceCombo.SelectedItem.ToString();
             this.DeviceIdx = deviceCombo.Items.IndexOf(deviceCombo.SelectedItem);
-            saveUserSettings();
+            Utils.SaveSetting("VidDevice", deviceCombo.SelectedItem.ToString());
+            //saveUserSettings();
         }
 
-        private void saveUserSettings()
-        {
-            //MessageBox.Show(deviceCombo.SelectedItem.ToString());
-            // Save the settings.
-            //ConfigurationManager.AppSettings["VidDevice"] = deviceCombo.SelectedItem.ToString();
-            AddUpdateAppSettings("VidDevice", deviceCombo.SelectedItem.ToString());
-            AddUpdateAppSettings("LvlViewEndless", lvlViewEndlessCB.IsChecked.ToString());
-            AddUpdateAppSettings("LvlViewReport", lvlViewReportCB.IsChecked.ToString());
-            AddUpdateAppSettings("LogAll", logAllCB.IsChecked.ToString());
-            AddUpdateAppSettings("LogLocation", logLocation.Content.ToString());
+        //private void saveUserSettings()
+        //{
+        //    //MessageBox.Show(deviceCombo.SelectedItem.ToString());
+        //    // Save the settings.
+        //    //ConfigurationManager.AppSettings["VidDevice"] = deviceCombo.SelectedItem.ToString();
+        //    if (deviceCombo.SelectedItem != null)
+        //        Utils.SaveSetting("VidDevice", deviceCombo.SelectedItem.ToString());
+        //    Utils.SaveSetting("LvlViewEndless", lvlViewEndlessCB.IsChecked.ToString());
+        //    Utils.SaveSetting("LvlViewReport", lvlViewReportCB.IsChecked.ToString());
+        //    Utils.SaveSetting("LogAll", logAllCB.IsChecked.ToString());
+        //    Utils.SaveSetting("LogLocation", logLocation.Content.ToString());
 
-            //ConfigurationManager.AppSettings["LvlViewEndless"] = textBoxPassword.Text;
-            //ConfigurationManager.AppSettings.
-            Utils.Log("User Settings Updated");
-        }
+        //    //ConfigurationManager.AppSettings["LvlViewEndless"] = textBoxPassword.Text;
+        //    //ConfigurationManager.AppSettings.
+        //    Utils.Log("User Settings Updated");
+        //}
 
         private void lvlViewEndless_Click(object sender, RoutedEventArgs e)
         {
             this.LvlViewEndless = lvlViewEndlessCB.IsChecked ?? false;
-            saveUserSettings();
+            Utils.SaveSetting("LvlViewEndless", lvlViewEndlessCB.IsChecked.ToString());
+            //saveUserSettings();
             //lvlViewEndlessCB.
         }
 
         private void lvlViewReport_Click(object sender, RoutedEventArgs e)
         {
             this.LvlViewReport = lvlViewReportCB.IsChecked ?? false;
-            saveUserSettings();
+            Utils.SaveSetting("LvlViewReport", lvlViewReportCB.IsChecked.ToString());
         }
 
         private void logAll_Click(object sender, RoutedEventArgs e)
         {
             this.LogAll = logAllCB.IsChecked ?? false;
-            saveUserSettings();
-            if (this.LogAll && this.LogLocation.Length < 3)
+            Utils.SaveSetting("LogAll", logAllCB.IsChecked.ToString());
+            //saveUserSettings();
+            if (LogAll && LogLocation == null)
             {
 
                 //    // Create an instance of the Excel application
@@ -505,7 +491,8 @@ namespace MM2Buddy
                     //MessageBox.Show("Excel file copied successfully.");
                     this.LogLocation = newFilePath;
                     this.logLocation.Content = newFilePath;
-                    saveUserSettings();
+                    Utils.SaveSetting("LogLocation", this.logLocation.Content.ToString());
+                    //saveUserSettings();
                 }
                 else if (result == false)
                 {
@@ -695,9 +682,9 @@ namespace MM2Buddy
             }
 
             // Save to user settings
-            AddUpdateAppSettings("PlayerVisible", (videoPort.Visibility == Visibility.Visible).ToString());
-            AddUpdateAppSettings("WinWidth", ActualWidth.ToString());
-            AddUpdateAppSettings("WinHeight", ActualHeight.ToString());
+            Utils.SaveSetting("PlayerVisible", (videoPort.Visibility == Visibility.Visible).ToString());
+            Utils.SaveSetting("WinWidth", ActualWidth.ToString());
+            Utils.SaveSetting("WinHeight", ActualHeight.ToString());
             UpdateLayout();
         }
 

@@ -16,9 +16,13 @@
     <None Remove="ColorWheelIcon.png" />
     <None Remove="Default1Filler.png" />
     <None Remove="LaunchScreen.png" />
+    <None Remove="Logo.ico" />
     <None Remove="Logo.png" />
+    <None Remove="Logo32.ico" />
+    <None Remove="MarioDeadIndicator.png" />
     <None Remove="MM2GameStartScreen.png" />
     <None Remove="MM2LogTemplate.xlsx" />
+    <None Remove="quixotic-tesla-186114-b70a8508470d.json" />
     <None Remove="starship_retro_cropped.jpg" />
   </ItemGroup>
 
@@ -42,7 +46,16 @@
     <Content Include="CollapseIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Logo.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MarioDeadIndicator.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="MM2LogTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="quixotic-tesla-186114-b70a8508470d.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="ColorWheelIcon.png" />
@@ -51,6 +64,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Logo32.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="MM2GameStartScreen.png" />

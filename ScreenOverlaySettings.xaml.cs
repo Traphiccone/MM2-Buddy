@@ -166,11 +166,17 @@ namespace MM2Buddy
         {
             try
             {
-                var appSettings = ConfigurationManager.AppSettings;
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string configFilePath = System.IO.Path.Combine(appDataFolder, "MM2Buddy", "MM2BuddySettings.config");
+                var configFileMap = new ExeConfigurationFileMap { ExeConfigFilename = configFilePath };
+                var customConfig = ConfigurationManager.OpenMappedExeConfiguration(configFileMap, ConfigurationUserLevel.None);
+
+                //var appSettings = ConfigurationManager.AppSettings;
+                var appSettings = customConfig.AppSettings.Settings;
 
                 if (appSettings.Count == 0)
                 {
-                    MessageBox.Show("AppSettings is empty.");
+                    //MessageBox.Show("AppSettings is empty.");
                 }
                 else
                 {
@@ -188,7 +194,7 @@ namespace MM2Buddy
                                 if (foundCheckBox != null)
                                 {
                                     // Convert the loaded value to a boolean
-                                    bool isChecked = bool.Parse(appSettings[key]);
+                                    bool isChecked = bool.Parse(appSettings[key].Value);
 
                                     // Set the IsChecked property of the checkbox
                                     foundCheckBox.IsChecked = isChecked;
@@ -225,7 +231,7 @@ namespace MM2Buddy
                                 if (foundTextBox != null)
                                 {
                                     // Load string from config file
-                                    string str = (appSettings[key]);
+                                    string str = (appSettings[key].Value);
 
                                     // Set the IsChecked property of the checkbox
                                     foundTextBox.Text = str;
@@ -247,7 +253,7 @@ namespace MM2Buddy
                                 {
                                     foreach(ComboBoxItem x in foundComboBox.Items)
                                     {
-                                        if (x.Content.ToString() == appSettings[key])
+                                        if (x.Content.ToString() == appSettings[key].Value)
                                         {
                                             foundComboBox.SelectedItem = x;
                                         }
@@ -303,7 +309,7 @@ namespace MM2Buddy
             if (sender is CheckBox checkBox)
             {
                 string checkBoxName = checkBox.Name;
-                UpdateOverlaySettings(checkBoxName, checkBox.IsChecked.ToString());
+                Utils.SaveSetting(checkBoxName, checkBox.IsChecked.ToString());
                 if (mainWin != null)
                 {
                     var propertyInfo = mainWindowType.GetProperty(checkBoxName);
@@ -314,7 +320,7 @@ namespace MM2Buddy
             else if (sender is TextBox textBox)
             {
                 string textBoxName = textBox.Name;
-                UpdateOverlaySettings(textBoxName, textBox.Text.ToString());
+                Utils.SaveSetting(textBoxName, textBox.Text.ToString());
                 if (mainWin != null)
                 {
                     var propertyInfo = mainWindowType.GetProperty(textBoxName); 
@@ -336,7 +342,7 @@ namespace MM2Buddy
                 if (comboBox.SelectedItem != null && ((ComboBoxItem)comboBox.SelectedItem).Content.ToString() != "Select a font...")
                 {
                     string comboBoxName = comboBox.Name;
-                    UpdateOverlaySettings(comboBoxName, ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
+                    Utils.SaveSetting(comboBoxName, ((ComboBoxItem)comboBox.SelectedItem).Content.ToString());
                     if (mainWin != null)
                     {
                         var propertyInfo = mainWindowType.GetProperty(comboBoxName);
@@ -369,29 +375,6 @@ namespace MM2Buddy
                         }
                     }
                 }
-            }
-        }
-
-        static void UpdateOverlaySettings(string key, string value)
-        {
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-                if (settings[key] == null)
-                {
-                    settings.Add(key, value);
-                }
-                else
-                {
-                    settings[key].Value = value;
-                }
-                configFile.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
-            }
-            catch (ConfigurationErrorsException)
-            {
-                MessageBox.Show("Error writing app settings");
             }
         }
 
