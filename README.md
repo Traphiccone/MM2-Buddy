@@ -11,3 +11,5 @@ It also can grab normally hidden information such as Boos, Descriptions, and cle
 
 -Easy access to Wizulus' Level Viewer.  MM2 Buddy has options to automatically open the level viewer in a browser as soon as the level starts.
 
+
+## Install
