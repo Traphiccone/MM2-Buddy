@@ -94,8 +94,8 @@ namespace MM2Buddy
         public string Default2Entry { get; set; }
 
 
+        public ScreenOverlayWin screenOverlayWin;
         private LogWindow logWindow;
-        private ScreenOverlayWin screenOverlayWin;
         private VirtualCameraOld2 virtualCam;
 
         public TimeSpan elapsedTime;
@@ -612,7 +612,8 @@ namespace MM2Buddy
             }
             else
             {
-                screenOverlayWin.Visibility = Visibility.Visible;
+                //screenOverlayWin.Visibility = Visibility.Visible; // TODO
+                screenOverlayWin.Close();
                 screenOverlayWin.Activate();
                 screenOverlayWin.Focus();
             }

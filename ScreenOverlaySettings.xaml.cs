@@ -391,6 +391,8 @@ namespace MM2Buddy
             {
                 e.Cancel = true;
                 Visibility = Visibility.Hidden;
+                mWin.screenOverlayWin.Close();
+                mWin.screenOverlayWin = null;
             }
         }
     }

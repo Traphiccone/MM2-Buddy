@@ -32,7 +32,7 @@
             <Label x:Name="FType" Grid.Column="0" Grid.Row="5" Content="Font Type:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
             
             <!-- Code Column Settings -->
-            <CheckBox x:Name="CodeSettings" Grid.Column="1" Grid.Row="0"  Content="Code" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888" ></CheckBox>
+            <CheckBox x:Name="CodeSettings" Grid.Column="1" Grid.Row="0"  Content="Code" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="False" BorderBrush="#FF888888" ></CheckBox>
             <!--IsChecked="{Binding CodeSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
             <TextBox x:Name="XPosCode" Grid.Column="1" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
@@ -58,7 +58,7 @@
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Name Column Settings -->
-            <CheckBox x:Name="NameSettings" Grid.Column="2" Grid.Row="0"  Content="Name" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <CheckBox x:Name="NameSettings" Grid.Column="2" Grid.Row="0"  Content="Name" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="False" BorderBrush="#FF888888"></CheckBox>
             <TextBox x:Name="XPosName" Grid.Column="2" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange" ForceCursor="True"/>
@@ -74,7 +74,7 @@
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Creator Column Settings -->
-            <CheckBox x:Name="CreatorSettings" Grid.Column="3" Grid.Row="0"  Content="Creator" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <CheckBox x:Name="CreatorSettings" Grid.Column="3" Grid.Row="0"  Content="Creator" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="False" BorderBrush="#FF888888"></CheckBox>
             <TextBox x:Name="XPosCreator" Grid.Column="3" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange" ForceCursor="True"/>
@@ -90,7 +90,7 @@
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Time Column Settings -->
-            <CheckBox x:Name="TimeSettings" Grid.Column="4" Grid.Row="0"  Content="Time" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <CheckBox x:Name="TimeSettings" Grid.Column="4" Grid.Row="0"  Content="Time" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="False" BorderBrush="#FF888888"></CheckBox>
             <TextBox x:Name="XPosTime" Grid.Column="4" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange" ForceCursor="True"/>
@@ -106,7 +106,7 @@
                 <ComboBoxItem Content="Select a font..." IsSelected="True" />
             </ComboBox>
             <!-- Death Column Settings -->
-            <CheckBox x:Name="DeathSettings" Grid.Column="5" Grid.Row="0"  Content="Deaths" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="True" BorderBrush="#FF888888"></CheckBox>
+            <CheckBox x:Name="DeathSettings" Grid.Column="5" Grid.Row="0"  Content="Deaths" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="False" BorderBrush="#FF888888"></CheckBox>
             <TextBox x:Name="XPosDeath" Grid.Column="5" Grid.Row="1"  Foreground="White" FontSize="16" CaretBrush="White" Background="{x:Null}" VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" PreviewTextInput="numberTextBox_PreviewTextInput"
                 PreviewMouseWheel="numberTextBox_PreviewMouseWheel"
                 TextChanged="ValueChange" ForceCursor="True"/>

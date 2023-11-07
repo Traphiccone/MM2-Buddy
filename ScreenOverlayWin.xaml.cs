@@ -137,24 +137,24 @@ namespace MM2Buddy
             //fadeTimer.Start();
         }
 
-        private void FadeInText(object sender, EventArgs e)
-        {
-            if (currentOpacity < 1.0)
-            {
-                currentOpacity += 0.20; // Increase the opacity increment for a faster fade-in effect
-                if (currentOpacity > 1.0)
-                    currentOpacity = 1.0; // Ensure opacity doesn't go beyond 1
-                codeBlock.Opacity = currentOpacity;
-                nameBlock.Opacity = currentOpacity;
-                creatorBlock.Opacity = currentOpacity;
-                timeBlock.Opacity = currentOpacity;
-                deathBlock.Opacity = currentOpacity;
-            }
-            else
-            {
-                fadeTimer.Stop();
-            }
-        }
+        //private void FadeInText(object sender, EventArgs e)
+        //{
+        //    if (currentOpacity < 1.0)
+        //    {
+        //        currentOpacity += 0.20; // Increase the opacity increment for a faster fade-in effect
+        //        if (currentOpacity > 1.0)
+        //            currentOpacity = 1.0; // Ensure opacity doesn't go beyond 1
+        //        codeBlock.Opacity = currentOpacity;
+        //        nameBlock.Opacity = currentOpacity;
+        //        creatorBlock.Opacity = currentOpacity;
+        //        timeBlock.Opacity = currentOpacity;
+        //        deathBlock.Opacity = currentOpacity;
+        //    }
+        //    else
+        //    {
+        //        fadeTimer.Stop();
+        //    }
+        //}
 
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
@@ -206,12 +206,12 @@ namespace MM2Buddy
 
                     //Create a DispatcherTimer for fading in
 
-                   fadeTimer = new DispatcherTimer
-                   {
-                       Interval = TimeSpan.FromMilliseconds(10)
-                   };
-                   fadeTimer.Tick += FadeInText;
-                   fadeTimer.Start();
+                   //fadeTimer = new DispatcherTimer
+                   //{
+                   //    Interval = TimeSpan.FromMilliseconds(10)
+                   //};
+                   //fadeTimer.Tick += FadeInText;
+                   //fadeTimer.Start();
                     // Start a timer to update the text alpha value
                 }
                 else
