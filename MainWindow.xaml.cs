@@ -530,6 +530,7 @@ namespace MM2Buddy
 
                 this.LogLocation = filePath;
                 this.logLocation.Content = filePath;
+                Utils.SaveSetting("LogLocation", filePath);
                 // Do something with the file path (e.g., open the file)
                 // ...
 
@@ -613,7 +614,6 @@ namespace MM2Buddy
             else
             {
                 //screenOverlayWin.Visibility = Visibility.Visible; // TODO
-                screenOverlayWin.Close();
                 screenOverlayWin.Activate();
                 screenOverlayWin.Focus();
             }

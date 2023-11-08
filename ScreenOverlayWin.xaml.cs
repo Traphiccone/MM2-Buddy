@@ -269,8 +269,12 @@ namespace MM2Buddy
 
         private void ScreenOverlayWinClosed(object sender, EventArgs e)
         {
+            MainWindow mWin = (MainWindow)Application.Current.MainWindow;
+
             // Unsubscribe from the CompositionTarget_Rendering event
             CompositionTarget.Rendering -= CompositionTarget_Rendering;
+            this.Close();
+            mWin.screenOverlayWin = null;
         }
         //private void UpdateImage()
         //{

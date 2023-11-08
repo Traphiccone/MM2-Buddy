@@ -1,5 +1,5 @@
 # MM2-Buddy
-The ultimate assisstant tool for Mario Maker 2 Twitch streamers or anyone with a capture card.  This program can capture and log all level information into an Excel file as well as display level information in a stream overlay and in the app itself.  
+The ultimate assistant tool for Mario Maker 2 Twitch streamers or anyone with a capture card.  This program uses OCR to capture and log all level information into an Excel file as well as display level information in a stream overlay and in the app itself.  
 It also can grab normally hidden information such as Boos, Descriptions, and clear rate(Endless).  MM2 Buddy can also provide real time translation for level names and descriptions.
 
 ## Features
@@ -12,4 +12,17 @@ It also can grab normally hidden information such as Boos, Descriptions, and cle
 -Easy access to Wizulus' Level Viewer.  MM2 Buddy has options to automatically open the level viewer in a browser as soon as the level starts.
 
 
+![](screenshots/MainAppExample.png)
+
+
+![](screenshots/ScreenOverlayDemo.gif)
+
+
+![](screenshots/ExcelLog.png) 
+
+
+![](screenshots/CustomOverlayExample.png)
+
 ## Install
+
+
