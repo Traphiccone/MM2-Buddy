@@ -3,13 +3,13 @@ The ultimate assistant tool for Mario Maker 2 Twitch streamers or anyone with a 
 It also can grab normally hidden information such as Boos, Descriptions, and clear rate(Endless).  MM2 Buddy can also provide real time translation for level names and descriptions.
 
 ## Features
--Excel data logging.  Log system saves Level Code, Level Name, Creator, Your Heart/Boo Vote, Death Count, Played Date, Clear Time, and Translation.
+- Excel data logging.  Log system saves Level Code, Level Name, Creator, Your Heart/Boo Vote, Death Count, Played Date, Clear Time, and Translation.
 
--Customizable stream overlay.  Stream overlay can provide Level Code, Level Name, Creator, Timer and Death Count.
+- Customizable stream overlay.  Stream overlay can provide Level Code, Level Name, Creator, Timer and Death Count.
 
--Live translation using Google's Translate API.  As soon as a level starts MM2 Buddy will grab name and description and translate (to english/other languages coming soon)
+- Live translation using Google's Translate API.  As soon as a level starts MM2 Buddy will grab name and description and translate (to english/other languages coming soon)
 
--Easy access to Wizulus' Level Viewer.  MM2 Buddy has options to automatically open the level viewer in a browser as soon as the level starts.
+- Easy access to Wizulus' Level Viewer.  MM2 Buddy has options to automatically open the level viewer in a browser as soon as the level starts.
 
 
 ![](screenshots/MainAppExample.png)
