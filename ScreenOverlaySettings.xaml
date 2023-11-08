@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
+        Icon="/Logo32.ico" 
         Closing="CloseOverlaySettings"
         Title="ScreenOverlaySettings" Height="450" Width="800" WindowStyle="SingleBorderWindow" ResizeMode="NoResize" Background="#FF292929" >
     <Grid>

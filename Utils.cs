@@ -229,8 +229,11 @@ namespace MM2Buddy
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
             //mainWin.HBGrid.Visibility = Visibility.Hidden;
 
-            //mainWin.ActiveLevel.InfoTask = task;
-            //mainWin.ActiveLevel.HttpClient = client;
+            if (!Utils.IsValidCode(mainWin.ActiveLevel.Code))
+            {
+                Utils.Log("Non valid code detected");
+                return;
+            }
 
             // Continue with other work while the HTTP request is being sent
 
@@ -550,6 +553,11 @@ namespace MM2Buddy
             {
                 MessageBox.Show("Error writing app settings");
             }
+        }
+
+        public static bool IsValidCode(string code)
+        {
+            return Regex.IsMatch(code, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$");
         }
 
     }

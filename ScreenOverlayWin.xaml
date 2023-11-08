@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
+        Icon="/Logo32.ico" 
         Title="ScreenOverlayWin" Height="540" Width="960" ResizeMode="NoResize" Background="#FF2FAB16">
     <!--<Window.Background>
         <SolidColorBrush Color="Transparent" Opacity="0"/>

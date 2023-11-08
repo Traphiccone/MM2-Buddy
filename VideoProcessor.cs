@@ -1015,8 +1015,7 @@ namespace MM2Buddy
             void ReadLvlStartScn () // Start screen right before user begins playing a lvl
             {
                 lvlCode = SubImageText(frame, 110, 265, 310, 40, "code");
-                lvlCode = lvlCode.Replace(" ", "");
-                lvlCode = lvlCode.Replace("\n", "");
+                lvlCode = ProcessCode(lvlCode);
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
 
@@ -1043,8 +1042,7 @@ namespace MM2Buddy
             void ReadLvlScn() // For Hot and New course screen
             {
                 lvlCode = SubImageText(frame, 1088, 737, 250, 40, "code");
-                lvlCode = lvlCode.Replace(" ", "");
-                lvlCode = lvlCode.Replace("\n", "");
+                lvlCode = ProcessCode(lvlCode);
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
                 if (mainWin.ActiveLevel.Code == lvlCode)
@@ -1073,8 +1071,7 @@ namespace MM2Buddy
 
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
                 lvlCode = SubImageText(frame, 1177, 737, 250, 40, "code");
-                lvlCode = lvlCode.Replace(" ", "");
-                lvlCode = lvlCode.Replace("\n", "");
+                lvlCode = ProcessCode(lvlCode);
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
                 if (mainWin.ActiveLevel.Code == lvlCode)
@@ -1102,8 +1099,7 @@ namespace MM2Buddy
 
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
                 lvlCode = SubImageText(frame, 1064, 705, 250, 40, "code");
-                lvlCode = lvlCode.Replace(" ", "");
-                lvlCode = lvlCode.Replace("\n", "");
+                lvlCode = ProcessCode(lvlCode);
 
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
@@ -1132,8 +1128,7 @@ namespace MM2Buddy
 
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
                 lvlCode = SubImageText(frame, 1064, 680, 250, 40, "code");
-                lvlCode = lvlCode.Replace(" ", "");
-                lvlCode = lvlCode.Replace("\n", "");
+                lvlCode = ProcessCode(lvlCode);
 
                 if (!Regex.IsMatch(lvlCode, @"^[A-Z0-9]{3}-[A-Z0-9]{3}-[A-Z0-9]{3}$"))
                     return;
@@ -1445,6 +1440,33 @@ namespace MM2Buddy
 
             return nextP;
 
+        }
+
+        /// <summary>
+        /// Cleans up the code string
+        /// </summary>
+        /// <param name="code">Detected Code string</param>
+        static public string ProcessCode(string code)
+        {
+            code = code.Replace(" ", "");
+            code = code.Replace("\n", "");
+            if (Utils.IsValidCode(code))
+                return code;
+            else
+            {
+                // The code is not valid, attempt to insert missing hyphens
+                code = Regex.Replace(code, @"[^A-Z0-9]", ""); // Remove any non-alphanumeric characters
+                if (code.Length == 9)
+                {
+                    return $"{code.Substring(0, 3)}-{code.Substring(3, 3)}-{code.Substring(6, 3)}";
+                }
+                else
+                {
+                    // If the code cannot be fixed, return an error or throw an exception
+                    Utils.Log("Invalid code format detected", true);
+                    return "Invalid code format";
+                }
+            }
         }
     }
 };

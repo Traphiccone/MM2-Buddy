@@ -29,6 +29,7 @@ using System.Timers;
 using System.Windows.Threading;
 using System.Windows.Media.Media3D;
 using System.Windows.Controls.Primitives;
+using System.Reflection;
 
 namespace MM2Buddy
 {
@@ -141,6 +142,12 @@ namespace MM2Buddy
             timer = new Timer(1000); // Timer interval in milliseconds (0.1 seconds)
             timer.Elapsed += Timer_Elapsed;
             timer.AutoReset = true;
+
+            // Get the version number of the assembly
+            System.Version version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Set the TextBox text to display the version number
+            versionTextBox.Content = "Version: " + version.ToString();
         }
 
         /// <summary>
@@ -164,6 +171,7 @@ namespace MM2Buddy
             this.CreatorLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Creator);
             this.TransNameLabel.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.Translation);
             this.Deaths.SetValue(System.Windows.Controls.Label.ContentProperty, lvl.DeathCnt);
+            LvlViewerBtn.IsEnabled = true;
 
             //this.OnPropertyChanged(nameof(_page))levelInfoGrid;
             //Binding bind = new Binding("ActiveLevel");
@@ -640,6 +648,7 @@ namespace MM2Buddy
             this.ClearRate.Content = "0.0%";
             this.ClearCount.Content = "";
             this.ClearAttempts.Content = "";
+            LvlViewerBtn.IsEnabled = false;
         }
 
         /// <summary>
