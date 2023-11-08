@@ -32,9 +32,9 @@ It also can grab normally hidden information such as Boos, Descriptions, and cle
 
 ## How To Use
 - After opening MM2 Buddy, select the capture device for your set up.  (Some users may need to run OBS's VirtualCam)
-- If data logging is desired, check 'Log All Played Levels'.  This will prompt you for a save location on your pc to save the 'MM2Log.xlsx' file.
+- If data logging is desired, check 'Log All Played Levels'.  This will prompt you for a save location on your pc to save the 'MM2Log.xlsx' file. (Recommend your desktop or documents folder)
 	- Optionally if you have an existing MM2 Buddy log you can import it using the Import Log button.
-- This will log all played levels including skipped levels.  (Recommend your desktop or documents folder)
+- This will log all played levels including skipped levels.  
 - Check 'On Level Start' if you want Wizulus' Level Viewer to automatically open in a browser during the Level Start screen.
 - Similarly when browsing levels in the Courses section or after looking up a level code, the 'On Report Hover' button will open the Level Viewer in a browser.
 	- Note do not actually press the report button, simply just hover the red selector over the Report button
