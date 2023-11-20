@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Protobuf.WellKnownTypes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,11 @@ namespace MM2Buddy
     {
         public DateTime Timestamp { get; set; }
         public string Message { get; set; }
+
+        public override string ToString()
+        {
+            // Customize the string representation as needed
+            return $"[{Timestamp}] {Message}";
+        }
     }
 }

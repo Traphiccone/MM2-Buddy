@@ -26,6 +26,7 @@ using System.Threading;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.TextFormatting;
 using OpenCvSharp.WpfExtensions;
+using Emgu.CV.CvEnum;
 //using OpenCvSharpExtern;
 
 namespace MM2Buddy
@@ -53,13 +54,13 @@ namespace MM2Buddy
             int width = (int)capture.FrameWidth;
             int height = (int)capture.FrameHeight;
             //MessageBox.Show(width.ToString() + "-" + height.ToString());
-            if (width != 1920 && height != 1080)
-            {
-                CustomMessageBox customMessageBox = new CustomMessageBox("Only 1080p Feed is Supported at this time. \n 720p support coming soon.");
-                customMessageBox.Show();
-                mainWin.stopBtn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-                return;
-            }
+            //if (width != 1920 && height != 1080)
+            //{
+            //    CustomMessageBox customMessageBox = new CustomMessageBox("Only 1080p Feed is Supported at this time. \n 720p support coming soon.");
+            //    customMessageBox.Show();
+            //    mainWin.stopBtn.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            //    return;
+            //}
 
             // check if the VideoCapture object was successfully created
             if (!capture.IsOpened())
@@ -87,6 +88,12 @@ namespace MM2Buddy
                     Console.WriteLine("Failed to read frame!");
                     break;
                 }
+
+                // If video is less than 1090p, upscale it
+                //if (width != 1920 && height != 1080)
+                //{
+                //    Cv2.Resize(frame, frame, new OpenCvSharp.Size(1920, 1080), interpolation: InterpolationFlags.Linear);
+                //}
 
                 //OpenCvSharp.Point center = new OpenCvSharp.Point(100, 100);
                 //int radius = 30;
@@ -829,7 +836,7 @@ namespace MM2Buddy
                 //
                 try
                 {
-                    using (var exampleImg = new OpenCvSharp.Mat("MarioDeadIndicator.png", ImreadModes.Grayscale))
+                    using (var exampleImg = new OpenCvSharp.Mat("MarioDeadIndicator.png", OpenCvSharp.ImreadModes.Grayscale))
                     using (frame)
                     {
                         OpenCvSharp.Mat thresholdedExampleImg = new OpenCvSharp.Mat();

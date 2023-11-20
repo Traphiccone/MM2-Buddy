@@ -392,13 +392,14 @@ namespace MM2Buddy
 
         private void startBtn_Click(object sender, RoutedEventArgs e)
         {
+            throw new InvalidOperationException("This is a simulated crash for testing purposes.");
             if (this.DeviceIdx == null)
             {
                 CustomMessageBox customMessageBox = new CustomMessageBox("Must Select an Input Device First");
                 customMessageBox.Show(); 
                 return;
             }
-            Utils.Log("Main Start", true);
+            Utils.Log("Main OCR Process Start", true);
             this.IsRunning = true;
             this.startBtn.IsEnabled = false;
             this.stopBtn.IsEnabled = true;
@@ -409,7 +410,7 @@ namespace MM2Buddy
 
         private void stopBtn_Click(object sender, RoutedEventArgs e)
         {
-            Utils.Log("Main Stop", true);
+            Utils.Log("Main OCR Process Stop", true);
             this.IsRunning = false;
             this.startBtn.IsEnabled = true;
             this.stopBtn.IsEnabled = false;
