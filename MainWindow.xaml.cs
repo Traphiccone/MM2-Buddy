@@ -392,7 +392,7 @@ namespace MM2Buddy
 
         private void startBtn_Click(object sender, RoutedEventArgs e)
         {
-            throw new InvalidOperationException("This is a simulated crash for testing purposes.");
+            //throw new InvalidOperationException("This is a simulated crash for testing purposes.");
             if (this.DeviceIdx == null)
             {
                 CustomMessageBox customMessageBox = new CustomMessageBox("Must Select an Input Device First");
