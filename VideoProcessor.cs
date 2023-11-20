@@ -90,10 +90,10 @@ namespace MM2Buddy
                 }
 
                 // If video is less than 1090p, upscale it
-                //if (width != 1920 && height != 1080)
-                //{
-                //    Cv2.Resize(frame, frame, new OpenCvSharp.Size(1920, 1080), interpolation: InterpolationFlags.Linear);
-                //}
+                if (width != 1920 && height != 1080)
+                {
+                    Cv2.Resize(frame, frame, new OpenCvSharp.Size(1920, 1080), interpolation: InterpolationFlags.Linear);
+                }
 
                 //OpenCvSharp.Point center = new OpenCvSharp.Point(100, 100);
                 //int radius = 30;
