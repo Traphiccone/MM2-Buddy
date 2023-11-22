@@ -188,6 +188,7 @@ namespace MM2Buddy
                             case "CodeSettings":
                             case "NameSettings":
                             case "CreatorSettings":
+                            case "DeathSettings":
                             case "TimeSettings":
                             {
                                 CheckBox foundCheckBox = (CheckBox)FindName(key);

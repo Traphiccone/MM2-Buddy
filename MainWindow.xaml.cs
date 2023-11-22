@@ -396,7 +396,7 @@ namespace MM2Buddy
             if (this.DeviceIdx == null)
             {
                 CustomMessageBox customMessageBox = new CustomMessageBox("Must Select an Input Device First");
-                customMessageBox.Show(); 
+                customMessageBox.Show();
                 return;
             }
             Utils.Log("Main OCR Process Start", true);

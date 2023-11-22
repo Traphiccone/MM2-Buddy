@@ -54,6 +54,7 @@ namespace MM2Buddy
             int width = (int)capture.FrameWidth;
             int height = (int)capture.FrameHeight;
             //MessageBox.Show(width.ToString() + "-" + height.ToString());
+            Utils.Log("Detected Resolution: " + width.ToString() + "-" + height.ToString());
             //if (width != 1920 && height != 1080)
             //{
             //    CustomMessageBox customMessageBox = new CustomMessageBox("Only 1080p Feed is Supported at this time. \n 720p support coming soon.");
@@ -219,7 +220,7 @@ namespace MM2Buddy
                 {
                     using var img = TesseractOCR.Pix.Image.LoadFromMemory(sepChar.ToBytes());
 
-                    using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata\train", Language.English, TesseractOCR.Enums.EngineMode.Default))
+                    using (var engine = new Engine(@"tessdata\train", Language.English, TesseractOCR.Enums.EngineMode.Default))
                     {
                         engine.SetVariable("tessedit_char_whitelist", "0123456789QWERTYUPASDFGHJKLXCVBNM-");
 
@@ -238,7 +239,7 @@ namespace MM2Buddy
             {
                 using var img = TesseractOCR.Pix.Image.LoadFromMemory(frame.ToBytes());
 
-                using (var engine = new Engine(@"C:\Program Files\Tesseract-OCR\tessdata", "eng+jpn", TesseractOCR.Enums.EngineMode.Default))
+                using (var engine = new Engine(@"tessdata", "eng+jpn", TesseractOCR.Enums.EngineMode.Default))
                 {
                     if (type == "num")
                         engine.SetVariable("tessedit_char_whitelist", "0123456789:.");
