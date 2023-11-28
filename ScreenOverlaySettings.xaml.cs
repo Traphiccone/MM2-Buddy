@@ -327,14 +327,15 @@ namespace MM2Buddy
                     var propertyInfo = mainWindowType.GetProperty(textBoxName); 
                     if (propertyInfo != null && propertyInfo.CanWrite)
                     {
-                        if (int.TryParse(textBox.Text, out int intValue))
-                        {
-                            propertyInfo.SetValue(mainWin, intValue);
-                        }
-                        else if (textBoxName.Contains("Color"))
+                        if (textBoxName.Contains("Color"))
                         {
                             propertyInfo.SetValue(mainWin, textBox.Text);
                         }
+                        else if (int.TryParse(textBox.Text, out int intValue))
+                        {
+                            propertyInfo.SetValue(mainWin, intValue);
+                        }
+
                     }
                 }
             }
