@@ -135,14 +135,23 @@ namespace MM2Buddy
                 // Check for if the screen state has changed
                 if (mainWin.ScreenState != mainWin.LastScreenState)
                 {
+                    Utils.Log(mainWin.ScreenState.ToString(), true);
+
                     if (mainWin.ScreenState == ScreenState.DeathMarker ||
                         mainWin.ScreenState == ScreenState.PauseStartOver)
                     {
-                        mainWin.ActiveLevel.DeathCnt++;
-                        mainWin.Deaths.Content = mainWin.ActiveLevel.DeathCnt;
-                        Utils.UpdateLog();
+                        //
+                        // User can get a death marker, pause and then view the same death marker
+                        // which counts one death twice.  Prevent this.
+                        //
+                        if (mainWin.LastScreenState < ScreenState.Pause ||
+                        mainWin.LastScreenState > ScreenState.PauseHeart)
+                        {
+                            mainWin.ActiveLevel.DeathCnt++;
+                            mainWin.Deaths.Content = mainWin.ActiveLevel.DeathCnt;
+                            Utils.UpdateLog();
+                        }
                     }
-                    Utils.Log(mainWin.ScreenState.ToString(), true);
 
                     if (state == ScreenState.NoScreen)
                     {
@@ -242,7 +251,10 @@ namespace MM2Buddy
                 using (var engine = new Engine(@"tessdata", "eng+jpn", TesseractOCR.Enums.EngineMode.Default))
                 {
                     if (type == "num")
+                    {
                         engine.SetVariable("tessedit_char_whitelist", "0123456789:.");
+                        //Cv2.ImShow("Test", frame);
+                    }
                     //else
                     //    Cv2.ImShow("Test", frame);
                     using (img)
@@ -752,21 +764,21 @@ namespace MM2Buddy
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
 
-                //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
-                //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
-                //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
+                //MessageBox.Show("1Comp Result: " + p2.CompareColor(p2C) + "\n" +
+                //    "p1: " + p2.R + ", " + p2.G + ", " + p2.B + "\n" +
+                //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
 
                 double totalCompEnd = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
                 if (totalCompEnd > perMatchAllowed)
                 {
                     // On end screen, check if on alternate end screen (comments on bottom)
                     // check the blue at the top
-                    PixelColorCheck p4 = new PixelColorCheck(960, 20, 255, 206, 29); // 
+                    PixelColorCheck p4 = new PixelColorCheck(960, 20, 255, 206, 29); // mm2 Yellow
                     PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
                     //MessageBox.Show("1Comp Result: " + p4.CompareColor(p4C) + "\n" +
                     //    "p1: " + p4.R + ", " + p4.G + ", " + p4.B + "\n" +
                     //    "p2: " + p4C.R + ", " + p4C.G + ", " + p4C.B);
-                    if (p4.CompareColor(p4C) < perMatchAllowed)
+                    if (p4.CompareColor(p4C) > perMatchAllowed)
                     {
                         endScreenAlt = true;
                     }
@@ -1162,9 +1174,9 @@ namespace MM2Buddy
             }
             void ReadEndScn() // For Popular course screen
             {
-
+                bool isAlt = state >= ScreenState.EndScreenAlt && state <= ScreenState.EndScreenHeartAlt;
                 //MessageBox.Show(SubImageText(frame, 1177, 737, 250, 40));
-                var worldRec = SubImageText(frame, 917, state == ScreenState.EndScreenAlt ? 337 : 530, 309, 62, "num");
+                var worldRec = SubImageText(frame, 917, isAlt ? 337 : 530, 309, 62, "num");
                 worldRec = worldRec.Replace(" ", "");
                 worldRec = worldRec.Replace("\n", "");
                 //
@@ -1193,11 +1205,8 @@ namespace MM2Buddy
                 {
                     mainWin.ActiveLevel.RecordTime = recordTime;
 
-                    if (mainWin.LogAll)
-                    {
-                        Utils.UpdateLog();
-                        Utils.Log("Updated Data File WorldRecord: " + worldRec, true);
-                    }
+                    Utils.UpdateLog();
+                    Utils.Log("Updated Data File WorldRecord: " + worldRec, true);
                 }
                 //MessageBox.Show(ticks.ToString());
 
@@ -1297,6 +1306,7 @@ namespace MM2Buddy
                 case ScreenState.EndScreen:
                     ReadEndScn();
                     mainWin.PauseTimer();
+                    Utils.UpdateLog();
                     break;
                 case ScreenState.EndScreenBoo:
                     ReadEndScn();
@@ -1308,6 +1318,31 @@ namespace MM2Buddy
                     }
                     break;
                 case ScreenState.EndScreenHeart:
+                    ReadEndScn();
+                    mainWin.PauseTimer();
+                    //MessageBox.Show("mainWin.LogAll && mainWin.ActiveLevel.Hearted == null");
+                    if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
+                    {
+                        //MessageBox.Show("mainWin.ActiveLevel.Hearted");
+                        mainWin.ActiveLevel.Hearted = "H";
+                        Utils.UpdateLog();
+                    }
+                    break;
+                case ScreenState.EndScreenAlt:
+                    ReadEndScn();
+                    mainWin.PauseTimer();
+                    Utils.UpdateLog();
+                    break;
+                case ScreenState.EndScreenBooAlt:
+                    ReadEndScn();
+                    mainWin.PauseTimer();
+                    if (mainWin.LogAll && mainWin.ActiveLevel.Hearted == null)
+                    {
+                        mainWin.ActiveLevel.Hearted = "B";
+                        Utils.UpdateLog();
+                    }
+                    break;
+                case ScreenState.EndScreenHeartAlt:
                     ReadEndScn();
                     mainWin.PauseTimer();
                     //MessageBox.Show("mainWin.LogAll && mainWin.ActiveLevel.Hearted == null");
@@ -1394,7 +1429,7 @@ namespace MM2Buddy
             //    //Cv2.Filter2D(dst, dst, -1, kernel);
             //    //Cv2.Filter2D(dst, dst, -1, kernel);
 
-            //if (type != "code")
+            //if (type != "num")
             //    Cv2.ImShow("Large View", binary);
             var codeTxt = GetOCRText(binary, type);
             //MessageBox.Show(codeTxt);
