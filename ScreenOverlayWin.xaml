@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:MM2Buddy"
         mc:Ignorable="d"
         Icon="/Logo32.ico" 
-        Title="ScreenOverlayWin" Height="540" Width="960" ResizeMode="NoResize" Background="#FF2FAB16">
+        Title="ScreenOverlayWin" ResizeMode="NoResize" Background="#FF2FAB16" Height="Auto" Width="Auto" SizeToContent="WidthAndHeight">
     <!--<Window.Background>
         <SolidColorBrush Color="Transparent" Opacity="0"/>
     </Window.Background>-->
-    <Grid x:Name="mainGrid">
+    <Grid x:Name="mainGrid" Width="960" Height="540" >
         <TextBlock x:Name="codeBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="" FontSize="18" Margin="0,0,0,0"/>
         <TextBlock x:Name="nameBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="" FontSize="18" Margin="0,0,0,0"/>
         <TextBlock x:Name="creatorBlock" HorizontalAlignment="Left" VerticalAlignment="Top" Text="" FontSize="18" Margin="0,0,0,0"/>

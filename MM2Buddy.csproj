@@ -7,9 +7,9 @@
     <UseWPF>true</UseWPF>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Platforms>AnyCPU;x86</Platforms>
-    <Version>1.0.4</Version>
-    <FileVersion>1.04</FileVersion>
-    <AssemblyVersion>1.0.4</AssemblyVersion>
+    <Version>1.0.7</Version>
+    <FileVersion>1.0.7</FileVersion>
+    <AssemblyVersion>1.0.7</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

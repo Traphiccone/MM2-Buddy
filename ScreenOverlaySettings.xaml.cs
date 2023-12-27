@@ -227,8 +227,10 @@ namespace MM2Buddy
                             case "YPosDeath":
                             case "FSizeDeath":
                             case "ColorDeath":
+                            case "CanvasX":
+                            case "CanvasY":
                             {
-                                    TextBox foundTextBox = (TextBox)FindName(key);
+                                TextBox foundTextBox = (TextBox)FindName(key);
                                 if (foundTextBox != null)
                                 {
                                     // Load string from config file

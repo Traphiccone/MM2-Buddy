@@ -137,20 +137,29 @@ namespace MM2Buddy
                 {
                     Utils.Log(mainWin.ScreenState.ToString(), true);
 
-                    if (mainWin.ScreenState == ScreenState.DeathMarker ||
-                        mainWin.ScreenState == ScreenState.PauseStartOver)
+                    if (mainWin.ScreenState == ScreenState.DeathMarker)
                     {
                         //
                         // User can get a death marker, pause and then view the same death marker
                         // which counts one death twice.  Prevent this.
                         //
-                        if (mainWin.LastScreenState < ScreenState.Pause ||
-                        mainWin.LastScreenState > ScreenState.PauseHeart)
+                        // TODO this still does not work
+                        // when scanning the video a NoScreen is detected in between the transition from
+                        // a death marker and the pause screen
+                        //
+                        if (mainWin.LastScreenState >= ScreenState.Pause ||
+                        mainWin.LastScreenState <= ScreenState.PauseHeart)
                         {
                             mainWin.ActiveLevel.DeathCnt++;
                             mainWin.Deaths.Content = mainWin.ActiveLevel.DeathCnt;
                             Utils.UpdateLog();
                         }
+                    }
+                    else if (mainWin.ScreenState == ScreenState.PauseStartOver)
+                    {
+                        mainWin.ActiveLevel.DeathCnt++;
+                        mainWin.Deaths.Content = mainWin.ActiveLevel.DeathCnt;
+                        Utils.UpdateLog();
                     }
 
                     if (state == ScreenState.NoScreen)
@@ -331,7 +340,7 @@ namespace MM2Buddy
             // When checking the state of the game, compare 4-6 known pixels against their expected value,
             // if the average combined values match by above 97%, that screen state is the new state
             //
-            var perMatchAllowed = 97; //97
+            var perMatchAllowed = 94; //97 20231212 Hotfist having trouble detecting end screen
 
             MainWindow mWin = (MainWindow)Application.Current.MainWindow;
 
@@ -658,17 +667,17 @@ namespace MM2Buddy
                 PixelColorCheck p1 = new PixelColorCheck(1843, 41, 13, 0, 0); // Top right close btn black
                 PixelColorCheck p2 = new PixelColorCheck(1843, 66, 255, 255, 255); // Top right close btn white
                 PixelColorCheck p3 = new PixelColorCheck(1799, 990, 255, 255, 255); // White Settings Icon
-                PixelColorCheck p4 = new PixelColorCheck(1311, 827, 255, 204, 30); // Exit course btn yellow
+                //PixelColorCheck p4 = new PixelColorCheck(1311, 827, 255, 204, 30); // Exit course btn yellow
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
                 PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
-                PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
+                //PixelColorCheck p4C = GenerateCompPixel(bmap, p4.X, p4.Y);
 
                 //MessageBox.Show("1Comp Result: " + p3.CompareColor(p3C) + "\n" +
                 //    "p1: " + p3.R + ", " + p3.G + ", " + p3.B + "\n" +
                 //    "p2: " + p3C.R + ", " + p3C.G + ", " + p3C.B);
 
-                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C) + p4.CompareColor(p4C)) / 4;
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
 
                 //MessageBox.Show("Pixel Colors - > 1: " + pixel[0] + "  2: " + pixel[1] + "  3: " + pixel[2]);
 
@@ -740,15 +749,24 @@ namespace MM2Buddy
             bool checkPauseQuit(BitmapSource bmap)
             {
                 PixelColorCheck p1 = new PixelColorCheck(1843, 41, 15, 0, 0); // Top right close btn black
-                PixelColorCheck p2 = new PixelColorCheck(1300, 775, 104, 27, 28); // Brown start over button
+                PixelColorCheck p2 = new PixelColorCheck(1300, 775, 104, 27, 28); // Brown start over button left
+                PixelColorCheck p3 = new PixelColorCheck(1780, 775, 104, 27, 28); // Brown start over button to the right
                 PixelColorCheck p1C = GenerateCompPixel(bmap, p1.X, p1.Y);
                 PixelColorCheck p2C = GenerateCompPixel(bmap, p2.X, p2.Y);
+                PixelColorCheck p3C = GenerateCompPixel(bmap, p3.X, p3.Y);
 
                 //MessageBox.Show("Quit Result: " + p2.CompareColor(p2C) + "\n" +
                 //    "p1: " + p2.R + ", " + p2.G + ", " + p2.B + "\n" +
                 //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
-                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C)) / 2;
+                double totalComp = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
 
+                if (totalComp > 80)
+                {
+                    Utils.Log("Pause Quit Check: Total: " + totalComp.ToString()
+                        + " - P1:" + p1C.R + "," + p1C.G + "," + p1C.B
+                        + " - P2:" + p2C.R + "," + p2C.G + "," + p2C.B
+                        + " - P3:" + p3C.R + "," + p3C.G + "," + p3C.B);
+                }
 
                 return totalComp > perMatchAllowed;
             }
@@ -769,6 +787,13 @@ namespace MM2Buddy
                 //    "p2: " + p2C.R + ", " + p2C.G + ", " + p2C.B);
 
                 double totalCompEnd = (p1.CompareColor(p1C) + p2.CompareColor(p2C) + p3.CompareColor(p3C)) / 3;
+                //if (totalCompEnd > 80)
+                //{
+                //    Utils.Log("End Screen Check: Total: " + totalCompEnd.ToString() 
+                //        + " - P1:" + p1C.R + "," + p1C.G + "," + p1C.B
+                //        + " - P2:" + p2C.R + "," + p2C.G + "," + p2C.B
+                //        + " - P3:" + p3C.R + "," + p3C.G + "," + p3C.B);
+                //}
                 if (totalCompEnd > perMatchAllowed)
                 {
                     // On end screen, check if on alternate end screen (comments on bottom)
@@ -858,13 +883,13 @@ namespace MM2Buddy
 
                         if (frame.Width < thresholdedExampleImg.Width || frame.Height < thresholdedExampleImg.Height)
                         {
-                            MessageBox.Show("Error: Example image is larger than the search image.");
+                            Utils.Log("Error: Example image is larger than the search image.");
                             return false;
                         }
 
                         if (frame.Type() != thresholdedExampleImg.Type())
                         {
-                            MessageBox.Show("Error: Images are of different types.");
+                            Utils.Log("Error: Images are of different types.");
                             return false;
                         }
 
@@ -891,13 +916,17 @@ namespace MM2Buddy
                             //MessageBox.Show(pixelColor.Item0 + " " + pixelColor.Item1 + " " + pixelColor.Item2);
                             Utils.Log("Detected Death Marker color: " + pixelColor.Item0 + ", " + pixelColor.Item1 + ", " + pixelColor.Item2);
                             // 9 5 255
-                            if (pixelColor.Item0 < 15 && pixelColor.Item1 < 15 && pixelColor.Item2 > 250) // check for red pixel
+                            if (pixelColor.Item0 < 15 && pixelColor.Item1 < 30 && pixelColor.Item2 > 250) // check for red pixel
                             {
+                                Utils.Log("Color meets accepted threshold for death count");
                                 return true;
                             }
+                            Utils.Log("Color failed to meet accepted threshold for death count");
+
                             //Cv2.ImShow("Ex View", result);
                             //largerImg.SaveImage("result.jpg");
                         }
+
                         return false;
                     }
                 }
@@ -973,9 +1002,7 @@ namespace MM2Buddy
 
                 return ScreenState.Pause;
             }
-            pauseQuit = checkPauseQuit(bmap);
-            if (pauseQuit)
-                return ScreenState.PauseQuit;
+
             endScreen = checkEndScreen(bmap);
             if (endScreen)
             {

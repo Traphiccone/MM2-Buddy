@@ -31,7 +31,7 @@
             <Label x:Name="FSize" Grid.Column="0" Grid.Row="3" Content="Font Size:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
             <Label x:Name="FColor" Grid.Column="0" Grid.Row="4" Content="Font Color:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
             <Label x:Name="FType" Grid.Column="0" Grid.Row="5" Content="Font Type:" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="1,5,5,5" Foreground="White" HorizontalAlignment="Center" FontSize="16"  />
-            
+
             <!-- Code Column Settings -->
             <CheckBox x:Name="CodeSettings" Grid.Column="1" Grid.Row="0"  Content="Code" Click="ValueChange" Foreground="White" FontSize="18" Padding="10,-5,0,0" RenderTransformOrigin="0.5,0.5" VerticalContentAlignment="Center" HorizontalAlignment="Center" IsChecked="False" BorderBrush="#FF888888" ></CheckBox>
             <!--IsChecked="{Binding CodeSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
@@ -127,7 +127,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
-   
+
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="35" />
@@ -173,5 +173,24 @@
             <ComboBoxItem >Custom</ComboBoxItem>
         </ComboBox>
         <Label Content="Profile:" HorizontalAlignment="Left" Margin="41,40,0,0" VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+        <Grid x:Name="CanvasGrid" ShowGridLines="True" Height="35" VerticalAlignment="Top" Margin="41,105,0,0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="120" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35" />
+            </Grid.RowDefinitions>
+            <Label Content="Canvas Size:" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Foreground="White" FontSize="16"/>
+            <Label Content="X:" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+            <Label Content="Y:" Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="20"/>
+            <TextBox x:Name="CanvasX"  Grid.Column="2" Grid.Row="0" Foreground="White" FontSize="16" CaretBrush="White" VerticalScrollBarVisibility="Disabled"
+                    TextChanged="ValueChange"  Width="110" Height="35" Panel.ZIndex="9" Background="{x:Null}"/>
+            <TextBox x:Name="CanvasY"  Grid.Column="4" Grid.Row="0" Foreground="White" FontSize="16" CaretBrush="White" VerticalScrollBarVisibility="Disabled"
+                    TextChanged="ValueChange"  Width="110" Height="35" Panel.ZIndex="9" Background="{x:Null}"/>
+        </Grid>
     </Grid>
 </Window>

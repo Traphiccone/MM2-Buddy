@@ -172,6 +172,8 @@ namespace MM2Buddy
                 //
                 // Create custom overlay using user's settings
                 // 
+                mainGrid.Width = mWin.CanvasX > 50 ? mWin.CanvasX : 50;
+                mainGrid.Height = mWin.CanvasY > 50 ? mWin.CanvasY : 50;
                 if (lvl.Active)
                 {
                     if (mWin.CodeSettings)

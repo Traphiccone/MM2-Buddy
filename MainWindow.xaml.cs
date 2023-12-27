@@ -93,6 +93,8 @@ namespace MM2Buddy
         public string OverlaySelection { get; set; }
         public string Default1Entry { get; set; }
         public string Default2Entry { get; set; }
+        public int CanvasX { get; set; }
+        public int CanvasY { get; set; }
 
 
         public ScreenOverlayWin screenOverlayWin;
